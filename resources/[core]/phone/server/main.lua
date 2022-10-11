@@ -1065,18 +1065,18 @@ Core.Commands.Add('bill', 'Bill A Player', {{name = 'id', help = 'Player ID'}, {
                         {billed.PlayerData.citizenid, amount, biller.PlayerData.job.name,
                          biller.PlayerData.charinfo.firstname, biller.PlayerData.citizenid})
                     TriggerClientEvent('phone:RefreshPhone', billed.PlayerData.source)
-                    TriggerClientEvent('Core:Notify', source, 'Invoice Successfully Sent', 'success')
+                    TriggerClientEvent('Core:Notify', source, 'Fatura enviada com sucesso', 'success')
                     TriggerClientEvent('Core:Notify', billed.PlayerData.source, 'New Invoice Received')
                 else
-                    TriggerClientEvent('Core:Notify', source, 'Must Be A Valid Amount Above 0', 'error')
+                    TriggerClientEvent('Core:Notify', source, 'Deve ser uma quantidade válida acima de 0', 'error')
                 end
             else
-                TriggerClientEvent('Core:Notify', source, 'You Cannot Bill Yourself', 'error')
+                TriggerClientEvent('Core:Notify', source, 'Você não pode se cobrar', 'error')
             end
         else
-            TriggerClientEvent('Core:Notify', source, 'Player Not Online', 'error')
+            TriggerClientEvent('Core:Notify', source, 'Jogador não online', 'error')
         end
     else
-        TriggerClientEvent('Core:Notify', source, 'No Access', 'error')
+        TriggerClientEvent('Core:Notify', source, 'Sem acesso', 'error')
     end
 end)
