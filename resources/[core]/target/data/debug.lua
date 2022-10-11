@@ -12,7 +12,7 @@ AddEventHandler(currentResourceName..':debug', function(data)
                     type = "client",
                     event = currentResourceName..':debug',
                     icon = "fas fa-box-circle-check",
-                    label = "Hello World",
+                    label = "Olá Mundo",
                     remove = true
                 },
             },
@@ -27,7 +27,7 @@ targeting:AddGlobalPed({
             type = "client",
             event = currentResourceName..':debug',
             icon = "fas fa-male",
-            label = "(Debug) Ped",
+            label = "(debug)Ped",
         },
     },
     distance = Config.MaxDistance
@@ -39,7 +39,7 @@ targeting:AddGlobalVehicle({
             type = "client",
             event = currentResourceName..':debug',
             icon = "fas fa-car",
-            label = "(Debug) Vehicle",
+            label = "(Debug) Veículo",
         },
     },
     distance = Config.MaxDistance
