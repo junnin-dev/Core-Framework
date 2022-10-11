@@ -1,6 +1,6 @@
 local Core = exports['core']:GetCoreObject()
 
-Core.Commands.Add("binds", "Open commandbinding menu", {}, false, function(source, _)
+Core.Commands.Add("binds", "Abrir commandbinding menu", {}, false, function(source, _)
 	TriggerClientEvent("commandbinding:client:openUI", source)
 end)
 
