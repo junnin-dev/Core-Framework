@@ -1,11 +1,3 @@
---  Relationship Types:
---  0 = Companion
---  1 = Respect
---  2 = Like
---  3 = Neutral
---  4 = Dislike
---  5 = Hate
-
 SetRelationshipBetweenGroups(1, `AMBIENT_GANG_HILLBILLY`, `PLAYER`)
 SetRelationshipBetweenGroups(1, `AMBIENT_GANG_BALLAS`, `PLAYER`)
 SetRelationshipBetweenGroups(1, `AMBIENT_GANG_MEXICAN`, `PLAYER`)
