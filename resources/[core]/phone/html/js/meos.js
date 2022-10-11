@@ -27,7 +27,7 @@ OpenMeosPage = function(page) {
 }
 
 SetupMeosHome = function() {
-    $("#meos-app-name").html("Welcome " + QB.Phone.Data.PlayerData.charinfo.firstname + " " + QB.Phone.Data.PlayerData.charinfo.lastname);
+    $("#meos-app-name").html("Welcome " + JN.Phone.Data.PlayerData.charinfo.firstname + " " + JN.Phone.Data.PlayerData.charinfo.lastname);
 }
 
 MeosHomePage = function() {
@@ -140,7 +140,7 @@ $(document).on('click', '.person-search-result-apartment > span', function(e){
     copyText.setSelectionRange(0, 99999);
     document.execCommand("copy");
 
-    QB.Phone.Notifications.Add("fas fa-university", "MDT", "House number copied!", "#badc58", 1750);
+    JN.Phone.Notifications.Add("fas fa-university", "MDT", "House number copied!", "#badc58", 1750);
 
     $.post('https://phone/SetApartmentLocation', JSON.stringify({
         data: ClickedPersonData
@@ -197,12 +197,12 @@ $(document).on('click', '.confirm-search-person-test', function(e){
                     $("#person-"+i).data("PersonData", person);
                 });
             } else {
-                QB.Phone.Notifications.Add("politie", "MDT", "There are no search results!");
+                JN.Phone.Notifications.Add("politie", "MDT", "There are no search results!");
                 $(".person-search-results").html("");
             }
         });
     } else {
-        QB.Phone.Notifications.Add("politie", "MDT", "There are no search results!");
+        JN.Phone.Notifications.Add("politie", "MDT", "There are no search results!");
         $(".person-search-results").html("");
     }
 });
@@ -223,12 +223,12 @@ $(document).on('click', '.confirm-search-person-house', function(e){
                     $("#personhouse-"+i).data("HouseData", house);
                 });
             } else {
-                QB.Phone.Notifications.Add("politie", "MDT", "There are no search results!");
+                JN.Phone.Notifications.Add("politie", "MDT", "There are no search results!");
                 $(".person-search-results").html("");
             }
         });
     } else {
-        QB.Phone.Notifications.Add("politie", "MDT", "There are no search results!");
+        JN.Phone.Notifications.Add("politie", "MDT", "There are no search results!");
         $(".person-search-results").html("");
     }
 });
@@ -259,7 +259,7 @@ $(document).on('click', '.confirm-search-vehicle', function(e){
             }
         });
     } else {
-        QB.Phone.Notifications.Add("politie", "MDT", "There are no search results!");
+        JN.Phone.Notifications.Add("politie", "MDT", "There are no search results!");
         $(".vehicle-search-results").html("");
     }
 });
@@ -281,7 +281,7 @@ $(document).on('click', '.scan-search-vehicle', function(e){
             var VehicleElement = '<div class="vehicle-search-result"> <div class="vehicle-search-result-name">'+vehicle.label+'</div> <div class="vehicle-search-result-plate">License Plate: '+vehicle.plate+'</div> <div class="vehicle-opensplit"></div> &nbsp; <div class="vehicle-search-result-owner">Owner: '+vehicle.owner+'</div> &nbsp; <div class="vehicle-search-result-apk">MOT: '+APK+'</div> <div class="vehicle-search-result-warrant">Signaled: '+Flagged+'</div> </div>'
             $(".vehicle-search-results").append(VehicleElement);
         } else {
-            QB.Phone.Notifications.Add("politie", "MDT", "No vehicle nearby!");
+            JN.Phone.Notifications.Add("politie", "MDT", "No vehicle nearby!");
             $(".vehicle-search-results").append("");
         }
     });
@@ -315,10 +315,10 @@ $(document).on('click', '.meos-recent-alert', function(e){
                 alert: alertData,
             }));
         } else {
-            QB.Phone.Notifications.Add("politie", "MDT", "This alert doesn't have a GPS location!");
+            JN.Phone.Notifications.Add("politie", "MDT", "This alert doesn't have a GPS location!");
         }
     }else {
-        QB.Phone.Notifications.Add("politie", "MDT", "There are no alerts available.");
+        JN.Phone.Notifications.Add("politie", "MDT", "There are no alerts available.");
     }
 });
 
@@ -333,5 +333,5 @@ $(document).on('click', '.meos-location-button', function(e){
 $(document).on('click', '.meos-clear-alerts', function(e){
     $(".meos-alerts").html("");
     $(".meos-recent-alerts").html('<div class="meos-recent-alert"> <span class="meos-recent-alert-title">You don\'t have any alerts!</span></div>');
-    QB.Phone.Notifications.Add("politie", "MDT", "All alerts have been deleted!");
+    JN.Phone.Notifications.Add("politie", "MDT", "All alerts have been deleted!");
 });
