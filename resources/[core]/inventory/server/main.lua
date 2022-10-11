@@ -144,13 +144,6 @@ end
 
 exports("GetFirstSlotByItem", GetFirstSlotByItem)
 
----Add an item to the inventory of the player
----@param source number The source of the player
----@param item string The item to add to the inventory
----@param amount? number The amount of the item to add
----@param slot? number The slot to add the item to
----@param info? table Extra info to add onto the item to use whenever you get the item
----@return boolean success Returns true if the item was added, false it the item couldn't be added
 local function AddItem(source, item, amount, slot, info)
 	local Player = Core.Functions.GetPlayer(source)
 
@@ -159,7 +152,7 @@ local function AddItem(source, item, amount, slot, info)
 	local totalWeight = GetTotalWeight(Player.PlayerData.items)
 	local itemInfo = Core.Shared.Items[item:lower()]
 	if not itemInfo and not Player.Offline then
-		Core.Functions.Notify(source, "Item does not exist", 'error')
+		Core.Functions.Notify(source, "O item não existe", 'error')
 		return false
 	end
 
@@ -212,12 +205,7 @@ end
 
 exports("AddItem", AddItem)
 
----Remove an item from the inventory of the player
----@param source number The source of the player
----@param item string The item to remove from the inventory
----@param amount? number The amount of the item to remove
----@param slot? number The slot to remove the item from
----@return boolean success Returns true if the item was remove, false it the item couldn't be removed
+
 local function RemoveItem(source, item, amount, slot)
 	local Player = Core.Functions.GetPlayer(source)
 
@@ -2057,11 +2045,9 @@ Core.Functions.CreateCallback('Core:HasItem', function(source, cb, items, amount
     cb(retval)
 end)
 
---#endregion Callbacks
+--Register command
 
---#region Commands
-
-Core.Commands.Add("resetinv", "Reset Inventory (Admin Only)", {{name="type", help="stash/trunk/glovebox"},{name="id/plate", help="ID of stash or license plate"}}, true, function(source, args)
+Core.Commands.Add("resetinv", "Redefinir inventário (somente admin)", {{name="type", help="stash/trunk/glovebox"},{name="id/plate", help="ID of stash or license plate"}}, true, function(source, args)
 	local invType = args[1]:lower()
 	table.remove(args, 1)
 	local invId = table.concat(args, " ")
@@ -2090,7 +2076,7 @@ Core.Commands.Add("rob", "Rob Player", {}, false, function(source, _)
 	TriggerClientEvent("police:client:RobPlayer", source)
 end)
 
-Core.Commands.Add("giveitem", "Give An Item (Admin Only)", {{name="id", help="Player ID"},{name="item", help="Name of the item (not a label)"}, {name="amount", help="Amount of items"}}, false, function(source, args)
+Core.Commands.Add("giveitem", "Dê um item (somente administrador)", {{name="id", help="Player ID"},{name="item", help="Name of the item (not a label)"}, {name="amount", help="Amount of items"}}, false, function(source, args)
 	local id = tonumber(args[1])
 	local Player = Core.Functions.GetPlayer(id)
 	local amount = tonumber(args[3]) or 1
@@ -2138,7 +2124,7 @@ Core.Commands.Add("giveitem", "Give An Item (Admin Only)", {{name="id", help="Pl
 	end
 end, "admin")
 
-Core.Commands.Add("randomitems", "Give Random Items (God Only)", {}, false, function(source, _)
+Core.Commands.Add("randomitems", "Dê itens aleatórios (somente Deus)", {}, false, function(source, _)
 	local filteredItems = {}
 	for k, v in pairs(Core.Shared.Items) do
 		if Core.Shared.Items[k]["type"] ~= "weapon" then
@@ -2158,13 +2144,13 @@ Core.Commands.Add("randomitems", "Give Random Items (God Only)", {}, false, func
 	end
 end, "god")
 
-Core.Commands.Add('clearinv', 'Clear Players Inventory (Admin Only)', { { name = 'id', help = 'Player ID' } }, false, function(source, args)
+Core.Commands.Add('clearinv', 'Limpar o inv do Player (Admin Only)', { { name = 'id', help = 'Player ID' } }, false, function(source, args)
     local playerId = args[1] ~= '' and tonumber(args[1]) or source
     local Player = Core.Functions.GetPlayer(playerId)
     if Player then
         ClearInventory(playerId)
     else
-        Core.Functions.Notify(source, "Player not online", 'error')
+        Core.Functions.Notify(source, "Jogador não online", 'error')
     end
 end, 'admin')
 
