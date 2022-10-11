@@ -7,7 +7,7 @@ CreateThread(function()
     while true do
         Wait(3600000)
         dailyWithdraws = {}
-        TriggerClientEvent('Core:Notify', -1, "Daily Withdraw Limit Reset", "success")
+        TriggerClientEvent('Core:Notify', -1, "Redefinição do limite diário de retirada", "success")
     end
 end)
 
