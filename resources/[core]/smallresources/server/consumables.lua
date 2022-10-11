@@ -98,12 +98,12 @@ Core.Functions.CreateUseableItem("heavyarmor", function(source)
     TriggerClientEvent("consumables:client:UseHeavyArmor", source)
 end)
 
-Core.Commands.Add("resetarmor", "Resets Vest (Police Only)", {}, false, function(source)
+Core.Commands.Add("resetarmor", "Redefine o colete (somente da polícia)", {}, false, function(source)
     local Player = Core.Functions.GetPlayer(source)
     if Player.PlayerData.job.name == "police" then
         TriggerClientEvent("consumables:client:ResetArmor", source)
     else
-        TriggerClientEvent('Core:Notify', source,  "For Police Officer Only", "error")
+        TriggerClientEvent('Core:Notify', source,  "Apenas para policial", "error")
     end
 end)
 
@@ -117,7 +117,7 @@ Core.Functions.CreateUseableItem("parachute", function(source, item)
     TriggerClientEvent("consumables:client:UseParachute", source)
 end)
 
-Core.Commands.Add("resetparachute", "Resets Parachute", {}, false, function(source)
+Core.Commands.Add("resetparachute", "Redefina o pára -quedas", {}, false, function(source)
 	TriggerClientEvent("consumables:client:ResetParachute", source)
 end)
 
