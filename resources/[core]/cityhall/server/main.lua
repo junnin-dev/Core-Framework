@@ -111,7 +111,7 @@ RegisterNetEvent('cityhall:server:getIDs', giveStarterItems)
 
 -- Commands
 
-Core.Commands.Add("drivinglicense", "Give a drivers license to someone", {{"id", "ID of a person"}}, true, function(source, args)
+Core.Commands.Add("drivinglicense", "Dê uma carteira de motorista a alguém", {{"id", "ID of a person"}}, true, function(source, args)
     local Player = Core.Functions.GetPlayer(source)
     local SearchedPlayer = Core.Functions.GetPlayer(tonumber(args[1]))
     if SearchedPlayer then
