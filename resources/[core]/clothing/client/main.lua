@@ -827,7 +827,7 @@ function openMenu(allowedMenus)
 end
 
 RegisterNUICallback('TrackerError', function(_, cb)
-    Core.Functions.Notify("Você não pode remover sua pulseira no tornozelo ..", "error")
+    Core.Functions.Notify("Você não pode remover sua pulseira do tornozelo..", "error")
     cb('ok')
 end)
 
