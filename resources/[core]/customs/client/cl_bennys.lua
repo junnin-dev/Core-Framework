@@ -1030,7 +1030,7 @@ end)
 RegisterNetEvent("customs:client:purchaseFailed", function()
     isPurchaseSuccessful = false
     attemptingPurchase = false
-    Core.Functions.Notify("Not enough money", "error")
+    Core.Functions.Notify("Dinheiro insuficiente", "error")
 end)
 
 RegisterNetEvent('customs:client:EnterCustoms', function(override)
