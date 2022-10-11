@@ -100,10 +100,10 @@ function Process(action, start, tick, finish)
                 end
             end)
         else
-            TriggerEvent("Core:Notify", "You are already doing something!", "error")
+            TriggerEvent("Core:Notify", "Você já está fazendo algo!", "error")
         end
     else
-        TriggerEvent("Core:Notify", "Cant do that action!", "error")
+        TriggerEvent("Core:Notify", "Não posso fazer essa ação!", "error")
     end
 end
 
