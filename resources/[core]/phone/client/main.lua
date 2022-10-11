@@ -303,7 +303,7 @@ local function OpenPhone()
                 PhoneData.GarageVehicles = vehicles
             end)
         else
-            Core.Functions.Notify("You don't have a phone", "error")
+            Core.Functions.Notify("Você não tem um telefone", "error")
         end
     end)
 end
@@ -464,7 +464,7 @@ RegisterCommand('phone', function()
         if not PlayerData.metadata['ishandcuffed'] and not PlayerData.metadata['inlaststand'] and not PlayerData.metadata['isdead'] and not IsPauseMenuActive() then
             OpenPhone()
         else
-            Core.Functions.Notify("Action not available at the moment..", "error")
+            Core.Functions.Notify("Ação não disponível no momento ..", "error")
         end
     end
 end)
@@ -862,9 +862,9 @@ end)
 RegisterNUICallback('track-vehicle', function(data, cb)
     local veh = data.veh
     if findVehFromPlateAndLocate(veh.plate) then
-        Core.Functions.Notify("Your vehicle has been marked", "success")
+        Core.Functions.Notify("Seu veículo foi marcado", "success")
     else
-        Core.Functions.Notify("This vehicle cannot be located", "error")
+        Core.Functions.Notify("Este veículo não pode ser localizado", "error")
     end
     cb("ok")
 end)
@@ -952,7 +952,7 @@ end)
 
 RegisterNUICallback('SetAlertWaypoint', function(data, cb)
     local coords = data.alert.coords
-    Core.Functions.Notify('GPS Location set: '..data.alert.title)
+    Core.Functions.Notify('Conjunto de localização do GPS: '..data.alert.title)
     SetNewWaypoint(coords.x, coords.y)
     cb('ok')
 end)
@@ -1063,7 +1063,7 @@ RegisterNUICallback('RaceDistanceCheck', function(data, cb)
             end
             cb(true)
         else
-            Core.Functions.Notify('You\'re too far away from the race. GPS has been set to the race.', 'error', 5000)
+            Core.Functions.Notify('Você está muito longe da corrida.O GPS foi definido para a corrida.', 'error', 5000)
             SetNewWaypoint(checkpointcoords.x, checkpointcoords.y)
             cb(false)
         end
@@ -1098,7 +1098,7 @@ end)
 
 RegisterNUICallback('SetHouseLocation', function(data, cb)
     SetNewWaypoint(data.HouseData.HouseData.coords.enter.x, data.HouseData.HouseData.coords.enter.y)
-    Core.Functions.Notify("GPS has been set to " .. data.HouseData.HouseData.adress .. "!", "success")
+    Core.Functions.Notify("GPS foi definido como " .. data.HouseData.HouseData.adress .. "!", "success")
     cb("ok")
 end)
 
@@ -1126,7 +1126,7 @@ end)
 
 RegisterNUICallback('SetGPSLocation', function(data, cb)
     SetNewWaypoint(data.coords.x, data.coords.y)
-    Core.Functions.Notify('GPS has been set!', 'success')
+    Core.Functions.Notify('GPS foi definido!', 'success')
     cb("ok")
 end)
 
@@ -1134,7 +1134,7 @@ RegisterNUICallback('SetApartmentLocation', function(data, cb)
     local ApartmentData = data.data.appartmentdata
     local TypeData = Apartments.Locations[ApartmentData.type]
     SetNewWaypoint(TypeData.coords.enter.x, TypeData.coords.enter.y)
-    Core.Functions.Notify('GPS has been set!', 'success')
+    Core.Functions.Notify('GPS foi definido!', 'success')
     cb("ok")
 end)
 
@@ -1427,7 +1427,7 @@ end)
 
 RegisterCommand('ping', function(_, args)
     if not args[1] then
-        Core.Functions.Notify("You need to input a Player ID", "error")
+        Core.Functions.Notify("Você precisa inserir um id de jogador", "error")
     else
         TriggerServerEvent('phone:server:sendPing', args[1])
     end
@@ -2074,7 +2074,7 @@ RegisterNetEvent('phone:client:GiveContactDetails', function()
         local PlayerId = GetPlayerServerId(player)
         TriggerServerEvent('phone:server:GiveContactDetails', PlayerId)
     else
-        Core.Functions.Notify("No one nearby!", "error")
+        Core.Functions.Notify("Ninguém por perto!", "error")
     end
 end)
 
