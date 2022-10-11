@@ -1,5 +1,5 @@
 local Core = exports['core']:GetCoreObject()
-Core.Commands.Add("fix", "Repair your vehicle (Admin Only)", {}, false, function(source)
+Core.Commands.Add("fix", "Repare seu veículo (somente administrador)", {}, false, function(source)
     TriggerClientEvent('iens:repaira', source)
     TriggerClientEvent('vehiclemod:client:fixEverything', source)
 end, "admin")
