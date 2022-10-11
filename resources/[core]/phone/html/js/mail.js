@@ -11,7 +11,7 @@ $(document).on('click', '.mail', function(e){
     }, 300);
 
     var MailData = $("#"+$(this).attr('id')).data('MailData');
-    QB.Phone.Functions.SetupMail(MailData);
+    JN.Phone.Functions.SetupMail(MailData);
 
     OpenedMail = $(this).attr('id');
 });
@@ -58,7 +58,7 @@ $(document).on('click', '#remove-mail', function(e){
     }, 300);
 });
 
-QB.Phone.Functions.SetupMails = function(Mails) {
+JN.Phone.Functions.SetupMails = function(Mails) {
     var NewDate = new Date();
     var NewHour = NewDate.getHours();
     var NewMinute = NewDate.getMinutes();
@@ -72,7 +72,7 @@ QB.Phone.Functions.SetupMails = function(Mails) {
     }
     var MessageTime = Hourssssss + ":" + Minutessss;
 
-    $("#mail-header-mail").html(QB.Phone.Data.PlayerData.charinfo.firstname+"."+QB.Phone.Data.PlayerData.charinfo.lastname+"@Core.com");
+    $("#mail-header-mail").html(JN.Phone.Data.PlayerData.charinfo.firstname+"."+JN.Phone.Data.PlayerData.charinfo.lastname+"@Core.com");
     $("#mail-header-lastsync").html("Last synchronized "+MessageTime);
     if (Mails !== null && Mails !== undefined) {
         if (Mails.length > 0) {
@@ -94,7 +94,7 @@ QB.Phone.Functions.SetupMails = function(Mails) {
 
 var MonthFormatting = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
-QB.Phone.Functions.SetupMail = function(MailData) {
+JN.Phone.Functions.SetupMail = function(MailData) {
     var date = new Date(MailData.date);
     var DateString = date.getDate()+" "+MonthFormatting[date.getMonth()]+" "+date.getFullYear()+" "+date.getHours()+":"+date.getMinutes();
     $(".mail-subject").html("<p><span style='font-weight: bold;'>"+MailData.sender+"</span><br>"+MailData.subject+"</p>");
@@ -130,7 +130,7 @@ $(document).on('click', '.test-slet', function(e){
 
 $(document).on('click','.advimage', function (){
     let source = $(this).attr('src')
-    QB.Screen.popUp(source);
+    JN.Screen.popUp(source);
 });
 
 $(document).on('click','#new-advert-photo',function(e){
@@ -140,7 +140,7 @@ $(document).on('click','#new-advert-photo',function(e){
             $('#advert-new-url').val(url)
         }
     })
-    QB.Phone.Functions.Close();
+    JN.Phone.Functions.Close();
 });
 
 $(document).on('click', '#new-advert-back', function(e){
@@ -180,12 +180,12 @@ $(document).on('click', '#new-advert-submit', function(e){
         $('#advert-new-url').val("")
         $(".new-advert-textarea").val("");
     } else {
-        QB.Phone.Notifications.Add("fas fa-ad", "Advertisement", "You can\'t post an empty ad!", "#ff8f1a", 2000);
+        JN.Phone.Notifications.Add("fas fa-ad", "Advertisement", "You can\'t post an empty ad!", "#ff8f1a", 2000);
     }
 });
 
-QB.Phone.Functions.RefreshAdverts = function(Adverts) {
-    $("#advert-header-name").html("@"+QB.Phone.Data.PlayerData.charinfo.firstname+""+QB.Phone.Data.PlayerData.charinfo.lastname+" | "+QB.Phone.Data.PlayerData.charinfo.phone);
+JN.Phone.Functions.RefreshAdverts = function(Adverts) {
+    $("#advert-header-name").html("@"+JN.Phone.Data.PlayerData.charinfo.firstname+""+JN.Phone.Data.PlayerData.charinfo.lastname+" | "+JN.Phone.Data.PlayerData.charinfo.phone);
     if (Adverts.length > 0 || Adverts.length == undefined) {
         $(".advert-list").html("");
         $.each(Adverts, function(i, advert){
@@ -204,7 +204,7 @@ QB.Phone.Functions.RefreshAdverts = function(Adverts) {
 
             $(".advert-list").append(element);
 
-            if (advert.number === QB.Phone.Data.PlayerData.charinfo.phone){
+            if (advert.number === JN.Phone.Data.PlayerData.charinfo.phone){
                 $(".advert").append('<i class="fas fa-trash"style="font-size: 1rem; right:0;" id="adv-delete"></i>')
             }
         });
@@ -219,7 +219,7 @@ $(document).on('click','#adv-delete',function(e){
     e.preventDefault();
     $.post('https://phone/DeleteAdvert', function(){
         setTimeout(function(){
-            QB.Phone.Notifications.Add("fas fa-ad", "Advertisement", "The ad was deleted", "#ff8f1a", 2000);
+            JN.Phone.Notifications.Add("fas fa-ad", "Advertisement", "The ad was deleted", "#ff8f1a", 2000);
         },400)
     });
 })
