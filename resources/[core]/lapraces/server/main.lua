@@ -227,7 +227,7 @@ RegisterNetEvent('lapraces:server:JoinRace', function(RaceData)
             Races[CurrentRace].Started = false
             Races[CurrentRace].Waiting = false
             table.remove(AvailableRaces, PreviousRaceKey)
-            TriggerClientEvent('Core:Notify', src, 'You were the only one in the race, the race had ended', 'error')
+            TriggerClientEvent('Core:Notify', src, 'Você foi o único na corrida, a corrida terminou', 'error')
             TriggerClientEvent('lapraces:client:LeaveRace', src, Races[CurrentRace])
         else
             AvailableRaces[PreviousRaceKey].RaceData = Races[CurrentRace]
@@ -327,7 +327,7 @@ RegisterNetEvent('lapraces:server:LeaveRace', function(RaceData)
         Races[RaceId].Started = false
         Races[RaceId].Waiting = false
         table.remove(AvailableRaces, AvailableKey)
-        TriggerClientEvent('Core:Notify', src, 'You were the only one in the race.The race had ended.', 'error')
+        TriggerClientEvent('Core:Notify', src, 'Você foi o único na corrida. A corrida terminou.', 'error')
         TriggerClientEvent('lapraces:client:LeaveRace', src, Races[RaceId])
         LastRaces[RaceId] = nil
         NotFinished[RaceId] = nil
@@ -386,7 +386,7 @@ RegisterNetEvent('lapraces:server:CancelRace', function(raceId)
     local Player = Core.Functions.GetPlayer(source)
     local AvailableKey = GetOpenedRaceKey(raceId)
 
-    TriggerClientEvent('Core:Notify', src, 'Stopping the race: ' .. raceId, 'error')
+    TriggerClientEvent('Core:Notify', src, 'Parando a corrida: ' .. raceId, 'error')
 
     if AvailableKey ~= nil then
         if AvailableRaces[AvailableKey].SetupCitizenId == Player.PlayerData.citizenid then
@@ -406,7 +406,7 @@ RegisterNetEvent('lapraces:server:CancelRace', function(raceId)
             TriggerClientEvent('phoneclient:UpdateLapraces', -1)
         end
     else
-        TriggerClientEvent('Core:Notify', src, 'Race not open: ' .. raceId, 'error')
+        TriggerClientEvent('Core:Notify', src, 'Corrida não aberta: ' .. raceId, 'error')
     end
 end)
 
@@ -444,10 +444,10 @@ RegisterNetEvent('lapraces:server:StartRace', function(RaceId)
             end
             TriggerClientEvent('phoneclient:UpdateLapraces', -1)
         else
-            TriggerClientEvent('Core:Notify', src, 'You are not the creator of the race..', 'error')
+            TriggerClientEvent('Core:Notify', src, 'Você não é o criador da corrida ..', 'error')
         end
     else
-        TriggerClientEvent('Core:Notify', src, 'You are not in a race..', 'error')
+        TriggerClientEvent('Core:Notify', src, 'Você não está em uma corrida ..', 'error')
     end
 end)
 
