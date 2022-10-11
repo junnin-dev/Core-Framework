@@ -685,7 +685,7 @@ function MenuManager(state, repairOnly)
                             toggleMenu(true, currentMenu)
                         else
                             ExitBennys()
-                            Core.Functions.Notify('Your vehicle was repaired!')
+                            Core.Functions.Notify('Seu veículo foi reparado!')
                         end
                         updateMenuHeading(currentMenu)
                         updateMenuSubheading(currentMenu)
