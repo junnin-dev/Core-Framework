@@ -225,7 +225,7 @@
     width: 100%;
     overflow: hidden;
 }
-.qbank-logo {
+.bank-logo {
     position: absolute;
     width: 10vh;
     margin: 0 auto;
@@ -234,7 +234,7 @@
     top: 22vh;
     z-index: 101;
 }
-#qbank-text {
+#bank-text {
     position: absolute;
     top: 24vh;
     left: 9vh;
