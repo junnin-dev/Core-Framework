@@ -178,7 +178,7 @@ RegisterNetEvent('weed:server:foodPlant', function(house, amount, plantName, pla
         'SELECT * FROM house_plants WHERE building = ? AND sort = ? AND plantid = ?',
         {house, plantName, tostring(plantId)})
     TriggerClientEvent('Core:Notify', src,
-        JNWeed.Plants[plantName]["label"] .. ' | Nutrition: ' .. plantStats[1].food .. '% + ' .. amount .. '% (' ..
+        JNWeed.Plants[plantName]["label"] .. ' | Nutrição: ' .. plantStats[1].food .. '% + ' .. amount .. '% (' ..
             (plantStats[1].food + amount) .. '%)', 'success', 3500)
     if plantStats[1].food + amount > 100 then
         MySQL.update('UPDATE house_plants SET food = ? WHERE building = ? AND plantid = ?',
