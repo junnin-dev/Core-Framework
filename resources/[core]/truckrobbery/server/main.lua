@@ -13,7 +13,7 @@ RegisterServerEvent('AttackTransport:akceptujto', function()
 	local accountMoney = xPlayer.PlayerData.money["bank"]
 	if ActiveMission == 0 then
 		if accountMoney < ActivationCost then
-		TriggerClientEvent('Core:Notify', _source, "You need $"..ActivationCost.." in the bank to accept the mission")
+		TriggerClientEvent('Core:Notify', _source, "Você precisa $"..ActivationCost.." no banco para aceitar a missão")
 		else
 			for _, v in pairs(Core.Functions.GetPlayers()) do
 				local Player = Core.Functions.GetPlayer(v)
@@ -29,11 +29,11 @@ RegisterServerEvent('AttackTransport:akceptujto', function()
 
 				OdpalTimer()
 			else
-				TriggerClientEvent('Core:Notify', _source, 'Need at least '..ActivePolice.. ' SASP to activate the mission.')
+				TriggerClientEvent('Core:Notify', _source, 'Precisa pelo menos '..ActivePolice.. ' SASP para ativar a missão.')
 			end
 		end
 	else
-		TriggerClientEvent('Core:Notify', _source, 'Someone is already carrying out this mission')
+		TriggerClientEvent('Core:Notify', _source, 'Alguém já está realizando esta missão')
 	end
 end)
 
@@ -63,7 +63,7 @@ RegisterServerEvent('AttackTransport:graczZrobilnapad', function()
 	TriggerClientEvent('inventory:client:ItemBox', _source, Core.Shared.Items['markedbills'], "add")
 
 	local chance = math.random(1, 100)
-	TriggerClientEvent('Core:Notify', _source, 'You took '..bags..' bags of cash from the van')
+	TriggerClientEvent('Core:Notify', _source, 'Você pegou '..bags..' sacos de dinheiro da van')
 
 	if chance >= 95 then
 		xPlayer.Functions.AddItem('security_card_01', 1)
