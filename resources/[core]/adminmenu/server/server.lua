@@ -337,7 +337,7 @@ Core.Commands.Add('reportr', Lang:t("commands.reply_to_report"), {{name='id', he
     local msg = table.concat(args, ' ')
     local OtherPlayer = Core.Functions.GetPlayer(playerId)
     if msg == '' then return end
-    if not OtherPlayer then return TriggerClientEvent('Core:Notify', src, 'Player is not online', 'error') end
+    if not OtherPlayer then return TriggerClientEvent('Core:Notify', src, 'Jogador não está online', 'error') end
     if not Core.Functions.HasPermission(src, 'admin') or IsPlayerAceAllowed(src, 'command') ~= 1 then return end
     TriggerClientEvent('chat:addMessage', playerId, {
         color = {255, 0, 0},
@@ -349,7 +349,7 @@ Core.Commands.Add('reportr', Lang:t("commands.reply_to_report"), {{name='id', he
         multiline = true,
         args = {'Report Response ('..playerId..')', msg}
     })
-    TriggerClientEvent('Core:Notify', src, 'Reply Sent')
+    TriggerClientEvent('Core:Notify', src, 'Resposta enviada')
     TriggerEvent('log:server:CreateLog', 'report', 'Relatório Responder', 'red', '**'..GetPlayerName(src)..'** respondeu em: **'..OtherPlayer.PlayerData.name.. ' **(ID: '..OtherPlayer.PlayerData.source..') **Message:** ' ..msg, false)
 end, 'admin')
 
