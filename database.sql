@@ -16,8 +16,8 @@
 
 
 -- Copiando estrutura do banco de dados para junnin_framework
-CREATE DATABASE IF NOT EXISTS `junnin_framework` /*!40100 DEFAULT CHARACTER SET utf8 */;
-USE `junnin_framework`;
+CREATE DATABASE IF NOT EXISTS `core_framework` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `core_framework`;
 
 -- Copiando estrutura para tabela junnin_framework.apartments
 CREATE TABLE IF NOT EXISTS `apartments` (
