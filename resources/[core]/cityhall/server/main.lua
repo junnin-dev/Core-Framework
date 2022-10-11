@@ -46,7 +46,7 @@ RegisterNetEvent('cityhall:server:requestId', function(item, hall)
     local Player = Core.Functions.GetPlayer(src)
     if not Player then return end
     local itemInfo = Config.Cityhalls[hall].licenses[item]
-    if not Player.Functions.RemoveMoney("cash", itemInfo.cost) then return TriggerClientEvent('Core:Notify', src, ('You don\'t have enough money on you, you need %s cash'):format(itemInfo.cost), 'error') end
+    if not Player.Functions.RemoveMoney("cash", itemInfo.cost) then return TriggerClientEvent('Core:Notify', src, ('Você não tem dinheiro suficiente para você, você precisa %s dinheiro'):format(itemInfo.cost), 'error') end
     local info = {}
     if item == "id_card" then
         info.citizenid = Player.PlayerData.citizenid
@@ -90,7 +90,7 @@ RegisterNetEvent('cityhall:server:sendDriverTest', function(instructors)
             TriggerEvent("phoneserver:sendNewMailToOffline", citizenid, mailData)
         end
     end
-    TriggerClientEvent('Core:Notify', src, "An email has been sent to driving schools, and you will be contacted automatically", "success", 5000)
+    TriggerClientEvent('Core:Notify', src, "Um email foi enviado para as escolas de direção e você será contatado automaticamente", "success", 5000)
 end)
 
 RegisterNetEvent('cityhall:server:ApplyJob', function(job, cityhallCoords)
