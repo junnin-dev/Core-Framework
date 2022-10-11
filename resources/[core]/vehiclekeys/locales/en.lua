@@ -7,7 +7,7 @@ local Translations = {
         vlockpick = 'Você conseguiu arrombar a fechadura da porta!',
         fvlockpick = 'Você não consegue encontrar as chaves e fica frustrado.',
         vgkeys = 'Você entrega as chaves.',
-        vgetkeys = 'Você recebe as chaves do veículo!',
+        vgetkeys = 'Você recebeu as chaves do veículo!',
         fpid = 'Preencha os argumentos de ID do jogador e Placa',
     },
     progress = {
