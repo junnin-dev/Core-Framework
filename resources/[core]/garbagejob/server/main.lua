@@ -130,7 +130,7 @@ RegisterNetEvent('garbagejob:server:PayShift', function(continue)
     end
 end)
 
-Core.Commands.Add("cleargarbroutes", "Removes garbo routes for user (admin only)", {{name="id", help="Player ID (may be empty)"}}, false, function(source, args)
+Core.Commands.Add("cleargarbroutes", "Remove as rotas Garbo para usuário (somente admin)", {{name="id", help="Player ID (may be empty)"}}, false, function(source, args)
     local Player = Core.Functions.GetPlayer(tonumber(args[1]))
     local CitizenId = Player.PlayerData.citizenid
     local count = 0
