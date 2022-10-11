@@ -15,14 +15,6 @@ local isCrafting = false
 local isHotbar = false
 local WeaponAttachments = {}
 
---#endregion Variables
-
---#region Functions
-
----Checks if you have an item or not
----@param items string | string[] | table<string, number> The items to check, either a string, array of strings or a key-value table of a string and number with the string representing the name of the item and the number representing the amount
----@param amount? number The amount of the item to check for, this will only have effect when items is a string or an array of strings
----@return boolean success Returns true if the player has the item
 local function HasItem(items, amount)
     local isTable = type(items) == 'table'
     local isArray = isTable and table.type(items) == 'array' or false
