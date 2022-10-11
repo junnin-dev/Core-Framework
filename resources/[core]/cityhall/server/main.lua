@@ -121,16 +121,16 @@ Core.Commands.Add("drivinglicense", "Give a drivers license to someone", {{"id",
                     if Config.DrivingSchools[i].instructors[id] == Player.PlayerData.citizenid then
                         SearchedPlayer.PlayerData.metadata["licences"]["driver"] = true
                         SearchedPlayer.Functions.SetMetaData("licences", SearchedPlayer.PlayerData.metadata["licences"])
-                        TriggerClientEvent('Core:Notify', SearchedPlayer.PlayerData.source, "You have passed! Pick up your drivers license at the town hall", "success", 5000)
-                        TriggerClientEvent('Core:Notify', source, ("Player with ID %s has been granted access to a driving license"):format(SearchedPlayer.PlayerData.source), "success", 5000)
+                        TriggerClientEvent('Core:Notify', SearchedPlayer.PlayerData.source, "Você passou!Pegue sua carteira de motorista na prefeitura", "success", 5000)
+                        TriggerClientEvent('Core:Notify', source, ("Jogador com ID %s recebeu acesso a uma carteira de motorista"):format(SearchedPlayer.PlayerData.source), "success", 5000)
                         break
                     end
                 end
             end
         else
-            TriggerClientEvent('Core:Notify', source, "Can't give permission for a drivers license, this person already has permission", "error")
+            TriggerClientEvent('Core:Notify', source, "Não posso dar permissão para uma carteira de motorista, essa pessoa já tem permissão", "error")
         end
     else
-        TriggerClientEvent('Core:Notify', source, "Player Not Online", "error")
+        TriggerClientEvent('Core:Notify', source, "Jogador não online", "error")
     end
 end)
