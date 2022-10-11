@@ -1,5 +1,5 @@
 local Core = exports['core']:GetCoreObject()
-local QBPhone = {}
+local JNPhone = {}
 local AppAlerts = {}
 local MentionedTweets = {}
 local Hashtags = {}
@@ -41,14 +41,14 @@ local function round(num, numDecimalPlaces)
     return math.floor(num + 0.5)
 end
 
-function QBPhone.AddMentionedTweet(citizenid, TweetData)
+function JNPhone.AddMentionedTweet(citizenid, TweetData)
     if MentionedTweets[citizenid] == nil then
         MentionedTweets[citizenid] = {}
     end
     MentionedTweets[citizenid][#MentionedTweets[citizenid]+1] = TweetData
 end
 
-function QBPhone.SetPhoneAlerts(citizenid, app, alerts)
+function JNPhone.SetPhoneAlerts(citizenid, app, alerts)
     if citizenid ~= nil and app ~= nil then
         if AppAlerts[citizenid] == nil then
             AppAlerts[citizenid] = {}
@@ -722,8 +722,8 @@ RegisterNetEvent('phone:server:MentionedPlayer', function(firstName, lastName, T
         local Player = Core.Functions.GetPlayer(v)
         if Player ~= nil then
             if (Player.PlayerData.charinfo.firstname == firstName and Player.PlayerData.charinfo.lastname == lastName) then
-                QBPhone.SetPhoneAlerts(Player.PlayerData.citizenid, "twitter")
-                QBPhone.AddMentionedTweet(Player.PlayerData.citizenid, TweetMessage)
+                JNPhone.SetPhoneAlerts(Player.PlayerData.citizenid, "twitter")
+                JNPhone.AddMentionedTweet(Player.PlayerData.citizenid, TweetMessage)
                 TriggerClientEvent('phone:client:GetMentioned', Player.PlayerData.source, TweetMessage, AppAlerts[Player.PlayerData.citizenid]["twitter"])
             else
                 local query1 = '%' .. firstName .. '%'
@@ -731,8 +731,8 @@ RegisterNetEvent('phone:server:MentionedPlayer', function(firstName, lastName, T
                 local result = MySQL.query.await('SELECT * FROM players WHERE charinfo LIKE ? AND charinfo LIKE ?', {query1, query2})
                 if result[1] ~= nil then
                     local MentionedTarget = result[1].citizenid
-                    QBPhone.SetPhoneAlerts(MentionedTarget, "twitter")
-                    QBPhone.AddMentionedTweet(MentionedTarget, TweetMessage)
+                    JNPhone.SetPhoneAlerts(MentionedTarget, "twitter")
+                    JNPhone.AddMentionedTweet(MentionedTarget, TweetMessage)
                 end
             end
         end
@@ -779,7 +779,7 @@ end)
 RegisterNetEvent('phone:server:SetPhoneAlerts', function(app, alerts)
     local src = source
     local CitizenId = Core.Functions.GetPlayer(src).citizenid
-    QBPhone.SetPhoneAlerts(CitizenId, app, alerts)
+    JNPhone.SetPhoneAlerts(CitizenId, app, alerts)
 end)
 
 RegisterNetEvent('phone:server:DeleteTweet', function(tweetId)
