@@ -227,7 +227,7 @@ end)
 
 -- Commands
 
-Core.Commands.Add("setvehiclestatus", "Set Vehicle Status", {{
+Core.Commands.Add("setvehiclestatus", "Defina o status do veículo", {{
     name = "part",
     help = "Type The Part You Want To Edit"
 }, {
@@ -239,7 +239,7 @@ Core.Commands.Add("setvehiclestatus", "Set Vehicle Status", {{
     TriggerClientEvent("vehiclemod:client:setPartLevel", source, part, level)
 end, "god")
 
-Core.Commands.Add("setmechanic", "Give Someone The Mechanic job", {{
+Core.Commands.Add("setmechanic", "Dê a alguém o Mechanic job", {{
     name = "id",
     help = "ID Of The Player"
 }}, false, function(source, args)
