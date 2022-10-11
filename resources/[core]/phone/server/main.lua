@@ -488,7 +488,7 @@ Core.Functions.CreateCallback('phone:server:ScanPlate', function(source, cb, pla
         end
         cb(vehicleData)
     else
-        TriggerClientEvent('Core:Notify', src, 'No Vehicle Nearby', 'error')
+        TriggerClientEvent('Core:Notify', src, 'Nenhum veículo próximo', 'error')
         cb(nil)
     end
 end)
@@ -857,7 +857,7 @@ RegisterNetEvent('phone:server:TransferMoney', function(iban, amount)
             sender.Functions.RemoveMoney('bank', amount, "phone-transfered")
         end
     else
-        TriggerClientEvent('Core:Notify', src, "This account number doesn't exist!", "error")
+        TriggerClientEvent('Core:Notify', src, "Este número de conta não existe!", "error")
     end
 end)
 
