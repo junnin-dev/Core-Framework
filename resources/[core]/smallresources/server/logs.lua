@@ -66,7 +66,7 @@ RegisterNetEvent('log:server:CreateLog', function(name, title, color, message, t
             ['description'] = message,
             ['author'] = {
                 ['name'] = 'Core Logs',
-                ['icon_url'] = 'https://media.discordapp.net/attachments/870094209783308299/870104331142189126/Logo_-_Display_Picture_-_Stylized_-_Red.png?width=670&height=670',
+                ['icon_url'] = 'https://cdn.discordapp.com/attachments/1029405834708537404/1029405892510228490/perfiel_nicolas.png',
             },
         }
     }
