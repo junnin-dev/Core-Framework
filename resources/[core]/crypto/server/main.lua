@@ -139,7 +139,7 @@ Core.Commands.Add("setcryptoworth", "Set crypto value", {{name="crypto", help="N
                     NewWorth = NewWorth
                 }
 
-                TriggerClientEvent('Core:Notify', src, "You have changed the value of "..Crypto.Labels[crypto].." from: $"..Crypto.Worth[crypto].." to: $"..NewWorth.." ("..ChangeLabel.." "..PercentageChange.."%)")
+                TriggerClientEvent('Core:Notify', src, "Você mudou o valor de "..Crypto.Labels[crypto].." from: $"..Crypto.Worth[crypto].." to: $"..NewWorth.." ("..ChangeLabel.." "..PercentageChange.."%)")
                 Crypto.Worth[crypto] = NewWorth
                 TriggerClientEvent('crypto:client:UpdateCryptoWorth', -1, crypto, NewWorth)
                 MySQL.insert('INSERT INTO crypto (worth, history) VALUES (:worth, :history) ON DUPLICATE KEY UPDATE worth = :worth, history = :history', {
