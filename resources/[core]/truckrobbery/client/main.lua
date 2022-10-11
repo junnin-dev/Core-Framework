@@ -302,7 +302,7 @@ Citizen.CreateThread(function()
                 DrawMarker(0, transCoords.x, transCoords.y, transCoords.z + 4.5, 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 135, 31, 35, 100, 1, 0, 0, 0)
                 if warning == 0 then
                     warning = 1
-                    Core.Functions.Notify("Get rid of the guards before you place the bomb.", "error")
+                    Core.Functions.Notify("Livre -se dos guardas antes de colocar a bomba.", "error")
                 end
 
                 if GuardsDead == 0 then
