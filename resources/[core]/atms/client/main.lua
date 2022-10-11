@@ -63,7 +63,7 @@ RegisterNetEvent('atms:client:loadATM', function(cards)
             local atm = IsObjectNearPoint(hash, playerCoords.x, playerCoords.y, playerCoords.z, 1.5)
             if atm then
                 PlayATMAnimation('enter')
-                Core.Functions.Progressbar("accessing_atm", "Accessing ATM", 1500, false, true, {
+                Core.Functions.Progressbar("accessing_atm", "Acessando atm", 1500, false, true, {
                     disableMovement = false,
                     disableCarMovement = false,
                     disableMouse = false,
@@ -75,12 +75,12 @@ RegisterNetEvent('atms:client:loadATM', function(cards)
                         cards = cards,
                     })
                 end, function()
-                    Core.Functions.Notify("Failed!", "error")
+                    Core.Functions.Notify("Fracassada!", "error")
                 end)
             end
         end
     else
-        Core.Functions.Notify("Please visit a branch to order a card", "error")
+        Core.Functions.Notify("Visite uma filial para pedir um cartão", "error")
     end
 end)
 

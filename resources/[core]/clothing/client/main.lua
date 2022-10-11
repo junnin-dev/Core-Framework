@@ -827,7 +827,7 @@ function openMenu(allowedMenus)
 end
 
 RegisterNUICallback('TrackerError', function(_, cb)
-    Core.Functions.Notify("You can't remove your ankle bracelet ..", "error")
+    Core.Functions.Notify("Você não pode remover sua pulseira no tornozelo ..", "error")
     cb('ok')
 end)
 
@@ -1081,7 +1081,7 @@ end)
 
 RegisterNUICallback('removeOutfit', function(data, cb)
     TriggerServerEvent('clothing:server:removeOutfit', data.outfitName, data.outfitId)
-    Core.Functions.Notify("You have deleted your"..data.outfitName.." outfit!")
+    Core.Functions.Notify("Você excluiu seu"..data.outfitName.." outfit!")
     cb('ok')
 end)
 
@@ -1938,7 +1938,7 @@ AddEventHandler('clothing:client:loadOutfit', function(oData)
     end
 
     if oData.outfitName ~= nil then
-        Core.Functions.Notify("You have chosen "..oData.outfitName.."! Press Confirm to confirm outfit.")
+        Core.Functions.Notify("Você escolheu "..oData.outfitName.."! Press Confirm to confirm outfit.")
     end
 end)
 

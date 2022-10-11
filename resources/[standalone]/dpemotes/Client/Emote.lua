@@ -141,7 +141,7 @@ AddEventHandler('animations:client:EmoteCommandStart', function(args)
   if CanDoEmote then
     EmoteCommandStart(source, args)
   else
-    Core.Functions.Notify("Cannot Be Done Right Now", "error")
+    Core.Functions.Notify("Não pode ser feito agora", "error")
   end
 end)
 

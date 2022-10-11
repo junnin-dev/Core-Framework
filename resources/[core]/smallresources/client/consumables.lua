@@ -196,7 +196,7 @@ RegisterNetEvent('consumables:client:DrinkAlcohol', function(itemName)
 
     end, function() -- Cancel
         TriggerEvent('animations:client:EmoteCommandStart', {"c"})
-        Core.Functions.Notify("Cancelled..", "error")
+        Core.Functions.Notify("Cancelada..", "error")
     end)
 end)
 
@@ -219,7 +219,7 @@ RegisterNetEvent('consumables:client:Cokebaggy', function()
         CokeBaggyEffect()
     end, function() -- Cancel
         StopAnimTask(ped, "switch@trevor@trev_smoking_meth", "trev_smoking_meth_loop", 1.0)
-        Core.Functions.Notify("Canceled..", "error")
+        Core.Functions.Notify("Cancelada..", "error")
     end)
 end)
 
@@ -242,7 +242,7 @@ RegisterNetEvent('consumables:client:Crackbaggy', function()
         CrackBaggyEffect()
     end, function() -- Cancel
         StopAnimTask(ped, "switch@trevor@trev_smoking_meth", "trev_smoking_meth_loop", 1.0)
-        Core.Functions.Notify("Canceled..", "error")
+        Core.Functions.Notify("Cancelada..", "error")
     end)
 end)
 
@@ -263,7 +263,7 @@ RegisterNetEvent('consumables:client:EcstasyBaggy', function()
         EcstasyEffect()
     end, function() -- Cancel
         StopAnimTask(PlayerPedId(), "mp_suicide", "pill", 1.0)
-        Core.Functions.Notify("Failed", "error")
+        Core.Functions.Notify("Fracassada", "error")
     end)
 end)
 
@@ -285,7 +285,7 @@ RegisterNetEvent('consumables:client:oxy', function()
 		HealOxy()
     end, function() -- Cancel
         StopAnimTask(PlayerPedId(), "mp_suicide", "pill", 1.0)
-        Core.Functions.Notify("Canceled", "error")
+        Core.Functions.Notify("Cancelada", "error")
     end)
 end)
 
@@ -308,7 +308,7 @@ RegisterNetEvent('consumables:client:meth', function()
         MethBagEffect()
     end, function() -- Cancel
         StopAnimTask(PlayerPedId(), "switch@trevor@trev_smoking_meth", "trev_smoking_meth_loop", 1.0)
-        Core.Functions.Notify("Canceled..", "error")
+        Core.Functions.Notify("Cancelada..", "error")
 	end)
 end)
 
@@ -374,7 +374,7 @@ RegisterNetEvent('consumables:client:ResetParachute', function()
             ParachuteEquiped = false
         end)
     else
-        Core.Functions.Notify("You dont have a parachute!", "error")
+        Core.Functions.Notify("Você não tem um pára -quedas!", "error")
     end
 end)
 
@@ -437,7 +437,7 @@ RegisterNetEvent('consumables:client:ResetArmor', function()
             TriggerServerEvent('consumables:server:resetArmor')
         end)
     else
-        Core.Functions.Notify("You\'re not wearing a vest..", "error")
+        Core.Functions.Notify("Você não está usando um colete..", "error")
     end
 end)
 

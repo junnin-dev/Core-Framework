@@ -31,7 +31,7 @@ RegisterNetEvent('carwash:client:washCar', function()
         WashDecalsFromVehicle(PedVehicle, 1.0)
         washingVehicle = false
     end, function() -- Cancel
-        Core.Functions.Notify("Washing canceled ..", "error")
+        Core.Functions.Notify("Lavar cancelado ..", "error")
         washingVehicle = false
     end)
 end)
@@ -56,7 +56,7 @@ CreateThread(function()
                             if dirtLevel > Config.DirtLevel then
                                 TriggerServerEvent('carwash:server:washCar')
                             else
-                                Core.Functions.Notify("The vehicle isn't dirty", 'error')
+                                Core.Functions.Notify("O veículo não está sujo", 'error')
                             end
                         end
                     else

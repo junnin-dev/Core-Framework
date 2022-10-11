@@ -138,9 +138,9 @@ function EndMinigame(won)
 	SafeCracker.MinigameOpen = false
 	if won then 
 		PlaySoundFrontend(SafeCracker.SoundID, SafeCracker.Config.SafeFinalSound, SafeCracker.Config.SafeSoundset, true)
-		Core.Functions.Notify("Safe opened..", "success")
+		Core.Functions.Notify("Seguro aberto..", "success")
 	else
-		Core.Functions.Notify("Safe opening failed..", "error")
+		Core.Functions.Notify("A abertura segura falhou..", "error")
 	end
   	TriggerEvent('SafeCracker:EndMinigame', won)
 	FreezeEntityPosition(PlayerPedId(), false)

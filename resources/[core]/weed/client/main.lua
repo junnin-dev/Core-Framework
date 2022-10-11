@@ -130,7 +130,7 @@ CreateThread(function()
                                         TriggerServerEvent('weed:server:harvestPlant', currentHouse, amount, plantData["plantSort"]["name"], plantData["plantStats"]["plantId"])
                                     end, function() -- Cancel
                                         ClearPedTasks(ped)
-                                        Core.Functions.Notify("Process Canceled", "error")
+                                        Core.Functions.Notify("Processo cancelado", "error")
                                     end)
                                 end
                             end

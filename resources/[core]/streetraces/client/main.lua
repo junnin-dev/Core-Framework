@@ -77,7 +77,7 @@ RegisterNetEvent('streetraces:RaceDone', function(race, winner)
     if RaceId ~= 0 and RaceId == race then
         RaceId = 0
         InRace = false
-        Core.Functions.Notify("Race Is Over! The Winner Is "..winner.. "!")
+        Core.Functions.Notify("A raça acabou!O vencedor é "..winner.. "!")
     end
 end)
 
@@ -106,12 +106,12 @@ RegisterNetEvent('streetraces:CreateRace', function(amount)
                 joined = {}
             }
             TriggerServerEvent("streetraces:NewRace", race)
-            Core.Functions.Notify("Race Made For $"..amount.."", "success")
+            Core.Functions.Notify("Corrida feita para $"..amount.."", "success")
         else
-            Core.Functions.Notify("End Position Is Too Close", "error")
+            Core.Functions.Notify("A posição final está muito perto", "error")
         end
     else
-        Core.Functions.Notify("You Need To Drop A Marker", "error")
+        Core.Functions.Notify("Você precisa largar um marcador", "error")
     end
 end)
 
@@ -136,5 +136,5 @@ function RaceCountDown()
     ShowCountDown = false
     RaceCount = 5
     FreezeEntityPosition(GetVehiclePedIsIn(PlayerPedId(), true), false)
-    Core.Functions.Notify("GOOOOOOOOO!!!")
+    Core.Functions.Notify("Gooouuo!!!")
 end

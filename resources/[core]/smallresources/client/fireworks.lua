@@ -125,6 +125,6 @@ RegisterNetEvent('fireworks:client:UseFirework', function(itemName, assetName)
         DoFireWork(assetName, pos)
     end, function() -- Cancel
         StopAnimTask(PlayerPedId(), "anim@narcotics@trash", "drop_front", 1.0)
-        Core.Functions.Notify("Canceled..", "error")
+        Core.Functions.Notify("Cancelada..", "error")
     end)
 end)
