@@ -17,53 +17,37 @@ end
 
 Config = {}
 
--- É possível interagir com entidades através de paredes, então isso deve ser baixo
 Config.MaxDistance = 7.0
 
--- Ativar opções de depuração
 Config.Debug = false
 
--- Valores suportados: true, false
 Config.Standalone = false
 
--- Ativar contornos em torno da entidade que você está olhando
 Config.EnableOutline = false
 
--- Se deve ter o alvo como uma alternância ou não
 Config.Toggle = false
 
--- Desenhe um sprite no centro de uma poliónea para sugerir onde está localizado
 Config.DrawSprite = false
 
--- A distância padrão para desenhar o sprite
 Config.DrawDistance = 10.0
 
--- A cor do sprite no RGB, o primeiro valor é vermelho, o segundo valor é verde, o terceiro valor é azul e o último valor é alfa (opacidade).Aqui está um link para um seletor de cores para obter esses valores: https://htmlcolorcodes.com/color-picker/
 Config.DrawColor = {255, 255, 255, 255}
 
--- A cor do sprite no RGB Quando o poliZona é direcionado, o primeiro valor é vermelho, o segundo valor é verde, o terceiro valor é azul e o último valor é alfa (opacidade).Aqui está um link para um seletor de cores para obter esses valores: https://htmlcolorcodes.com/color-picker/
 Config.SuccessDrawColor = {30, 144, 255, 255}
 
--- A cor do contorno no RGB, o primeiro valor é vermelho, o segundo valor é verde, o terceiro valor é azul e o último valor é alfa (opacidade).Aqui está um link para um seletor de cores para obter esses valores: https://htmlcolorcodes.com/color-picker/
 Config.OutlineColor = {255, 255, 255, 255}
 
--- Ativar opções padrão (alternando portas de veículos)
 Config.EnableDefaultOptions = true
 
--- Desative o olho alvo enquanto estiver em um veículo
 Config.DisableInVehicle = false
 
--- Chave para abrir o olho de destino, aqui você pode encontrar todos os nomes: https://docs.fivem.net/docs/game-references/input-mapper-parameter-ids/keyboard/
 Config.OpenKey = 'LMENU' -- Left Alt
 
--- Controle para a detecção de pressionar as teclas no menu de contexto, é o botão direito do mouse por padrão, os controles são encontrados aqui https://docs.fivem.net/docs/game-references/controls/
 Config.MenuControlKey = 238
 
 -------------------------------------------------------------------------------
 -- Target Configs
 -------------------------------------------------------------------------------
-
--- Tudo isso está vazio para você preencher, consulte os arquivos .md para obter ajuda para preenchê -los em
 
 Config.CircleZones = {
 
@@ -130,7 +114,7 @@ CreateThread(function()
 			SpawnPeds()
 			firstSpawn = true
 		end)
-		-- Remove event after it has been triggered
+
 		while true do
 			if firstSpawn then
 				RemoveEventHandler(event)
