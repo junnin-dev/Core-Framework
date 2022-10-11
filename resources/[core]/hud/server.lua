@@ -1,19 +1,19 @@
 local Core = exports['core']:GetCoreObject()
 local ResetStress = false
 
-Core.Commands.Add('cash', 'Check Cash Balance', {}, false, function(source, args)
+Core.Commands.Add('cash', 'Verifique o saldo de caixa', {}, false, function(source, args)
     local Player = Core.Functions.GetPlayer(source)
     local cashamount = Player.PlayerData.money.cash
     TriggerClientEvent('hud:client:ShowAccounts', source, 'cash', cashamount)
 end)
 
-Core.Commands.Add('bank', 'Check Bank Balance', {}, false, function(source, args)
+Core.Commands.Add('bank', 'Verifique o saldo bancário', {}, false, function(source, args)
     local Player = Core.Functions.GetPlayer(source)
     local bankamount = Player.PlayerData.money.bank
     TriggerClientEvent('hud:client:ShowAccounts', source, 'bank', bankamount)
 end)
 
-Core.Commands.Add("dev", "Enable/Disable developer Mode", {}, false, function(source, args)
+Core.Commands.Add("dev", "Enable/Disable Modo de desenvolvedor", {}, false, function(source, args)
     TriggerClientEvent("admin:client:ToggleDevmode", source)
 end, 'admin')
 
