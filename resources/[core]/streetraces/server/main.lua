@@ -12,7 +12,7 @@ RegisterNetEvent('streetraces:NewRace', function(RaceTable)
         Races[RaceId].joined[#Races[RaceId].joined+1] = Core.Functions.GetIdentifier(src, 'license')
         TriggerClientEvent('streetraces:SetRace', -1, Races)
         TriggerClientEvent('streetraces:SetRaceId', src, RaceId)
-        TriggerClientEvent('Core:Notify', src, "You joind the race for €"..Races[RaceId].amount..",-", 'success')
+        TriggerClientEvent('Core:Notify', src, "Você entrou na corrida para €"..Races[RaceId].amount..",-", 'success')
     end
 end)
 
@@ -20,7 +20,7 @@ RegisterNetEvent('streetraces:RaceWon', function(RaceId)
     local src = source
     local xPlayer = Core.Functions.GetPlayer(src)
     xPlayer.Functions.AddMoney('cash', Races[RaceId].pot, "race-won")
-    TriggerClientEvent('Core:Notify', src, "You won the race and €"..Races[RaceId].pot..",- recieved", 'success')
+    TriggerClientEvent('Core:Notify', src, "Você venceu a corrida e €"..Races[RaceId].pot..",- recieved", 'success')
     TriggerClientEvent('streetraces:SetRace', -1, Races)
     TriggerClientEvent('streetraces:RaceDone', -1, RaceId, GetPlayerName(src))
 end)
@@ -39,25 +39,25 @@ RegisterNetEvent('streetraces:JoinRace', function(RaceId)
                 TriggerClientEvent('Core:Notify', zPlayer.PlayerData.source, GetPlayerName(src).." Joined the race", 'primary')
             end
         else
-            TriggerClientEvent('Core:Notify', src, "You dont have enough cash", 'error')
+            TriggerClientEvent('Core:Notify', src, "Você não tem dinheiro suficiente", 'error')
         end
     else
-        TriggerClientEvent('Core:Notify', src, "The person wo made the race is offline!", 'error')
+        TriggerClientEvent('Core:Notify', src, "A pessoa que fez a corrida está offline!", 'error')
         Races[RaceId] = {}
     end
 end)
 
-Core.Commands.Add("createrace", "Start A Street Race", {{name="amount", help="The Stake Amount For The Race."}}, false, function(source, args)
+Core.Commands.Add("createrace", "Comece uma corrida de rua", {{name="amount", help="O valor da estaca para a corrida."}}, false, function(source, args)
     local src = source
     local amount = tonumber(args[1])
     if GetJoinedRace(Core.Functions.GetIdentifier(src, 'license')) == 0 then
         TriggerClientEvent('streetraces:CreateRace', src, amount)
     else
-        TriggerClientEvent('Core:Notify', src, "You Are Already In A Race", 'error')
+        TriggerClientEvent('Core:Notify', src, "Você já está em uma corrida", 'error')
     end
 end)
 
-Core.Commands.Add("stoprace", "Stop The Race You Created", {}, false, function(source, _)
+Core.Commands.Add("stoprace", "Pare a corrida que você criou", {}, false, function(source, _)
     CancelRace(source)
 end)
 
@@ -67,12 +67,12 @@ Core.Commands.Add("quitrace", "Get Out Of A Race. (You Will NOT Get Your Money B
     if RaceId ~= 0 then
         if GetCreatedRace(Core.Functions.GetIdentifier(src, 'license')) ~= RaceId then
             RemoveFromRace(Core.Functions.GetIdentifier(src, 'license'))
-            TriggerClientEvent('Core:Notify', src, "You Have Stepped Out Of The Race! And You Lost Your Money", 'error')
+            TriggerClientEvent('Core:Notify', src, "Você saiu da corrida!E você perdeu seu dinheiro", 'error')
         else
-            TriggerClientEvent('Core:Notify', src, "/stoprace To Stop The Race", 'error')
+            TriggerClientEvent('Core:Notify', src, "/stoprace Para parar a corrida", 'error')
         end
     else
-        TriggerClientEvent('Core:Notify', src, "You Are Not In A Race ", 'error')
+        TriggerClientEvent('Core:Notify', src, "Você não está em uma corrida ", 'error')
     end
 end)
 
@@ -86,7 +86,7 @@ Core.Commands.Add("startrace", "Start The Race", {}, false, function(source)
         TriggerClientEvent('streetraces:SetRace', -1, Races)
         TriggerClientEvent("streetraces:StartRace", -1, RaceId)
     else
-        TriggerClientEvent('Core:Notify', src, "You Have Not Started A Race", 'error')
+        TriggerClientEvent('Core:Notify', src, "Você não começou uma corrida", 'error')
 
     end
 end)
@@ -102,20 +102,20 @@ function CancelRace(source)
                     for _, iden in pairs(Races[key].joined) do
                         local xdPlayer = Core.Functions.GetPlayer(iden)
                             xdPlayer.Functions.AddMoney('cash', Races[key].amount, "race-cancelled")
-                            TriggerClientEvent('Core:Notify', xdPlayer.PlayerData.source, "Race Has Stopped, You Got Back $"..Races[key].amount.."", 'error')
+                            TriggerClientEvent('Core:Notify', xdPlayer.PlayerData.source, "A corrida parou, você voltou $"..Races[key].amount.."", 'error')
                             TriggerClientEvent('streetraces:StopRace', xdPlayer.PlayerData.source)
                             RemoveFromRace(iden)
                     end
                 else
-                    TriggerClientEvent('Core:Notify', Player.PlayerData.source, "The Race Has Already Started", 'error')
+                    TriggerClientEvent('Core:Notify', Player.PlayerData.source, "A corrida já começou", 'error')
                 end
-                TriggerClientEvent('Core:Notify', source, "Race Stopped!", 'error')
+                TriggerClientEvent('Core:Notify', source, "A corrida parou!", 'error')
                 Races[key] = nil
             end
         end
         TriggerClientEvent('streetraces:SetRace', -1, Races)
     else
-        TriggerClientEvent('Core:Notify', source, "You Have Not Started A Race!", 'error')
+        TriggerClientEvent('Core:Notify', source, "Você não começou uma corrida!", 'error')
     end
 end
 
