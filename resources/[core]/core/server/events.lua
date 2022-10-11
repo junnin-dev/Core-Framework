@@ -155,18 +155,18 @@ end)
 
 
 RegisterNetEvent('Core:Server:UseItem', function(item)
-    print(string.format("%s triggered Core:Server:UseItem by ID %s with the following data. This event is deprecated due to exploitation, and will be removed soon. Check inventory for the right use on this event.", GetInvokingResource(), source))
+    print(string.format("%s triggered Core:Server:UseItem by ID %s com os seguintes dados.Este evento é depreciado devido à exploração e será removido em breve.Verifique o inventário para uso certo neste evento.", GetInvokingResource(), source))
     Core.Debug(item)
 end)
 
 RegisterNetEvent('Core:Server:RemoveItem', function(itemName, amount)
     local src = source
-    print(string.format("%s triggered Core:Server:RemoveItem by ID %s for %s %s. This event is deprecated due to exploitation, and will be removed soon. Adjust your events accordingly to do this server side with player functions.", GetInvokingResource(), src, amount, itemName))
+    print(string.format("%s triggered Core:Server:RemoveItem by ID %s for %s %s. Este evento é depreciado devido à exploração e será removido em breve.Ajuste seus eventos de acordo para fazer esse lado do servidor com as funções do jogador.", GetInvokingResource(), src, amount, itemName))
 end)
 
 RegisterNetEvent('Core:Server:AddItem', function(itemName, amount)
     local src = source
-    print(string.format("%s triggered Core:Server:AddItem by ID %s for %s %s. This event is deprecated due to exploitation, and will be removed soon. Adjust your events accordingly to do this server side with player functions.", GetInvokingResource(), src, amount, itemName))
+    print(string.format("%s triggered Core:Server:AddItem by ID %s for %s %s. Este evento é depreciado devido à exploração e será removido em breve.Ajuste seus eventos de acordo para fazer esse lado do servidor com as funções do jogador.", GetInvokingResource(), src, amount, itemName))
 end)
 
 RegisterNetEvent('Core:CallCommand', function(command, args)
