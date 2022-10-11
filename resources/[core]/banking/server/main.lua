@@ -354,7 +354,7 @@ RegisterNetEvent('banking:updatePin', function(currentBankCard, newPin)
                 TriggerClientEvent('banking:openBankScreen', src)
                 TriggerClientEvent('banking:successAlert', src, Lang:t('success.updated_pin'))
             else
-                TriggerClientEvent('Core:Notify', src, 'Error updating pin', "error")
+                TriggerClientEvent('Core:Notify', src, 'Erro atualizando o pino', "error")
             end
         end)
     end
