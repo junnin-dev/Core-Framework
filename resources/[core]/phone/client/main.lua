@@ -1,7 +1,7 @@
 local Core = exports['core']:GetCoreObject()
 local PlayerJob = {}
 local patt = "[?!@#]"
-local CallVolume = 0.2
+local frontCam = false
 PhoneData = {
     MetaData = {},
     isOpen = false,
@@ -31,14 +31,14 @@ PhoneData = {
 
 function string:split(delimiter)
     local result = { }
-    local from  = 1
-    local delim_from, delim_to = string.find( self, delimiter, from  )
+    local from = 1
+    local delim_from, delim_to = string.find(self, delimiter, from)
     while delim_from do
-      table.insert( result, string.sub( self, from , delim_from-1 ) )
-      from  = delim_to + 1
-      delim_from, delim_to = string.find( self, delimiter, from  )
+	result[#result+1] = string.sub(self, from, delim_from - 1)
+        from = delim_to + 1
+        delim_from, delim_to = string.find(self, delimiter, from)
     end
-    table.insert( result, string.sub( self, from  ) )
+	result[#result+1] = string.sub(self, from)
     return result
 end
 
@@ -62,8 +62,8 @@ local function IsNumberInContacts(num)
 end
 
 local function CalculateTimeToDisplay()
-	hour = GetClockHours()
-    minute = GetClockMinutes()
+	local hour = GetClockHours()
+    local minute = GetClockMinutes()
 
     local obj = {}
 
@@ -148,46 +148,25 @@ local function findVehFromPlateAndLocate(plate)
     end
 end
 
-local function PublicPhone()
-    local PublicPhoneobject = {
-        -2103798695,1158960338,
-        1281992692,1511539537,
-        295857659,-78626473,
-        -1559354806
-    }
-        exports["target"]:AddTargetModel(PublicPhoneobject, {
-            options = {
-                {
-                    type = "client",
-                    event = "stx-phone:client:publocphoneopen",
-                    icon = "fas fa-phone-alt",
-                    label = "Telefone Publico",
-                    job = false,
-                },
-            },
-            distance = 1.0
-        })
-end
-
 local function DisableDisplayControlActions()
-    DisableControlAction(0, 1, true)
-    DisableControlAction(0, 2, true)
-    DisableControlAction(0, 3, true)
-    DisableControlAction(0, 4, true)
-    DisableControlAction(0, 5, true)
-    DisableControlAction(0, 6, true)
-    DisableControlAction(0, 263, true)
-    DisableControlAction(0, 264, true)
-    DisableControlAction(0, 257, true)
-    DisableControlAction(0, 140, true)
-    DisableControlAction(0, 141, true)
-    DisableControlAction(0, 142, true)
-    DisableControlAction(0, 143, true)
-    DisableControlAction(0, 177, true)
-    DisableControlAction(0, 200, true)
-    DisableControlAction(0, 202, true)
-    DisableControlAction(0, 322, true)
-    DisableControlAction(0, 245, true)
+    DisableControlAction(0, 1, true) -- disable mouse look
+    DisableControlAction(0, 2, true) -- disable mouse look
+    DisableControlAction(0, 3, true) -- disable mouse look
+    DisableControlAction(0, 4, true) -- disable mouse look
+    DisableControlAction(0, 5, true) -- disable mouse look
+    DisableControlAction(0, 6, true) -- disable mouse look
+    DisableControlAction(0, 263, true) -- disable melee
+    DisableControlAction(0, 264, true) -- disable melee
+    DisableControlAction(0, 257, true) -- disable melee
+    DisableControlAction(0, 140, true) -- disable melee
+    DisableControlAction(0, 141, true) -- disable melee
+    DisableControlAction(0, 142, true) -- disable melee
+    DisableControlAction(0, 143, true) -- disable melee
+    DisableControlAction(0, 177, true) -- disable escape
+    DisableControlAction(0, 200, true) -- disable escape
+    DisableControlAction(0, 202, true) -- disable escape
+    DisableControlAction(0, 322, true) -- disable escape
+    DisableControlAction(0, 245, true) -- disable chat
 end
 
 local function LoadPhone()
@@ -199,7 +178,7 @@ local function LoadPhone()
         PhoneData.MetaData = PhoneMeta
 
         if pData.InstalledApps ~= nil and next(pData.InstalledApps) ~= nil then
-            for k, v in pairs(pData.InstalledApps) do
+            for _, v in pairs(pData.InstalledApps) do
                 local AppData = Config.StoreApps[v.app]
                 Config.PhoneApplications[v.app] = {
                     app = v.app,
@@ -237,7 +216,7 @@ local function LoadPhone()
 
         if pData.Chats ~= nil and next(pData.Chats) ~= nil then
             local Chats = {}
-            for k, v in pairs(pData.Chats) do
+            for _, v in pairs(pData.Chats) do
                 Chats[v.number] = {
                     name = IsNumberInContacts(v.number),
                     number = v.number,
@@ -293,7 +272,7 @@ local function OpenPhone()
     Core.Functions.TriggerCallback('phone:server:HasPhone', function(HasPhone)
         if HasPhone then
             PhoneData.PlayerData = Core.Functions.GetPlayerData()
-    	    SetNuiFocus(true, true)
+            SetNuiFocus(true, true)
             SendNUIMessage({
                 action = "open",
                 Tweets = PhoneData.Tweets,
@@ -320,11 +299,11 @@ local function OpenPhone()
                 newPhoneProp()
             end)
 
-            Core.Functions.TriggerCallback('phone:server:GetGarageVehicles', function(vehicles)
+            Core.Functions.TriggerCallback('garage:server:GetPlayerVehicles', function(vehicles)
                 PhoneData.GarageVehicles = vehicles
             end)
         else
-            Core.Functions.Notify("You don't have a phone?", "error")
+            Core.Functions.Notify("You don't have a phone", "error")
         end
     end)
 end
@@ -332,37 +311,6 @@ end
 local function GenerateCallId(caller, target)
     local CallId = math.ceil(((tonumber(caller) + tonumber(target)) / 100 * 1))
     return CallId
-end
-
-local function CallContact(CallData, AnonymousCall)
-    local RepeatCount = 0
-    PhoneData.CallData.CallType = "outgoing"
-    PhoneData.CallData.InCall = true
-    PhoneData.CallData.TargetData = CallData
-    PhoneData.CallData.AnsweredCall = false
-    PhoneData.CallData.CallId = GenerateCallId(PhoneData.PlayerData.charinfo.phone, CallData.number)
-
-    TriggerServerEvent('phone:server:CallContact', PhoneData.CallData.TargetData, PhoneData.CallData.CallId, AnonymousCall)
-    TriggerServerEvent('phone:server:SetCallState', true)
-
-    for i = 1, Config.CallRepeats + 1, 1 do
-        if not PhoneData.CallData.AnsweredCall then
-            if RepeatCount + 1 ~= Config.CallRepeats + 1 then
-                if PhoneData.CallData.InCall then
-                    RepeatCount = RepeatCount + 1
-                    TriggerServerEvent("InteractSound_SV:PlayOnSource", "demo", 0.1)
-                else
-                    break
-                end
-                Wait(Config.RepeatTimeout)
-            else
-                CancelCall()
-                break
-            end
-        else
-            break
-        end
-    end
 end
 
 local function CancelCall()
@@ -393,7 +341,7 @@ local function CancelCall()
             action = "PhoneNotification",
             PhoneNotify = {
                 title = "Phone",
-                text = "Call ended",
+                text = "The call has been ended",
                 icon = "fas fa-phone",
                 color = "#e84118",
             },
@@ -403,7 +351,7 @@ local function CancelCall()
             action = "PhoneNotification",
             PhoneNotify = {
                 title = "Phone",
-                text = "Call ended",
+                text = "The call has been ended",
                 icon = "fas fa-phone",
                 color = "#e84118",
             },
@@ -417,6 +365,37 @@ local function CancelCall()
         SendNUIMessage({
             action = "CancelOutgoingCall",
         })
+    end
+end
+
+local function CallContact(CallData, AnonymousCall)
+    local RepeatCount = 0
+    PhoneData.CallData.CallType = "outgoing"
+    PhoneData.CallData.InCall = true
+    PhoneData.CallData.TargetData = CallData
+    PhoneData.CallData.AnsweredCall = false
+    PhoneData.CallData.CallId = GenerateCallId(PhoneData.PlayerData.charinfo.phone, CallData.number)
+
+    TriggerServerEvent('phone:server:CallContact', PhoneData.CallData.TargetData, PhoneData.CallData.CallId, AnonymousCall)
+    TriggerServerEvent('phone:server:SetCallState', true)
+
+    for _ = 1, Config.CallRepeats + 1, 1 do
+        if not PhoneData.CallData.AnsweredCall then
+            if RepeatCount + 1 ~= Config.CallRepeats + 1 then
+                if PhoneData.CallData.InCall then
+                    RepeatCount = RepeatCount + 1
+                    TriggerServerEvent("InteractSound_SV:PlayOnSource", "demo", 0.1)
+                else
+                    break
+                end
+                Wait(Config.RepeatTimeout)
+            else
+                CancelCall()
+                break
+            end
+        else
+            break
+        end
     end
 end
 
@@ -465,7 +444,7 @@ local function AnswerCall()
             action = "PhoneNotification",
             PhoneNotify = {
                 title = "Phone",
-                text = "You don't have an incoming call...",
+                text = "You don't have a incoming call...",
                 icon = "fas fa-phone",
                 color = "#e84118",
             },
@@ -480,7 +459,7 @@ end
 -- Command
 
 RegisterCommand('phone', function()
-    PlayerData = Core.Functions.GetPlayerData()
+    local PlayerData = Core.Functions.GetPlayerData()
     if not PhoneData.isOpen and LocalPlayer.state.isLoggedIn then
         if not PlayerData.metadata['ishandcuffed'] and not PlayerData.metadata['inlaststand'] and not PlayerData.metadata['isdead'] and not IsPauseMenuActive() then
             OpenPhone()
@@ -494,49 +473,55 @@ RegisterKeyMapping('phone', 'Open Phone', 'keyboard', 'M')
 
 -- NUI Callbacks
 
-RegisterNUICallback('CancelOutgoingCall', function()
+RegisterNUICallback('CancelOutgoingCall', function(_, cb)
     CancelCall()
+    cb('ok')
 end)
 
-RegisterNUICallback('DenyIncomingCall', function()
+RegisterNUICallback('DenyIncomingCall', function(_, cb)
     CancelCall()
+    cb('ok')
 end)
 
-RegisterNUICallback('CancelOngoingCall', function()
+RegisterNUICallback('CancelOngoingCall', function(_, cb)
     CancelCall()
+    cb('ok')
 end)
 
-RegisterNUICallback('AnswerCall', function()
+RegisterNUICallback('AnswerCall', function(_, cb)
     AnswerCall()
+    cb('ok')
 end)
 
-RegisterNUICallback('ClearRecentAlerts', function(data, cb)
+RegisterNUICallback('ClearRecentAlerts', function(_, cb)
     TriggerServerEvent('phone:server:SetPhoneAlerts', "phone", 0)
     Config.PhoneApplications["phone"].Alerts = 0
     SendNUIMessage({ action = "RefreshAppAlerts", AppData = Config.PhoneApplications })
+    cb("ok")
 end)
 
-RegisterNUICallback('SetBackground', function(data)
+RegisterNUICallback('SetBackground', function(data, cb)
     local background = data.background
     PhoneData.MetaData.background = background
     TriggerServerEvent('phone:server:SaveMetaData', PhoneData.MetaData)
+    cb('ok')
 end)
 
-RegisterNUICallback('GetMissedCalls', function(data, cb)
+RegisterNUICallback('GetMissedCalls', function(_, cb)
     cb(PhoneData.RecentCalls)
 end)
 
-RegisterNUICallback('GetSuggestedContacts', function(data, cb)
+RegisterNUICallback('GetSuggestedContacts', function(_, cb)
     cb(PhoneData.SuggestedContacts)
 end)
 
-RegisterNUICallback('HasPhone', function(data, cb)
+RegisterNUICallback('HasPhone', function(_, cb)
     Core.Functions.TriggerCallback('phone:server:HasPhone', function(HasPhone)
         cb(HasPhone)
     end)
 end)
 
-RegisterNUICallback('SetupGarageVehicles', function(data, cb)
+RegisterNUICallback('SetupGarageVehicles', function(_, cb)
     cb(PhoneData.GarageVehicles)
 end)
 
@@ -546,7 +531,7 @@ RegisterNUICallback('RemoveMail', function(data, cb)
     cb('ok')
 end)
 
-RegisterNUICallback('Close', function()
+RegisterNUICallback('Close', function(_, cb)
     if not PhoneData.CallData.InCall then
         DoPhoneAnimation('cellphone_text_out')
         SetTimeout(400, function()
@@ -560,17 +545,19 @@ RegisterNUICallback('Close', function()
         PhoneData.AnimationData.anim = nil
         DoPhoneAnimation('cellphone_text_to_call')
     end
-    SetTimeout(300, function()
-        SetNuiFocus(false, false)
+    SetNuiFocus(false, false)
+    SetTimeout(500, function()
         PhoneData.isOpen = false
     end)
+    cb('ok')
 end)
 
-RegisterNUICallback('AcceptMailButton', function(data)
+RegisterNUICallback('AcceptMailButton', function(data, cb)
     if data.buttonEvent ~= nil or  data.buttonData ~= nil then
         TriggerEvent(data.buttonEvent, data.buttonData)
     end
     TriggerServerEvent('phone:server:ClearButtonData', data.mailId)
+    cb('ok')
 end)
 
 RegisterNUICallback('AddNewContact', function(data, cb)
@@ -587,7 +574,7 @@ RegisterNUICallback('AddNewContact', function(data, cb)
     TriggerServerEvent('phone:server:AddNewContact', data.ContactName, data.ContactNumber, data.ContactIban)
 end)
 
-RegisterNUICallback('GetMails', function(data, cb)
+RegisterNUICallback('GetMails', function(_, cb)
     cb(PhoneData.Mails)
 end)
 
@@ -606,11 +593,11 @@ RegisterNUICallback('GetProfilePicture', function(data, cb)
     end, number)
 end)
 
-RegisterNUICallback('GetBankContacts', function(data, cb)
+RegisterNUICallback('GetBankContacts', function(_, cb)
     cb(PhoneData.Contacts)
 end)
 
-RegisterNUICallback('GetInvoices', function(data, cb)
+RegisterNUICallback('GetInvoices', function(_, cb)
     if PhoneData.Invoices ~= nil and next(PhoneData.Invoices) ~= nil then
         cb(PhoneData.Invoices)
     else
@@ -618,36 +605,39 @@ RegisterNUICallback('GetInvoices', function(data, cb)
     end
 end)
 
-RegisterNUICallback('SharedLocation', function(data)
+RegisterNUICallback('SharedLocation', function(data, cb)
     local x = data.coords.x
     local y = data.coords.y
-
     SetNewWaypoint(x, y)
     SendNUIMessage({
         action = "PhoneNotification",
         PhoneNotify = {
-            title = "Messages",
-            text = "Location set!",
-            icon = "fas fa-comment",
+            title = "Whatsapp",
+            text = "Location has been set!",
+            icon = "fab fa-whatsapp",
             color = "#25D366",
             timeout = 1500,
         },
     })
+    cb('ok')
 end)
 
-RegisterNUICallback('PostAdvert', function(data)
+RegisterNUICallback('PostAdvert', function(data, cb)
     TriggerServerEvent('phone:server:AddAdvert', data.message, data.url)
+    cb('ok')
 end)
 
-RegisterNUICallback("DeleteAdvert", function()
+RegisterNUICallback("DeleteAdvert", function(_, cb)
     TriggerServerEvent("phone:server:DeleteAdvert")
+    cb('ok')
 end)
 
-RegisterNUICallback('LoadAdverts', function()
+RegisterNUICallback('LoadAdverts', function(_, cb)
     SendNUIMessage({
         action = "RefreshAdverts",
         Adverts = PhoneData.Adverts
     })
+    cb('ok')
 end)
 
 RegisterNUICallback('ClearAlerts', function(data, cb)
@@ -667,15 +657,14 @@ RegisterNUICallback('ClearAlerts', function(data, cb)
         })
         SendNUIMessage({ action = "RefreshAppAlerts", AppData = Config.PhoneApplications })
     end
+    cb("ok")
 end)
 
 RegisterNUICallback('PayInvoice', function(data, cb)
-    local sender = data.sender
     local senderCitizenId = data.senderCitizenId
     local society = data.society
     local amount = data.amount
     local invoiceId = data.invoiceId
-
     Core.Functions.TriggerCallback('phone:server:PayInvoice', function(CanPay, Invoices)
         if CanPay then PhoneData.Invoices = Invoices end
         cb(CanPay)
@@ -684,12 +673,10 @@ RegisterNUICallback('PayInvoice', function(data, cb)
 end)
 
 RegisterNUICallback('DeclineInvoice', function(data, cb)
-    local sender = data.sender
     local society = data.society
     local amount = data.amount
     local invoiceId = data.invoiceId
-
-    Core.Functions.TriggerCallback('phone:server:DeclineInvoice', function(CanPay, Invoices)
+    Core.Functions.TriggerCallback('phone:server:DeclineInvoice', function(_, Invoices)
         PhoneData.Invoices = Invoices
         cb('ok')
     end, society, amount, invoiceId)
@@ -703,8 +690,7 @@ RegisterNUICallback('EditContact', function(data, cb)
     local OldName = data.OldContactName
     local OldNumber = data.OldContactNumber
     local OldIban = data.OldContactIban
-
-    for k, v in pairs(PhoneData.Contacts) do
+    for _, v in pairs(PhoneData.Contacts) do
         if v.name == OldName and v.number == OldNumber then
             v.name = NewName
             v.number = NewNumber
@@ -727,14 +713,15 @@ RegisterNUICallback('GetHashtagMessages', function(data, cb)
     end
 end)
 
-RegisterNUICallback('GetTweets', function(data, cb)
+RegisterNUICallback('GetTweets', function(_, cb)
     cb(PhoneData.Tweets)
 end)
 
-RegisterNUICallback('UpdateProfilePicture', function(data)
+RegisterNUICallback('UpdateProfilePicture', function(data, cb)
     local pf = data.profilepicture
     PhoneData.MetaData.profilepicture = pf
     TriggerServerEvent('phone:server:SaveMetaData', PhoneData.MetaData)
+    cb("ok")
 end)
 
 RegisterNUICallback('PostNewTweet', function(data, cb)
@@ -752,50 +739,63 @@ RegisterNUICallback('PostNewTweet', function(data, cb)
     local TwitterMessage = data.Message
     local MentionTag = TwitterMessage:split("@")
     local Hashtag = TwitterMessage:split("#")
-
-    for i = 2, #Hashtag, 1 do
-        local Handle = Hashtag[i]:split(" ")[1]
-        if Handle ~= nil or Handle ~= "" then
-            local InvalidSymbol = string.match(Handle, patt)
-            if InvalidSymbol then
-                Handle = Handle:gsub("%"..InvalidSymbol, "")
+    if #Hashtag <= 3 then
+        for i = 2, #Hashtag, 1 do
+            local Handle = Hashtag[i]:split(" ")[1]
+            if Handle ~= nil or Handle ~= "" then
+                local InvalidSymbol = string.match(Handle, patt)
+                if InvalidSymbol then
+                    Handle = Handle:gsub("%"..InvalidSymbol, "")
+                end
+                TriggerServerEvent('phone:server:UpdateHashtags', Handle, TweetMessage)
             end
-            TriggerServerEvent('phone:server:UpdateHashtags', Handle, TweetMessage)
         end
-    end
 
-    for i = 2, #MentionTag, 1 do
-        local Handle = MentionTag[i]:split(" ")[1]
-        if Handle ~= nil or Handle ~= "" then
-            local Fullname = Handle:split("_")
-            local Firstname = Fullname[1]
-            table.remove(Fullname, 1)
-            local Lastname = table.concat(Fullname, " ")
+        for i = 2, #MentionTag, 1 do
+            local Handle = MentionTag[i]:split(" ")[1]
+            if Handle ~= nil or Handle ~= "" then
+                local Fullname = Handle:split("_")
+                local Firstname = Fullname[1]
+                table.remove(Fullname, 1)
+                local Lastname = table.concat(Fullname, " ")
 
-            if (Firstname ~= nil and Firstname ~= "") and (Lastname ~= nil and Lastname ~= "") then
-                if Firstname ~= PhoneData.PlayerData.charinfo.firstname and Lastname ~= PhoneData.PlayerData.charinfo.lastname then
-                    TriggerServerEvent('phone:server:MentionedPlayer', Firstname, Lastname, TweetMessage)
+                if (Firstname ~= nil and Firstname ~= "") and (Lastname ~= nil and Lastname ~= "") then
+                    if Firstname ~= PhoneData.PlayerData.charinfo.firstname and Lastname ~= PhoneData.PlayerData.charinfo.lastname then
+                        TriggerServerEvent('phone:server:MentionedPlayer', Firstname, Lastname, TweetMessage)
+                    end
                 end
             end
         end
+
+        PhoneData.Tweets[#PhoneData.Tweets+1] = TweetMessage
+        Wait(100)
+        cb(PhoneData.Tweets)
+
+        TriggerServerEvent('phone:server:UpdateTweets', PhoneData.Tweets, TweetMessage)
+    else
+        SendNUIMessage({
+            action = "PhoneNotification",
+            PhoneNotify = {
+                title = "Twitter",
+                text = "Invalid Tweet",
+                icon = "fab fa-twitter",
+                color = "#1DA1F2",
+                timeout = 1000,
+            },
+        })
     end
-
-    PhoneData.Tweets[#PhoneData.Tweets+1] = TweetMessage
-    Wait(100)
-    cb(PhoneData.Tweets)
-
-    TriggerServerEvent('phone:server:UpdateTweets', PhoneData.Tweets, TweetMessage)
 end)
 
-RegisterNUICallback('DeleteTweet',function(data)
+RegisterNUICallback('DeleteTweet',function(data, cb)
     TriggerServerEvent('phone:server:DeleteTweet', data.id)
+    cb('ok')
 end)
 
-RegisterNUICallback('GetMentionedTweets', function(data, cb)
+RegisterNUICallback('GetMentionedTweets', function(_, cb)
     cb(PhoneData.MentionedTweets)
 end)
 
-RegisterNUICallback('GetHashtags', function(data, cb)
+RegisterNUICallback('GetHashtags', function(_, cb)
     if PhoneData.Hashtags ~= nil and next(PhoneData.Hashtags) ~= nil then
         cb(PhoneData.Hashtags)
     else
@@ -809,10 +809,14 @@ RegisterNUICallback('FetchSearchResults', function(data, cb)
     end, data.input)
 end)
 
+local function GetFirstAvailableSlot() -- Placeholder
+    return nil
+end
+local CanDownloadApps = false
+
 RegisterNUICallback('InstallApplication', function(data, cb)
     local ApplicationData = Config.StoreApps[data.app]
     local NewSlot = GetFirstAvailableSlot()
-    --  local NewSlot = 17
 
     if not CanDownloadApps then
         return
@@ -833,48 +837,51 @@ end)
 
 RegisterNUICallback('RemoveApplication', function(data, cb)
     TriggerServerEvent('phone:server:RemoveInstallation', data.app)
+    cb("ok")
 end)
 
-RegisterNUICallback('GetTruckerData', function(data, cb)
+RegisterNUICallback('GetTruckerData', function(_, cb)
     local TruckerMeta = Core.Functions.GetPlayerData().metadata["jobrep"]["trucker"]
-    local TierData = exports['qb-trucker']:GetTier(TruckerMeta)
+    local TierData = exports['trucker']:GetTier(TruckerMeta)
     cb(TierData)
 end)
 
-RegisterNUICallback('GetGalleryData', function(data, cb)
+RegisterNUICallback('GetGalleryData', function(_, cb)
     local data = PhoneData.Images
     cb(data)
 end)
 
-RegisterNUICallback('DeleteImage', function(image,cb)
+RegisterNUICallback('DeleteImage', function(image, cb)
     TriggerServerEvent('phone:server:RemoveImageFromGallery',image)
     Wait(400)
     TriggerServerEvent('phone:server:getImageFromGallery')
     cb(true)
 end)
 
-RegisterNUICallback('gps-vehicle-garage', function(data, cb)
-local veh = data.veh
-if findVehFromPlateAndLocate(veh.plate) then
-    Core.Functions.Notify("Your vehicle has been marked", "success")
-else
-    Core.Functions.Notify("This vehicle cannot be located", "error")
-end
+
+RegisterNUICallback('track-vehicle', function(data, cb)
+    local veh = data.veh
+    if findVehFromPlateAndLocate(veh.plate) then
+        Core.Functions.Notify("Your vehicle has been marked", "success")
+    else
+        Core.Functions.Notify("This vehicle cannot be located", "error")
+    end
+    cb("ok")
 end)
 
 RegisterNUICallback('DeleteContact', function(data, cb)
     local Name = data.CurrentContactName
     local Number = data.CurrentContactNumber
-    local Account = data.CurrentContactIban
 
     for k, v in pairs(PhoneData.Contacts) do
         if v.name == Name and v.number == Number then
             table.remove(PhoneData.Contacts, k)
+            --if PhoneData.isOpen then
                 SendNUIMessage({
                     action = "PhoneNotification",
                     PhoneNotify = {
                         title = "Phone",
-                        text = "Contact deleted!",
+                        text = "You deleted contact!",
                         icon = "fa fa-phone-alt",
                         color = "#04b543",
                         timeout = 1500,
@@ -892,62 +899,66 @@ RegisterNUICallback('DeleteContact', function(data, cb)
 end)
 
 RegisterNUICallback('GetCryptoData', function(data, cb)
-    Core.Functions.TriggerCallback('qb-crypto:server:GetCryptoData', function(CryptoData)
+    Core.Functions.TriggerCallback('crypto:server:GetCryptoData', function(CryptoData)
         cb(CryptoData)
     end, data.crypto)
 end)
 
 RegisterNUICallback('BuyCrypto', function(data, cb)
-    Core.Functions.TriggerCallback('qb-crypto:server:BuyCrypto', function(CryptoData)
+    Core.Functions.TriggerCallback('crypto:server:BuyCrypto', function(CryptoData)
         cb(CryptoData)
     end, data)
 end)
 
 RegisterNUICallback('SellCrypto', function(data, cb)
-    Core.Functions.TriggerCallback('qb-crypto:server:SellCrypto', function(CryptoData)
+    Core.Functions.TriggerCallback('crypto:server:SellCrypto', function(CryptoData)
         cb(CryptoData)
     end, data)
 end)
 
 RegisterNUICallback('TransferCrypto', function(data, cb)
-    Core.Functions.TriggerCallback('qb-crypto:server:TransferCrypto', function(CryptoData)
+    Core.Functions.TriggerCallback('crypto:server:TransferCrypto', function(CryptoData)
         cb(CryptoData)
     end, data)
 end)
 
-RegisterNUICallback('GetCryptoTransactions', function(data, cb)
+RegisterNUICallback('GetCryptoTransactions', function(_, cb)
     local Data = {
         CryptoTransactions = PhoneData.CryptoTransactions
     }
     cb(Data)
 end)
 
-RegisterNUICallback('GetAvailableRaces', function(data, cb)
-    Core.Functions.TriggerCallback('qb-lapraces:server:GetRaces', function(Races)
+RegisterNUICallback('GetAvailableRaces', function(_, cb)
+    Core.Functions.TriggerCallback('lapraces:server:GetRaces', function(Races)
         cb(Races)
     end)
 end)
 
-RegisterNUICallback('JoinRace', function(data)
-    TriggerServerEvent('qb-lapraces:server:JoinRace', data.RaceData)
+RegisterNUICallback('JoinRace', function(data, cb)
+    TriggerServerEvent('lapraces:server:JoinRace', data.RaceData)
+    cb('ok')
 end)
 
-RegisterNUICallback('LeaveRace', function(data)
-    TriggerServerEvent('qb-lapraces:server:LeaveRace', data.RaceData)
+RegisterNUICallback('LeaveRace', function(data, cb)
+    TriggerServerEvent('lapraces:server:LeaveRace', data.RaceData)
+    cb('ok')
 end)
 
-RegisterNUICallback('StartRace', function(data)
-    TriggerServerEvent('qb-lapraces:server:StartRace', data.RaceData.RaceId)
+RegisterNUICallback('StartRace', function(data, cb)
+    TriggerServerEvent('lapraces:server:StartRace', data.RaceData.RaceId)
+    cb('ok')
 end)
 
-RegisterNUICallback('SetAlertWaypoint', function(data)
+RegisterNUICallback('SetAlertWaypoint', function(data, cb)
     local coords = data.alert.coords
-    Core.Functions.Notify('GPS set: '..data.alert.title)
+    Core.Functions.Notify('GPS Location set: '..data.alert.title)
     SetNewWaypoint(coords.x, coords.y)
+    cb('ok')
 end)
 
 RegisterNUICallback('RemoveSuggestion', function(data, cb)
-    local data = data.data
+    data = data.data
     if PhoneData.SuggestedContacts ~= nil and next(PhoneData.SuggestedContacts) ~= nil then
         for k, v in pairs(PhoneData.SuggestedContacts) do
             if (data.name[1] == v.name[1] and data.name[2] == v.name[2]) and data.number == v.number and data.bank == v.bank then
@@ -955,12 +966,13 @@ RegisterNUICallback('RemoveSuggestion', function(data, cb)
             end
         end
     end
+    cb("ok")
 end)
 
 RegisterNUICallback('FetchVehicleResults', function(data, cb)
     Core.Functions.TriggerCallback('phone:server:GetVehicleSearchResults', function(result)
         if result ~= nil then
-            for k, v in pairs(result) do
+            for k, _ in pairs(result) do
                 Core.Functions.TriggerCallback('police:IsPlateFlagged', function(flagged)
                     result[k].isFlagged = flagged
                 end, result[k].plate)
@@ -971,7 +983,7 @@ RegisterNUICallback('FetchVehicleResults', function(data, cb)
     end, data.input)
 end)
 
-RegisterNUICallback('FetchVehicleScan', function(data, cb)
+RegisterNUICallback('FetchVehicleScan', function(_, cb)
     local vehicle = Core.Functions.GetClosestVehicle()
     local plate = Core.Functions.GetPlate(vehicle)
     local vehname = GetDisplayNameFromVehicleModel(GetEntityModel(vehicle)):lower()
@@ -988,39 +1000,40 @@ RegisterNUICallback('FetchVehicleScan', function(data, cb)
     end, plate)
 end)
 
-RegisterNUICallback('GetRaces', function(data, cb)
-    Core.Functions.TriggerCallback('qb-lapraces:server:GetListedRaces', function(Races)
+RegisterNUICallback('GetRaces', function(_, cb)
+    Core.Functions.TriggerCallback('lapraces:server:GetListedRaces', function(Races)
         cb(Races)
     end)
 end)
 
 RegisterNUICallback('GetTrackData', function(data, cb)
-    Core.Functions.TriggerCallback('qb-lapraces:server:GetTrackData', function(TrackData, CreatorData)
+    Core.Functions.TriggerCallback('lapraces:server:GetTrackData', function(TrackData, CreatorData)
         TrackData.CreatorData = CreatorData
         cb(TrackData)
     end, data.RaceId)
 end)
 
 RegisterNUICallback('SetupRace', function(data, cb)
-    TriggerServerEvent('qb-lapraces:server:SetupRace', data.RaceId, tonumber(data.AmountOfLaps))
+    TriggerServerEvent('lapraces:server:SetupRace', data.RaceId, tonumber(data.AmountOfLaps))
+    cb("ok")
 end)
 
-RegisterNUICallback('HasCreatedRace', function(data, cb)
-    Core.Functions.TriggerCallback('qb-lapraces:server:HasCreatedRace', function(HasCreated)
+RegisterNUICallback('HasCreatedRace', function(_, cb)
+    Core.Functions.TriggerCallback('lapraces:server:HasCreatedRace', function(HasCreated)
         cb(HasCreated)
     end)
 end)
 
-RegisterNUICallback('IsInRace', function(data, cb)
-    local InRace = exports['qb-lapraces']:IsInRace()
+RegisterNUICallback('IsInRace', function(_, cb)
+    local InRace = exports['lapraces']:IsInRace()
     cb(InRace)
 end)
 
 RegisterNUICallback('IsAuthorizedToCreateRaces', function(data, cb)
-    Core.Functions.TriggerCallback('qb-lapraces:server:IsAuthorizedToCreateRaces', function(IsAuthorized, NameAvailable)
-        local data = {
+    Core.Functions.TriggerCallback('lapraces:server:IsAuthorizedToCreateRaces', function(IsAuthorized, NameAvailable)
+        data = {
             IsAuthorized = IsAuthorized,
-            IsBusy = exports['qb-lapraces']:IsInEditor(),
+            IsBusy = exports['lapraces']:IsInEditor(),
             IsNameAvailable = NameAvailable,
         }
         cb(data)
@@ -1028,28 +1041,29 @@ RegisterNUICallback('IsAuthorizedToCreateRaces', function(data, cb)
 end)
 
 RegisterNUICallback('StartTrackEditor', function(data, cb)
-    TriggerServerEvent('qb-lapraces:server:CreateLapRace', data.TrackName)
+    TriggerServerEvent('lapraces:server:CreateLapRace', data.TrackName)
+    cb("ok")
 end)
 
-RegisterNUICallback('GetRacingLeaderboards', function(data, cb)
-    Core.Functions.TriggerCallback('qb-lapraces:server:GetRacingLeaderboards', function(Races)
+RegisterNUICallback('GetRacingLeaderboards', function(_, cb)
+    Core.Functions.TriggerCallback('lapraces:server:GetRacingLeaderboards', function(Races)
         cb(Races)
     end)
 end)
 
 RegisterNUICallback('RaceDistanceCheck', function(data, cb)
-    Core.Functions.TriggerCallback('qb-lapraces:server:GetRacingData', function(RaceData)
+    Core.Functions.TriggerCallback('lapraces:server:GetRacingData', function(RaceData)
         local ped = PlayerPedId()
         local coords = GetEntityCoords(ped)
         local checkpointcoords = RaceData.Checkpoints[1].coords
         local dist = #(coords - vector3(checkpointcoords.x, checkpointcoords.y, checkpointcoords.z))
         if dist <= 115.0 then
             if data.Joined then
-                TriggerEvent('qb-lapraces:client:WaitingDistanceCheck')
+                TriggerEvent('lapraces:client:WaitingDistanceCheck')
             end
             cb(true)
         else
-            Core.Functions.Notify('You\'re too far away from the race. GPS set.', 'error', 5000)
+            Core.Functions.Notify('You\'re too far away from the race. GPS has been set to the race.', 'error', 5000)
             SetNewWaypoint(checkpointcoords.x, checkpointcoords.y)
             cb(false)
         end
@@ -1058,25 +1072,25 @@ end)
 
 RegisterNUICallback('IsBusyCheck', function(data, cb)
     if data.check == "editor" then
-        cb(exports['qb-lapraces']:IsInEditor())
+        cb(exports['lapraces']:IsInEditor())
     else
-        cb(exports['qb-lapraces']:IsInRace())
+        cb(exports['lapraces']:IsInRace())
     end
 end)
 
-RegisterNUICallback('CanRaceSetup', function(data, cb)
-    Core.Functions.TriggerCallback('qb-lapraces:server:CanRaceSetup', function(CanSetup)
+RegisterNUICallback('CanRaceSetup', function(_, cb)
+    Core.Functions.TriggerCallback('lapraces:server:CanRaceSetup', function(CanSetup)
         cb(CanSetup)
     end)
 end)
 
-RegisterNUICallback('GetPlayerHouses', function(data, cb)
+RegisterNUICallback('GetPlayerHouses', function(_, cb)
     Core.Functions.TriggerCallback('phone:server:GetPlayerHouses', function(Houses)
         cb(Houses)
     end)
 end)
 
-RegisterNUICallback('GetPlayerKeys', function(data, cb)
+RegisterNUICallback('GetPlayerKeys', function(_, cb)
     Core.Functions.TriggerCallback('phone:server:GetHouseKeys', function(Keys)
         cb(Keys)
     end)
@@ -1084,20 +1098,21 @@ end)
 
 RegisterNUICallback('SetHouseLocation', function(data, cb)
     SetNewWaypoint(data.HouseData.HouseData.coords.enter.x, data.HouseData.HouseData.coords.enter.y)
-    Core.Functions.Notify("GPS set to " .. data.HouseData.HouseData.adress .. "!", "success")
+    Core.Functions.Notify("GPS has been set to " .. data.HouseData.HouseData.adress .. "!", "success")
+    cb("ok")
 end)
 
-RegisterNUICallback('RemoveKeyholder', function(data)
-    TriggerServerEvent('qb-houses:server:removeHouseKey', data.HouseData.name, {
+RegisterNUICallback('RemoveKeyholder', function(data, cb)
+    TriggerServerEvent('houses:server:removeHouseKey', data.HouseData.name, {
         citizenid = data.HolderData.citizenid,
         firstname = data.HolderData.charinfo.firstname,
         lastname = data.HolderData.charinfo.lastname,
     })
+    cb("ok")
 end)
 
 RegisterNUICallback('TransferCid', function(data, cb)
     local TransferedCid = data.newBsn
-
     Core.Functions.TriggerCallback('phone:server:TransferCid', function(CanTransfer)
         cb(CanTransfer)
     end, TransferedCid, data.HouseData)
@@ -1110,27 +1125,26 @@ RegisterNUICallback('FetchPlayerHouses', function(data, cb)
 end)
 
 RegisterNUICallback('SetGPSLocation', function(data, cb)
-    local ped = PlayerPedId()
-
     SetNewWaypoint(data.coords.x, data.coords.y)
-    Core.Functions.Notify('GPS set!', 'success')
+    Core.Functions.Notify('GPS has been set!', 'success')
+    cb("ok")
 end)
 
 RegisterNUICallback('SetApartmentLocation', function(data, cb)
     local ApartmentData = data.data.appartmentdata
     local TypeData = Apartments.Locations[ApartmentData.type]
-
     SetNewWaypoint(TypeData.coords.enter.x, TypeData.coords.enter.y)
-    Core.Functions.Notify('GPS set!', 'success')
+    Core.Functions.Notify('GPS has been set!', 'success')
+    cb("ok")
 end)
 
-RegisterNUICallback('GetCurrentLawyers', function(data, cb)
+RegisterNUICallback('GetCurrentLawyers', function(_, cb)
     Core.Functions.TriggerCallback('phone:server:GetCurrentLawyers', function(lawyers)
         cb(lawyers)
     end)
 end)
 
-RegisterNUICallback('SetupStoreApps', function(data, cb)
+RegisterNUICallback('SetupStoreApps', function(_, cb)
     local PlayerData = Core.Functions.GetPlayerData()
     local data = {
         StoreApps = Config.StoreApps,
@@ -1139,7 +1153,7 @@ RegisterNUICallback('SetupStoreApps', function(data, cb)
     cb(data)
 end)
 
-RegisterNUICallback('ClearMentions', function()
+RegisterNUICallback('ClearMentions', function(_ ,cb)
     Config.PhoneApplications["twitter"].Alerts = 0
     SendNUIMessage({
         action = "RefreshAppAlerts",
@@ -1147,9 +1161,10 @@ RegisterNUICallback('ClearMentions', function()
     })
     TriggerServerEvent('phone:server:SetPhoneAlerts', "twitter", 0)
     SendNUIMessage({ action = "RefreshAppAlerts", AppData = Config.PhoneApplications })
+    cb('ok')
 end)
 
-RegisterNUICallback('ClearGeneralAlerts', function(data)
+RegisterNUICallback('ClearGeneralAlerts', function(data, cb)
     SetTimeout(400, function()
         Config.PhoneApplications[data.app].Alerts = 0
         SendNUIMessage({
@@ -1158,6 +1173,7 @@ RegisterNUICallback('ClearGeneralAlerts', function(data)
         })
         TriggerServerEvent('phone:server:SetPhoneAlerts', data.app, 0)
         SendNUIMessage({ action = "RefreshAppAlerts", AppData = Config.PhoneApplications })
+        cb('ok')
     end)
 end)
 
@@ -1199,14 +1215,14 @@ RegisterNUICallback('CanTransferMoney', function(data, cb)
     end
 end)
 
-RegisterNUICallback('GetWhatsappChats', function(data, cb)
+RegisterNUICallback('GetWhatsappChats', function(_, cb)
     Core.Functions.TriggerCallback('phone:server:GetContactPictures', function(Chats)
         cb(Chats)
     end, PhoneData.Chats)
 end)
 
 RegisterNUICallback('CallContact', function(data, cb)
-    Core.Functions.TriggerCallback('phone:server:GetCallState', function(CanCall, IsOnline, contactData)
+    Core.Functions.TriggerCallback('phone:server:GetCallState', function(CanCall, IsOnline, _)
         local status = {
             CanCall = CanCall,
             IsOnline = IsOnline,
@@ -1361,50 +1377,59 @@ RegisterNUICallback('SendMessage', function(data, cb)
             chatNumber = ChatNumber,
         })
     end,  PhoneData.Chats[GetKeyByNumber(ChatNumber)])
+    cb("ok")
 end)
 
-RegisterNUICallback("TakePhoto", function(data,cb)
+RegisterNUICallback("TakePhoto", function(_,cb)
     SetNuiFocus(false, false)
     CreateMobilePhone(1)
     CellCamActivate(true, true)
-    takePhoto = true
+    local takePhoto = true
     while takePhoto do
-        if IsControlJustPressed(1, 27) then
+        if IsControlJustPressed(1, 27) then -- Toogle Mode
             frontCam = not frontCam
             CellFrontCamActivate(frontCam)
-        elseif IsControlJustPressed(1, 177) then
+        elseif IsControlJustPressed(1, 177) then -- CANCEL
             DestroyMobilePhone()
             CellCamActivate(false, false)
             cb(json.encode({ url = nil }))
-            OpenPhone()
-            takePhoto = false
             break
-        elseif IsControlJustPressed(1, 176) then
+        elseif IsControlJustPressed(1, 176) then -- TAKE.. PIC
             Core.Functions.TriggerCallback("phone:server:GetWebhook",function(hook)
-                Core.Functions.Notify('Touching up photo...', 'primary')
-                exports['screenshot-basic']:requestScreenshotUpload(tostring(hook), "files[]", function(data)
-                    local image = json.decode(data)
-                    DestroyMobilePhone()
-                    CellCamActivate(false, false)
-                    TriggerServerEvent('phone:server:addImageToGallery', image.attachments[1].proxy_url)
-                    Wait(400)
-                    TriggerServerEvent('phone:server:getImageFromGallery')
-                    cb(json.encode(image.attachments[1].proxy_url))
-                    Core.Functions.Notify('Photo ssaved!', 'success')
-                    OpenPhone()
-                end)
+                if hook then
+                    exports['screenshot-basic']:requestScreenshotUpload(tostring(hook), "files[]", function(data)
+                        local image = json.decode(data)
+                        DestroyMobilePhone()
+                        CellCamActivate(false, false)
+                        TriggerServerEvent('phone:server:addImageToGallery', image.attachments[1].proxy_url)
+                        Wait(400)
+                        TriggerServerEvent('phone:server:getImageFromGallery')
+                        cb(json.encode(image.attachments[1].proxy_url))
+                    end)
+                else
+                    return
+                end
             end)
-
             takePhoto = false
         end
-          HideHudComponentThisFrame(7)
-          HideHudComponentThisFrame(8)
-          HideHudComponentThisFrame(9)
-          HideHudComponentThisFrame(6)
-          HideHudComponentThisFrame(19)
-          HideHudAndRadarThisFrame()
-          EnableAllControlActions(0)
-          Wait(0)
+        HideHudComponentThisFrame(7)
+        HideHudComponentThisFrame(8)
+        HideHudComponentThisFrame(9)
+        HideHudComponentThisFrame(6)
+        HideHudComponentThisFrame(19)
+        HideHudAndRadarThisFrame()
+        EnableAllControlActions(0)
+        Wait(0)
+    end
+    Wait(1000)
+    OpenPhone()
+end)
+
+RegisterCommand('ping', function(_, args)
+    if not args[1] then
+        Core.Functions.Notify("You need to input a Player ID", "error")
+    else
+        TriggerServerEvent('phone:server:sendPing', args[1])
     end
 end)
 
@@ -1454,19 +1479,33 @@ end)
 
 RegisterNetEvent('phone:client:TransferMoney', function(amount, newmoney)
     PhoneData.PlayerData.money.bank = newmoney
-    SendNUIMessage({ action = "PhoneNotification", PhoneNotify = { title = "Bank", text = "&#36;"..amount.." added to your account!", icon = "fas fa-university", color = "#8c7ae6", }, })
+    SendNUIMessage({ action = "PhoneNotification", PhoneNotify = { title = "QBank", text = "&#36;"..amount.." has been added to your account!", icon = "fas fa-university", color = "#8c7ae6", }, })
     SendNUIMessage({ action = "UpdateBank", NewBalance = PhoneData.PlayerData.money.bank })
 end)
+
+-- RegisterNetEvent('phone:client:UpdateTweetsDel', function(source, Tweets)
+--     PhoneData.Tweets = Tweets
+--     print(source)
+--     print(PhoneData.PlayerData.source)
+--     --local MyPlayerId = PhoneData.PlayerData.source
+--     --GetPlayerServerId(PlayerPedId())
+--     if source ~= MyPlayerId then
+--         SendNUIMessage({
+--             action = "UpdateTweets",
+--             Tweets = PhoneData.Tweets
+--         })
+--     end
+-- end)
 
 RegisterNetEvent('phone:client:UpdateTweets', function(src, Tweets, NewTweetData, delete)
     PhoneData.Tweets = Tweets
     local MyPlayerId = PhoneData.PlayerData.source
-    if not delete then 
+    if not delete then -- New Tweet
         if src ~= MyPlayerId then
             SendNUIMessage({
                 action = "PhoneNotification",
                 PhoneNotify = {
-                    title = "New Tweet: (@"..NewTweetData.firstName.." "..NewTweetData.lastName..")",
+                    title = "New Tweet (@"..NewTweetData.firstName.." "..NewTweetData.lastName..")",
                     text = "A new tweet as been posted.",
                     icon = "fab fa-twitter",
                     color = "#1DA1F2",
@@ -1481,20 +1520,20 @@ RegisterNetEvent('phone:client:UpdateTweets', function(src, Tweets, NewTweetData
                 action = "PhoneNotification",
                 PhoneNotify = {
                     title = "Twitter",
-                    text = "Tweet posted!",
+                    text = "The Tweet has been posted!",
                     icon = "fab fa-twitter",
                     color = "#1DA1F2",
                     timeout = 1000,
                 },
             })
         end
-    else
+    else -- Deleting a tweet
         if src == MyPlayerId then
             SendNUIMessage({
                 action = "PhoneNotification",
                 PhoneNotify = {
                     title = "Twitter",
-                    text = "Tweet deleted!",
+                    text = "The Tweet has been deleted!",
                     icon = "fab fa-twitter",
                     color = "#1DA1F2",
                     timeout = 1000,
@@ -1555,7 +1594,7 @@ RegisterNetEvent('phone:client:NewMailNotify', function(MailData)
         action = "PhoneNotification",
         PhoneNotify = {
             title = "Mail",
-            text = "New E-Mail from: "..MailData.sender,
+            text = "You received a new mail from "..MailData.sender,
             icon = "fas fa-envelope",
             color = "#ff002f",
             timeout = 1500,
@@ -1587,7 +1626,7 @@ RegisterNetEvent('phone:client:UpdateAdverts', function(Adverts, LastAd)
         action = "PhoneNotification",
         PhoneNotify = {
             title = "Advertisement",
-            text = "New ad posted: "..LastAd,
+            text = "A new ad has been posted by "..LastAd,
             icon = "fas fa-ad",
             color = "#ff8f1a",
             timeout = 2500,
@@ -1644,7 +1683,7 @@ RegisterNetEvent('phone:client:CancelCall', function()
             action = "PhoneNotification",
             NotifyData = {
                 title = "Phone",
-                content = "Call ended",
+                content = "The call has been ended",
                 icon = "fas fa-phone",
                 timeout = 3500,
                 color = "#e84118",
@@ -1655,7 +1694,7 @@ RegisterNetEvent('phone:client:CancelCall', function()
             action = "PhoneNotification",
             PhoneNotify = {
                 title = "Phone",
-                text = "Call ended",
+                text = "The call has been ended",
                 icon = "fas fa-phone",
                 color = "#e84118",
             },
@@ -1669,18 +1708,6 @@ RegisterNetEvent('phone:client:CancelCall', function()
         SendNUIMessage({
             action = "CancelOutgoingCall",
         })
-    end
-end)
-
-RegisterNUICallback('phone-silent-button', function(data,cb)
-    if CallVolume == tonumber("0.2") then
-        CallVolume = 0
-        Core.Functions.Notify("Silent Mode On", "success")
-        cb(true)
-    else
-        CallVolume = 0.2
-        Core.Functions.Notify("Silent Mode Off", "error")
-        cb(false)
     end
 end)
 
@@ -1709,14 +1736,14 @@ RegisterNetEvent('phone:client:GetCalled', function(CallerNumber, CallId, Anonym
         CallData = PhoneData.CallData,
     })
 
-    for i = 1, Config.CallRepeats + 1, 1 do
+    for _ = 1, Config.CallRepeats + 1, 1 do
         if not PhoneData.CallData.AnsweredCall then
             if RepeatCount + 1 ~= Config.CallRepeats + 1 then
                 if PhoneData.CallData.InCall then
                     Core.Functions.TriggerCallback('phone:server:HasPhone', function(HasPhone)
                         if HasPhone then
                             RepeatCount = RepeatCount + 1
-                            TriggerServerEvent("InteractSound_SV:PlayOnSource", "ringing", CallVolume)
+                            TriggerServerEvent("InteractSound_SV:PlayOnSource", "ringing", 0.2)
 
                             if not PhoneData.isOpen then
                                 SendNUIMessage({
@@ -1760,7 +1787,7 @@ RegisterNetEvent('phone:client:UpdateMessages', function(ChatMessages, SenderNum
     local NumberKey = GetKeyByNumber(SenderNumber)
 
     if New then
-	    PhoneData.Chats[#PhoneData.Chats+1] = {
+        PhoneData.Chats[#PhoneData.Chats+1] = {
             name = IsNumberInContacts(SenderNumber),
             number = SenderNumber,
             messages = {},
@@ -1785,9 +1812,9 @@ RegisterNetEvent('phone:client:UpdateMessages', function(ChatMessages, SenderNum
                 SendNUIMessage({
                     action = "PhoneNotification",
                     PhoneNotify = {
-                        title = "Messages",
-                        text = "New message: "..IsNumberInContacts(SenderNumber),
-                        icon = "fas fa-comment",
+                        title = "Whatsapp",
+                        text = "New message from "..IsNumberInContacts(SenderNumber).."!",
+                        icon = "fab fa-whatsapp",
                         color = "#25D366",
                         timeout = 1500,
                     },
@@ -1796,9 +1823,9 @@ RegisterNetEvent('phone:client:UpdateMessages', function(ChatMessages, SenderNum
                 SendNUIMessage({
                     action = "PhoneNotification",
                     PhoneNotify = {
-                        title = "Messages",
-                        text = "Messaged yourself?",
-                        icon = "fas fa-comment",
+                        title = "Whatsapp",
+                        text = "Messaged yourself",
+                        icon = "fab fa-whatsapp",
                         color = "#25D366",
                         timeout = 4000,
                     },
@@ -1821,9 +1848,9 @@ RegisterNetEvent('phone:client:UpdateMessages', function(ChatMessages, SenderNum
 	    SendNUIMessage({
 	        action = "PhoneNotification",
 	        PhoneNotify = {
-		    title = "Messages",
-		    text = "New message: "..IsNumberInContacts(SenderNumber),
-		    icon = "fas fa-comment",
+		    title = "Whatsapp",
+		    text = "New message from "..IsNumberInContacts(SenderNumber).."!",
+		    icon = "fab fa-whatsapp",
 		    color = "#25D366",
 		    timeout = 3500,
 	        },
@@ -1845,9 +1872,9 @@ RegisterNetEvent('phone:client:UpdateMessages', function(ChatMessages, SenderNum
                 SendNUIMessage({
                     action = "PhoneNotification",
                     PhoneNotify = {
-                        title = "Messages",
-                        text = "New message: "..IsNumberInContacts(SenderNumber),
-                        icon = "fas fa-comment",
+                        title = "Whatsapp",
+                        text = "New message from "..IsNumberInContacts(SenderNumber).."!",
+                        icon = "fab fa-whatsapp",
                         color = "#25D366",
                         timeout = 1500,
                     },
@@ -1856,9 +1883,9 @@ RegisterNetEvent('phone:client:UpdateMessages', function(ChatMessages, SenderNum
                 SendNUIMessage({
                     action = "PhoneNotification",
                     PhoneNotify = {
-                        title = "Messages",
-                        text = "Messaged yourself?",
-                        icon = "fas fa-comment",
+                        title = "Whatsapp",
+                        text = "Messaged yourself",
+                        icon = "fab fa-whatsapp",
                         color = "#25D366",
                         timeout = 4000,
                     },
@@ -1881,9 +1908,9 @@ RegisterNetEvent('phone:client:UpdateMessages', function(ChatMessages, SenderNum
             SendNUIMessage({
                 action = "PhoneNotification",
                 PhoneNotify = {
-                    title = "Messages",
-                    text = "New message: "..IsNumberInContacts(SenderNumber),
-                    icon = "fas fa-comment",
+                    title = "Whatsapp",
+                    text = "New message from "..IsNumberInContacts(SenderNumber).."!",
+                    icon = "fab fa-whatsapp",
                     color = "#25D366",
                     timeout = 3500,
                 },
@@ -1904,7 +1931,7 @@ RegisterNetEvent('phone:client:RemoveBankMoney', function(amount)
             action = "PhoneNotification",
             PhoneNotify = {
                 title = "Bank",
-                text = "$"..amount.." removed from your balance!",
+                text = "$"..amount.." has been removed from your balance!",
                 icon = "fas fa-university",
                 color = "#ff002f",
                 timeout = 3500,
@@ -1923,7 +1950,7 @@ RegisterNetEvent('phone:RefreshPhone', function()
     end)
 end)
 
-RegisterNetEvent('phone:client:AddTransaction', function(SenderData, TransactionData, Message, Title)
+RegisterNetEvent('phone:client:AddTransaction', function(_, _, Message, Title)
     local Data = {
         TransactionTitle = Title,
         TransactionMessage = Message,
@@ -1934,7 +1961,7 @@ RegisterNetEvent('phone:client:AddTransaction', function(SenderData, Transaction
             PhoneNotify = {
                 title = "Crypto",
                 text = Message,
-                icon = "fab fa-bitcoin",
+                icon = "fas fa-chart-pie",
                 color = "#04b543",
                 timeout = 1500,
             },
@@ -1953,7 +1980,7 @@ RegisterNetEvent('phone:client:AddNewSuggestion', function(SuggestionData)
         action = "PhoneNotification",
         PhoneNotify = {
             title = "Phone",
-            text = "New suggested contact!",
+            text = "You have a new suggested contact!",
             icon = "fa fa-phone-alt",
             color = "#04b543",
             timeout = 1500,
@@ -2023,7 +2050,7 @@ RegisterNetEvent('phone:client:AnswerCall', function()
             action = "PhoneNotification",
             PhoneNotify = {
                 title = "Phone",
-                text = "You don't have an incoming call...",
+                text = "You don't have a incoming call...",
                 icon = "fas fa-phone",
                 color = "#e84118",
             },
@@ -2059,8 +2086,8 @@ end)
 
 RegisterNetEvent('phone:client:GetMentioned', function(TweetMessage, AppAlerts)
     Config.PhoneApplications["twitter"].Alerts = AppAlerts
-    SendNUIMessage({ action = "PhoneNotification", PhoneNotify = { title = "New mention!", text = TweetMessage.message, icon = "fab fa-twitter", color = "#1DA1F2", }, })
-    local TweetMessage = {firstName = TweetMessage.firstName, lastName = TweetMessage.lastName, message = escape_str(TweetMessage.message), time = TweetMessage.time, picture = TweetMessage.picture}
+    SendNUIMessage({ action = "PhoneNotification", PhoneNotify = { title = "You have been mentioned in a Tweet!", text = TweetMessage.message, icon = "fab fa-twitter", color = "#1DA1F2", }, })
+    TweetMessage = {firstName = TweetMessage.firstName, lastName = TweetMessage.lastName, message = escape_str(TweetMessage.message), time = TweetMessage.time, picture = TweetMessage.picture}
     PhoneData.MentionedTweets[#PhoneData.MentionedTweets+1] = TweetMessage
     SendNUIMessage({ action = "RefreshAppAlerts", AppData = Config.PhoneApplications })
     SendNUIMessage({ action = "UpdateMentionedTweets", Tweets = PhoneData.MentionedTweets })
@@ -2083,13 +2110,11 @@ RegisterNetEvent("phone:client:CustomNotification", function(title, text, icon, 
     })
 end)
 
-
 -- Threads
 
 CreateThread(function()
     Wait(500)
     LoadPhone()
-    PublicPhone()
 end)
 
 CreateThread(function()
@@ -2120,275 +2145,3 @@ CreateThread(function()
         end
     end
 end)
-
-
--- ping
-
-RegisterNUICallback('AcceptPingPlayer', function()
-    TriggerServerEvent('pings:server:acceptping')
-    TriggerEvent("phone:ping:client:UiUppers", false)
-end)
-
-RegisterNUICallback('rejectPingPlayer', function()
-    TriggerServerEvent('pings:server:denyping')
-    TriggerEvent("phone:ping:client:UiUppers", false)
-end)
-
-RegisterNUICallback('SendPingPlayer', function(data)
-    TriggerServerEvent('pings:server:SendPing2', data.id)
-    
-end)
-
-local CurrentPings = {}
-
-RegisterNetEvent('pings:client:DoPing', function(id)
-    TriggerServerEvent('pings:server:SendPing', id)
-end)
-
-RegisterNetEvent('pings:client:AcceptPing', function(PingData, SenderData)
-    local ped = PlayerPedId()
-    local pos = GetEntityCoords(ped)
-
-        TriggerServerEvent('pings:server:SendLocation', PingData, SenderData)
-end)
-
-RegisterNetEvent('pings:client:SendLocation', function(PingData, SenderData)
-    Core.Functions.Notify('Their location has been blipped on your map', 'success')
-
-    CurrentPings[PingData.sender] = AddBlipForCoord(PingData.coords.x, PingData.coords.y, PingData.coords.z)
-    SetBlipSprite(CurrentPings[PingData.sender], 280)
-    SetBlipDisplay(CurrentPings[PingData.sender], 4)
-    SetBlipScale(CurrentPings[PingData.sender], 1.1)
-    SetBlipAsShortRange(CurrentPings[PingData.sender], false)
-    SetBlipColour(CurrentPings[PingData.sender], 0)
-    BeginTextCommandSetBlipName("STRING")
-    AddTextComponentSubstringPlayerName("Friend")
-    EndTextCommandSetBlipName(CurrentPings[PingData.sender])
-
-    SetTimeout(5 * (60 * 1000), function()
-        Core.Functions.Notify('Ping '..PingData.sender..' has expired...', 'error')
-        RemoveBlip(CurrentPings[PingData.sender])
-        CurrentPings[PingData.sender] = nil
-        TriggerEvent("phone:ping:client:UiUppers", false)
-    end)
-end)
-
-RegisterNetEvent('phone:ping:client:UiUppers', function(toggle)
-    if toggle then
-        SendNUIMessage({
-            action = "acceptrejectBlock",
-        })
-        TriggerEvent("qb-hud:ping:client:ShowIcon", true)
-    else
-        SendNUIMessage({
-            action = "acceptrejectNone",
-        })
-        TriggerEvent("qb-hud:ping:client:ShowIcon", false)
-    end
-end)
-
-RegisterNUICallback('CasinoAddBet', function(data)
-    TriggerServerEvent('phone:server:CasinoAddBet', data)
-end)
-
-RegisterNetEvent('phone:client:addbetForAll', function(data)
-    SendNUIMessage({
-        action = "BetAddToApp",
-        datas = data,
-    })
-end)
-
-RegisterNUICallback('BettingAddToTable', function(data)
-    TriggerServerEvent('phone:server:BettingAddToTable', data)
-end)
-
-RegisterNUICallback('CasinoDeleteTable', function(data)
-    TriggerServerEvent('phone:server:DeleteAndClearTable')
-end)
-
-RegisterNUICallback('CheckHasBetTable', function(data, cb)
-    Core.Functions.TriggerCallback('phone:server:CheckHasBetTable', function(HasTable)
-        cb(HasTable)
-    end)
-end)
-
-RegisterNUICallback('casino_status', function(data)
-    TriggerServerEvent('phone:server:casino_status')
-end)
-
-RegisterNUICallback('CheckHasBetStatus', function(data, cb)
-    Core.Functions.TriggerCallback('phone:server:CheckHasBetStatus', function(HasStatus)
-        cb(HasStatus)
-    end)
-end)
-
-RegisterNUICallback('WineridCasino', function(data)
-    TriggerServerEvent('phone:server:WineridCasino', data)
-end)
-
-RegisterNUICallback('GetJobCentersJobs', function(data, cb)
-    cb(Config.JobCenter)
-end)
-
-RegisterNUICallback('CasinoPhoneJobCenter', function(data)
-    if data.action == 1 then
-        TriggerServerEvent('phone:server:SetJobJobCenter', data)
-    elseif data.action == 2 then
-        SetNewWaypoint(data.x, data.y)
-        Core.Functions.Notify('GPS set', "success")
-    end
-end)
-
-RegisterNUICallback('employment_CreateJobGroup', function(data)
-    TriggerServerEvent('phone:server:employment_CreateJobGroup', data)
-end)
-
-RegisterNetEvent('phone:client:EveryoneGrupAddsForAll', function(data)
-    SendNUIMessage({
-        action = "GroupAddDIV",
-        datas = data,
-    })
-end)
-
-RegisterNUICallback('employment_DeleteGroup', function(data)
-    TriggerServerEvent('phone:server:employment_DeleteGroup', data)
-end)
-
-RegisterNUICallback('GetGroupsApp', function(data, cb)
-    Core.Functions.TriggerCallback('phone:server:GetGroupsApp', function(HasGroups)
-        cb(HasGroups)
-    end)
-end)
-
-RegisterNUICallback('employment_JoinTheGroup', function(data)
-    TriggerServerEvent('phone:server:employment_JoinTheGroup', data)
-end)
-
-RegisterNUICallback('employment_leave_grouped', function(data)
-    TriggerServerEvent('phone:server:employment_leave_grouped', data)
-end)
-
-RegisterNUICallback('employment_CheckPlayerNames', function(data, cb)
-    Core.Functions.TriggerCallback('phone:server:employment_CheckPlayerNames', function(HasName)
-        cb(HasName)
-    end, data.id)
-end)
-
-RegisterNUICallback('SendBillForPlayer_debt', function(data)
-    TriggerServerEvent('phone:server:SendBillForPlayer_debt', data)
-end)
-
-RegisterNUICallback('GetHasBills_debt', function(data, cb)
-    Core.Functions.TriggerCallback('phone:server:GetHasBills_debt', function(Has)
-        cb(Has)
-    end)
-end)
-
-RegisterNUICallback('debit_AcceptBillForPay', function(data)
-    TriggerServerEvent('phone:server:debit_AcceptBillForPay', data)
-end)
-
-RegisterNetEvent('phone:RefreshPhoneForDebt', function()
-    SendNUIMessage({
-        action = "DebtRefresh",
-    })
-end)
-
-RegisterNUICallback('wenmo_givemoney_toID', function(data)
-    TriggerServerEvent('phone:server:wenmo_givemoney_toID', data)
-end)
-
-RegisterNetEvent('hud:client:OnMoneyChange', function(type, amount, isMinus, reason)
-    if type == "bank" then
-        if isMinus then
-            SendNUIMessage({
-                action = "ChangeMoney_Wenmo",
-                Color = "#f5a15b",
-                Amount = "-$"..amount,
-                Reason = reason,
-            })
-        else
-            SendNUIMessage({
-                action = "ChangeMoney_Wenmo",
-                Color = "#8ee074",
-                Amount = "+$"..amount,
-                Reason = reason,
-            })
-        end
-    end
-end)
-
-RegisterNUICallback('documents_Save_Note_As', function(data)
-    TriggerServerEvent('phone:server:documents_Save_Note_As', data)
-end)
-
-RegisterNUICallback('GetNote_for_Documents_app', function(data, cb)
-    Core.Functions.TriggerCallback('phone:server:GetNote_for_Documents_app', function(Has)
-        cb(Has)
-    end)
-end)
-
-RegisterNetEvent('phone:RefReshNotes_Free_Documents', function()
-    SendNUIMessage({
-        action = "DocumentRefresh",
-    })
-end)
-
-
-RegisterNUICallback('Send_lsbn_ToChat', function(data)
-    TriggerServerEvent('phone:server:Send_lsbn_ToChat', data)
-end)
-
-RegisterNetEvent('phone:LSBN-reafy-for-add', function(data, toggle, text)
-    if toggle then
-        SendNUIMessage({
-            action = "PhoneNotification",
-            PhoneNotify = {
-                title = "LSBN",
-                text = text,
-                icon = "fas fa-bullhorn",
-                color = "#d8e212",
-                timeout = 1000,
-            },
-        })
-    end
-
-    SendNUIMessage({
-        action = "AddNews",
-        data = data,
-    })
-end)
-
-RegisterNUICallback('GetLSBNchats', function(data)
-    TriggerServerEvent('phone:server:GetLSBNchats', data)
-end)
-
-
-
-
-
-
-
-RegisterNetEvent('stx-phone:client:publocphoneopen',function()
-    SetNuiFocus(true, true)
-    SendNUIMessage({type = 'publicphoneopen'})
-end)
-
-RegisterNUICallback('publicphoneclose', function()
-    SetNuiFocus(false, false)
-end)
-
-RegisterNUICallback('openHelp', function()  
-    TriggerEvent('')
-end)
-
-local function GetGroupCSNs(Data)
-    local gData = {}
-    Core.Functions.TriggerCallback('phone:server:GetGroupCSNs', function(HasGroup)
-        gData = HasGroup
-    end, Data)
-    Wait(100)
-    return gData
-end
-
-exports('GetGroupCSNs', GetGroupCSNs)

@@ -31,7 +31,7 @@ $(document).on('click', '.whatsapp-chat', function(e){
 
     QB.Phone.Functions.SetupChatMessages(ChatData);
 
-    $.post('https://qb-phone/ClearAlerts', JSON.stringify({
+    $.post('https://phone/ClearAlerts', JSON.stringify({
         number: ChatData.number
     }));
 
@@ -63,7 +63,7 @@ $(document).on('click', '.whatsapp-chat', function(e){
 
 $(document).on('click', '#whatsapp-openedchat-back', function(e){
     e.preventDefault();
-    $.post('https://qb-phone/GetWhatsappChats', JSON.stringify({}), function(chats){
+    $.post('https://phone/GetWhatsappChats', JSON.stringify({}), function(chats){
         QB.Phone.Functions.LoadWhatsappChats(chats);
     });
     OpenedChatData.number = null;
@@ -184,20 +184,21 @@ FormatMessageTime = function() {
 
 $(document).on('click', '#whatsapp-openedchat-send', function(e){
     e.preventDefault();
+
     var Message = $("#whatsapp-openedchat-message").val();
 
     if (Message !== null && Message !== undefined && Message !== "") {
-        $.post('https://qb-phone/SendMessage', JSON.stringify({
+        $.post('https://phone/SendMessage', JSON.stringify({
             ChatNumber: OpenedChatData.number,
             ChatDate: GetCurrentDateKey(),
             ChatMessage: Message,
             ChatTime: FormatMessageTime(),
             ChatType: "message",
         }));
-        $(".emojionearea-editor").html("");
         $("#whatsapp-openedchat-message").val("");
+        $("div.emojionearea-editor").data("emojioneArea").setText('');
     } else {
-        QB.Phone.Notifications.Add("fas fa-comment", "Messages", "You can't send a empty message!", "#25D366", 1750);
+        QB.Phone.Notifications.Add("fab fa-whatsapp", "Whatsapp", "You can't send a empty message!", "#25D366", 1750);
     }
 });
 
@@ -205,14 +206,14 @@ $(document).on('keypress', function (e) {
     if (OpenedChatData.number !== null) {
         if(e.which === 13){
             var Message = $("#whatsapp-openedchat-message").val();
-            
+
             if (Message !== null && Message !== undefined && Message !== "") {
                 var clean = DOMPurify.sanitize(Message , {
                     ALLOWED_TAGS: [],
                     ALLOWED_ATTR: []
                 });
                 if (clean == '') clean = 'Hmm, I shouldn\'t be able to do this...'
-                $.post('https://qb-phone/SendMessage', JSON.stringify({
+                $.post('https://phone/SendMessage', JSON.stringify({
                     ChatNumber: OpenedChatData.number,
                     ChatDate: GetCurrentDateKey(),
                     ChatMessage: clean,
@@ -220,9 +221,8 @@ $(document).on('keypress', function (e) {
                     ChatType: "message",
                 }));
                 $("#whatsapp-openedchat-message").val("");
-                $(".emojionearea-editor").html("");
             } else {
-                QB.Phone.Notifications.Add("fas fa-comment", "Messages", "You can't send a empty message!", "#25D366", 1750);
+                QB.Phone.Notifications.Add("fab fa-whatsapp", "Whatsapp", "You can't send a empty message!", "#25D366", 1750);
             }
         }
     }
@@ -230,8 +230,8 @@ $(document).on('keypress', function (e) {
 
 $(document).on('click', '#send-location', function(e){
     e.preventDefault();
-    $('#whatsapp-openedchat-message-extras').click();
-    $.post('https://qb-phone/SendMessage', JSON.stringify({
+
+    $.post('https://phone/SendMessage', JSON.stringify({
         ChatNumber: OpenedChatData.number,
         ChatDate: GetCurrentDateKey(),
         ChatMessage: "Shared location",
@@ -242,11 +242,10 @@ $(document).on('click', '#send-location', function(e){
 
 $(document).on('click', '#send-image', function(e){
     e.preventDefault();
-    $('#whatsapp-openedchat-message-extras').click();
     let ChatNumber2 = OpenedChatData.number;
-    $.post('https://qb-phone/TakePhoto', JSON.stringify({}),function(url){
-        if(url != "[]"){
-        $.post('https://qb-phone/SendMessage', JSON.stringify({
+    $.post('https://phone/TakePhoto', JSON.stringify({}),function(url){
+        if(url){
+        $.post('https://phone/SendMessage', JSON.stringify({
         ChatNumber: ChatNumber2,
         ChatDate: GetCurrentDateKey(),
         ChatMessage: "Photo",
@@ -257,47 +256,12 @@ $(document).on('click', '#send-image', function(e){
     QB.Phone.Functions.Close();
 });
 
-$(document).on('click', '#send-gallery-image', function(e){
-    e.preventDefault();
-    $(".whatsapp-gallery-box").html("");
-    $('.whatsapp-gallery').fadeIn(350);
-    $('#whatsapp-openedchat-message-extras').click();
-    $.post('https://qb-phone/GetGalleryData', JSON.stringify({}), function(data){
-        setTimeout(()=>{
-                for (const [k, v] of Object.entries(data)) {
-                    var Element = '<div data-url="'+v.image+'" class="whatsapp-image-body"><img src="'+v.image+'" class="whatsapp-image-image"></div>';
-                    $(".whatsapp-gallery-box").append(Element);
-                }
-        },200)
-    });
-});
-
-$(document).on('click', '.whatsapp-gallery-close', function(e){
-    e.preventDefault();
-    $('.whatsapp-gallery').fadeOut(350);
-});
-
-$(document).on('click', '.whatsapp-image-body', function(e){
-    e.preventDefault();
-    let ChatNumber2 = OpenedChatData.number;
-    var galleryURL = $(this).data('url');
-    $.post('https://qb-phone/SendMessage', JSON.stringify({
-        ChatNumber: ChatNumber2,
-        ChatDate: GetCurrentDateKey(),
-        ChatMessage: "Photo",
-        ChatTime: FormatMessageTime(),
-        ChatType: "picture",
-        url : galleryURL
-    }))
-    $('.whatsapp-gallery').fadeOut(350);
-});
-
 QB.Phone.Functions.SetupChatMessages = function(cData, NewChatData) {
     if (cData) {
         OpenedChatData.number = cData.number;
 
         if (OpenedChatPicture == null) {
-            $.post('https://qb-phone/GetProfilePicture', JSON.stringify({
+            $.post('https://phone/GetProfilePicture', JSON.stringify({
                 number: OpenedChatData.number,
             }), function(picture){
                 OpenedChatPicture = "./img/default.png";
@@ -343,7 +307,7 @@ QB.Phone.Functions.SetupChatMessages = function(cData, NewChatData) {
     } else {
         OpenedChatData.number = NewChatData.number;
         if (OpenedChatPicture == null) {
-            $.post('https://qb-phone/GetProfilePicture', JSON.stringify({
+            $.post('https://phone/GetProfilePicture', JSON.stringify({
                 number: OpenedChatData.number,
             }), function(picture){
                 OpenedChatPicture = "./img/default.png";
@@ -375,7 +339,7 @@ $(document).on('click', '.whatsapp-shared-location', function(e){
     messageCoords.x = $(this).data('x');
     messageCoords.y = $(this).data('y');
 
-    $.post('https://qb-phone/SharedLocation', JSON.stringify({
+    $.post('https://phone/SharedLocation', JSON.stringify({
         coords: messageCoords,
     }))
 });
@@ -391,13 +355,12 @@ $(document).on('click', '#whatsapp-openedchat-message-extras', function(e){
 
     if (!ExtraButtonsOpen) {
         $(".whatsapp-extra-buttons").css({"display":"block"}).animate({
-            left: 3+"%",
-            top:  14+"%"
+            left: 0+"vh"
         }, 250);
         ExtraButtonsOpen = true;
     } else {
         $(".whatsapp-extra-buttons").animate({
-            left: -20+"vh",
+            left: -10+"vh"
         }, 250, function(){
             $(".whatsapp-extra-buttons").css({"display":"block"});
             ExtraButtonsOpen = false;

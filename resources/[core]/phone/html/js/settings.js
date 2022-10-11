@@ -1,9 +1,9 @@
 QB.Phone.Settings = {};
-QB.Phone.Settings.Background = "default-Core";
+QB.Phone.Settings.Background = "default-qbcore";
 QB.Phone.Settings.OpenedTab = null;
 QB.Phone.Settings.Backgrounds = {
-    'default-Core': {
-        label: "Standard Core"
+    'default-qbcore': {
+        label: "Standard QBCore"
     }
 };
 
@@ -49,7 +49,7 @@ $(document).on('click', '#accept-background', function(e){
         $(".phone-background").css({"background-image":"url('"+QB.Phone.Settings.Background+"')"});
     }
 
-    $.post('https://qb-phone/SetBackground', JSON.stringify({
+    $.post('https://phone/SetBackground', JSON.stringify({
         background: QB.Phone.Settings.Background,
     }))
 });
@@ -58,7 +58,7 @@ QB.Phone.Functions.LoadMetaData = function(MetaData) {
     if (MetaData.background !== null && MetaData.background !== undefined) {
         QB.Phone.Settings.Background = MetaData.background;
     } else {
-        QB.Phone.Settings.Background = "default-Core";
+        QB.Phone.Settings.Background = "default-qbcore";
     }
 
     var hasCustomBackground = QB.Phone.Functions.IsBackgroundCustom();
@@ -147,7 +147,7 @@ $(document).on('click', '#accept-profilepicture', function(e){
         QB.Phone.Animations.TopSlideUp(".settings-"+QB.Phone.Settings.OpenedTab+"-tab", 200, -100);
         $("[data-settingstab='profilepicture']").find('.settings-tab-icon').html('<img src="'+ProfilePicture+'">');
     }
-    $.post('https://qb-phone/UpdateProfilePicture', JSON.stringify({
+    $.post('https://phone/UpdateProfilePicture', JSON.stringify({
         profilepicture: ProfilePicture,
     }));
 });

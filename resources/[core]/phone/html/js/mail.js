@@ -31,7 +31,7 @@ $(document).on('click', '.mail-back', function(e){
 $(document).on('click', '#accept-mail', function(e){
     e.preventDefault();
     var MailData = $("#"+OpenedMail).data('MailData');
-    $.post('https://qb-phone/AcceptMailButton', JSON.stringify({
+    $.post('https://phone/AcceptMailButton', JSON.stringify({
         buttonEvent: MailData.button.buttonEvent,
         buttonData: MailData.button.buttonData,
         mailId: MailData.mailid,
@@ -47,7 +47,7 @@ $(document).on('click', '#accept-mail', function(e){
 $(document).on('click', '#remove-mail', function(e){
     e.preventDefault();
     var MailData = $("#"+OpenedMail).data('MailData');
-    $.post('https://qb-phone/RemoveMail', JSON.stringify({
+    $.post('https://phone/RemoveMail', JSON.stringify({
         mailId: MailData.mailid
     }));
     $(".mail-home").animate({
@@ -72,14 +72,14 @@ QB.Phone.Functions.SetupMails = function(Mails) {
     }
     var MessageTime = Hourssssss + ":" + Minutessss;
 
-    $("#mail-header-mail").html(QB.Phone.Data.PlayerData.charinfo.firstname+"."+QB.Phone.Data.PlayerData.charinfo.lastname+"@core.com");
+    $("#mail-header-mail").html(QB.Phone.Data.PlayerData.charinfo.firstname+"."+QB.Phone.Data.PlayerData.charinfo.lastname+"@Core.com");
     $("#mail-header-lastsync").html("Last synchronized "+MessageTime);
     if (Mails !== null && Mails !== undefined) {
         if (Mails.length > 0) {
             $(".mail-list").html("");
             $.each(Mails, function(i, mail){
                 var date = new Date(mail.date);
-                var DateString = date.getDay()+" "+MonthFormatting[date.getMonth()]+" "+date.getFullYear()+" "+date.getHours()+":"+date.getMinutes();
+                var DateString = date.getDate()+" "+MonthFormatting[date.getMonth()]+" "+date.getFullYear()+" "+date.getHours()+":"+date.getMinutes();
                 var element = '<div class="mail" id="mail-'+mail.mailid+'"><span class="mail-sender" style="font-weight: bold;">'+mail.sender+'</span> <div class="mail-text"><p>'+mail.message+'</p></div> <div class="mail-time">'+DateString+'</div></div>';
 
                 $(".mail-list").append(element);
@@ -96,7 +96,7 @@ var MonthFormatting = ["January", "February", "March", "April", "May", "June", "
 
 QB.Phone.Functions.SetupMail = function(MailData) {
     var date = new Date(MailData.date);
-    var DateString = date.getDay()+" "+MonthFormatting[date.getMonth()]+" "+date.getFullYear()+" "+date.getHours()+":"+date.getMinutes();
+    var DateString = date.getDate()+" "+MonthFormatting[date.getMonth()]+" "+date.getFullYear()+" "+date.getHours()+":"+date.getMinutes();
     $(".mail-subject").html("<p><span style='font-weight: bold;'>"+MailData.sender+"</span><br>"+MailData.subject+"</p>");
     $(".mail-date").html("<p>"+DateString+"</p>");
     $(".mail-content").html("<p>"+MailData.message+"</p>");
@@ -120,29 +120,12 @@ QB.Phone.Functions.SetupMail = function(MailData) {
 
 $(document).on('click', '.test-slet', function(e){
     e.preventDefault();
-
-    ClearInputNew()
-    $('#advert-box-textt').fadeIn(350);
-});
-
-$(document).on('click', '#advert-sendmessage-chat', function(e){
-    e.preventDefault();
-
-    var Advert = $(".advert-box-textt-input").val();
-    let picture = $('#advert-new-url').val();
-
-    if (Advert !== "") {
-        $('#advert-box-textt').fadeOut(350);
-        if (!picture){
-            $.post('https://qb-phone/PostAdvert', JSON.stringify({
-                message: Advert,
-                url: null
-            }));
-            ClearInputNew()
-        }
-    } else {
-        QB.Phone.Notifications.Add("fas fa-ad", "Advertisement", "You can\'t post an empty ad!", "#ff8f1a", 2000);
-    }
+    $(".advert-home").animate({
+        left: 30+"vh"
+    });
+    $(".new-advert").animate({
+        left: 0+"vh"
+    });
 });
 
 $(document).on('click','.advimage', function (){
@@ -152,7 +135,7 @@ $(document).on('click','.advimage', function (){
 
 $(document).on('click','#new-advert-photo',function(e){
     e.preventDefault();
-    $.post('https://qb-phone/TakePhoto',function(url){
+    $.post('https://phone/TakePhoto',function(url){
         if(url){
             $('#advert-new-url').val(url)
         }
@@ -184,12 +167,12 @@ $(document).on('click', '#new-advert-submit', function(e){
             left: -30+"vh"
         });
         if (!picture){
-            $.post('https://qb-phone/PostAdvert', JSON.stringify({
+            $.post('https://phone/PostAdvert', JSON.stringify({
                 message: Advert,
                 url: null
             }));
         }else {
-            $.post('https://qb-phone/PostAdvert', JSON.stringify({
+            $.post('https://phone/PostAdvert', JSON.stringify({
                 message: Advert,
                 url: picture
             }));
@@ -202,6 +185,7 @@ $(document).on('click', '#new-advert-submit', function(e){
 });
 
 QB.Phone.Functions.RefreshAdverts = function(Adverts) {
+    $("#advert-header-name").html("@"+QB.Phone.Data.PlayerData.charinfo.firstname+""+QB.Phone.Data.PlayerData.charinfo.lastname+" | "+QB.Phone.Data.PlayerData.charinfo.phone);
     if (Adverts.length > 0 || Adverts.length == undefined) {
         $(".advert-list").html("");
         $.each(Adverts, function(i, advert){
@@ -233,7 +217,7 @@ QB.Phone.Functions.RefreshAdverts = function(Adverts) {
 
 $(document).on('click','#adv-delete',function(e){
     e.preventDefault();
-    $.post('https://qb-phone/DeleteAdvert', function(){
+    $.post('https://phone/DeleteAdvert', function(){
         setTimeout(function(){
             QB.Phone.Notifications.Add("fas fa-ad", "Advertisement", "The ad was deleted", "#ff8f1a", 2000);
         },400)

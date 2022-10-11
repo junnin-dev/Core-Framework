@@ -1,16 +1,15 @@
 fx_version 'cerulean'
 game 'gta5'
 
-author 'Junnin#0001'
-description 'Phone Core framework'
-version 'Release'
+description 'Phone'
+version '1.0.0'
 
 ui_page 'html/index.html'
 
 shared_scripts {
     'config.lua',
-    '@qb-apartments/config.lua',
-    '@qb-garages/config.lua',
+    '@apartments/config.lua',
+    '@garages/config.lua',
 }
 
 client_scripts {
@@ -19,8 +18,8 @@ client_scripts {
 }
 
 server_scripts {
-    'server/main.lua',
-    '@oxmysql/lib/MySQL.lua'
+    '@oxmysql/lib/MySQL.lua',
+    'server/main.lua'
 }
 
 files {
@@ -36,5 +35,3 @@ files {
 }
 
 lua54 'yes'
-
-dependency '/assetpacks'
