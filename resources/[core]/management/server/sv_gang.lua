@@ -126,7 +126,7 @@ RegisterNetEvent('gangmenu:server:GradeUpdate', function(data)
 	local Employee = Core.Functions.GetPlayerByCitizenId(data.cid)
 
 	if not Player.PlayerData.gang.isboss then ExploitBan(src, 'GradeUpdate Exploiting') return end
-	if data.grade > Player.PlayerData.gang.grade.level then TriggerClientEvent('Core:Notify', src, "You cannot promote to this rank!", "error") return end
+	if data.grade > Player.PlayerData.gang.grade.level then TriggerClientEvent('Core:Notify', src, "Você não pode promover para esta classificação!", "error") return end
 
 	if Employee then
 		if Employee.Functions.SetGang(Player.PlayerData.gang.name, data.grade) then
@@ -151,13 +151,13 @@ RegisterNetEvent('gangmenu:server:FireMember', function(target)
 
 	if Employee then
 		if target ~= Player.PlayerData.citizenid then
-			if Employee.PlayerData.gang.grade.level > Player.PlayerData.gang.grade.level then TriggerClientEvent('Core:Notify', src, "You cannot fire this citizen!", "error") return end
+			if Employee.PlayerData.gang.grade.level > Player.PlayerData.gang.grade.level then TriggerClientEvent('Core:Notify', src, "Você não pode demitir esse cidadão!", "error") return end
 			if Employee.Functions.SetGang("none", '0') then
 				TriggerEvent("log:server:CreateLog", "gangmenu", "Gang Fire", "orange", Player.PlayerData.charinfo.firstname .. " " .. Player.PlayerData.charinfo.lastname .. ' successfully fired ' .. Employee.PlayerData.charinfo.firstname .. " " .. Employee.PlayerData.charinfo.lastname .. " (" .. Player.PlayerData.gang.name .. ")", false)
-				TriggerClientEvent('Core:Notify', src, "Gang Member fired!", "success")
+				TriggerClientEvent('Core:Notify', src, "Membro de gangue demitido!", "success")
 				TriggerClientEvent('Core:Notify', Employee.PlayerData.source , "Você foi expulso da gangue!", "error")
 			else
-				TriggerClientEvent('Core:Notify', src, "Error.", "error")
+				TriggerClientEvent('Core:Notify', src, "Erro.", "error")
 			end
 		else
 			TriggerClientEvent('Core:Notify', src, "Você não pode sair da gangue!", "error")
@@ -167,7 +167,7 @@ RegisterNetEvent('gangmenu:server:FireMember', function(target)
 		if player[1] ~= nil then
 			Employee = player[1]
 			Employee.gang = json.decode(Employee.gang)
-			if Employee.gang.grade.level > Player.PlayerData.job.grade.level then TriggerClientEvent('Core:Notify', src, "You cannot fire this citizen!", "error") return end
+			if Employee.gang.grade.level > Player.PlayerData.job.grade.level then TriggerClientEvent('Core:Notify', src, "Você não pode demitir esse cidadão!", "error") return end
 			local gang = {}
 			gang.name = "none"
 			gang.label = "No Affiliation"
@@ -196,7 +196,7 @@ RegisterNetEvent('gangmenu:server:HireMember', function(recruit)
 	if not Player.PlayerData.gang.isboss then ExploitBan(src, 'HireEmployee Exploiting') return end
 
 	if Target and Target.Functions.SetGang(Player.PlayerData.gang.name, 0) then
-		TriggerClientEvent('Core:Notify', src, "You hired " .. (Target.PlayerData.charinfo.firstname .. ' ' .. Target.PlayerData.charinfo.lastname) .. " come " .. Player.PlayerData.gang.label .. "", "success")
+		TriggerClientEvent('Core:Notify', src, "Você contratou " .. (Target.PlayerData.charinfo.firstname .. ' ' .. Target.PlayerData.charinfo.lastname) .. " come " .. Player.PlayerData.gang.label .. "", "success")
 		TriggerClientEvent('Core:Notify', Target.PlayerData.source , "Você foi contratado como " .. Player.PlayerData.gang.label .. "", "success")
 		TriggerEvent('log:server:CreateLog', 'gangmenu', 'Recruit', 'yellow', (Player.PlayerData.charinfo.firstname .. ' ' .. Player.PlayerData.charinfo.lastname).. ' successfully recruited ' .. Target.PlayerData.charinfo.firstname .. ' ' .. Target.PlayerData.charinfo.lastname .. ' (' .. Player.PlayerData.gang.name .. ')', false)
 	end
