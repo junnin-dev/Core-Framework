@@ -30,18 +30,10 @@ local pcall = pcall
 local CheckOptions = CheckOptions
 local Bones = Load('bones')
 local listSprite = {}
-
----------------------------------------
---- Source: https://github.com/citizenfx/lua/blob/luaglm-dev/cfx/libs/scripts/examples/scripting_gta.lua
---- Credits to gottfriedleibniz
 local glm = require 'glm'
-
--- Cache common functions
 local glm_rad = glm.rad
 local glm_quatEuler = glm.quatEulerAngleZYX
 local glm_rayPicking = glm.rayPicking
-
--- Cache direction vectors
 local glm_up = glm.up()
 local glm_forward = glm.forward()
 
@@ -54,8 +46,8 @@ local function ScreenPositionToCameraRay()
         q * glm_up,
         glm_rad(screen.fov),
         screen.ratio,
-        0.10000, -- GetFinalRenderedCamNearClip(),
-        10000.0, -- GetFinalRenderedCamFarClip(),
+        0.10000,
+        10000.0,
         0, 0
     )
 end
@@ -1297,13 +1289,11 @@ end)
 
 -- Events
 
--- This is to make sure the peds spawn on restart too instead of only when you load/log-in.
 AddEventHandler('onResourceStart', function(resource)
 	if resource ~= currentResourceName then return end
 	SpawnPeds()
 end)
 
--- This will delete the peds when the resource stops to make sure you don't have random peds walking
 AddEventHandler('onResourceStop', function(resource)
 	if resource ~= currentResourceName then return end
 	DeletePeds()
