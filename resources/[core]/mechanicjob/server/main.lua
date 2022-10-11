@@ -257,10 +257,10 @@ Core.Commands.Add("setmechanic", "Give Someone The Mechanic job", {{
                     ") Hired As An Autocare Employee!")
             end
         else
-            TriggerClientEvent('Core:Notify', source, "You Must Provide A Player ID!")
+            TriggerClientEvent('Core:Notify', source, "Você deve fornecer um ID do jogador!")
         end
     else
-        TriggerClientEvent('Core:Notify', source, "You Cannot Do This!", "error")
+        TriggerClientEvent('Core:Notify', source, "Você não pode fazer isso!", "error")
     end
 end)
 
@@ -280,15 +280,15 @@ Core.Commands.Add("firemechanic", "Fire A Mechanic", {{
                     TriggerClientEvent('Core:Notify', TargetData.PlayerData.source,
                         "You Were Fired As An Autocare Employee!")
                     TriggerClientEvent('Core:Notify', source,
-                        "You have (" .. TargetData.PlayerData.charinfo.firstname .. ") Fired As Autocare Employee!")
+                        "You have (" .. TargetData.PlayerData.charinfo.firstname .. ") Disponível como funcionário da Autocare!")
                 else
-                    TriggerClientEvent('Core:Notify', source, "Youre Not An Employee of Autocare!", "error")
+                    TriggerClientEvent('Core:Notify', source, "Você não é um funcionário da Autocare!", "error")
                 end
             end
         else
-            TriggerClientEvent('Core:Notify', source, "You Must Provide A Player ID!", "error")
+            TriggerClientEvent('Core:Notify', source, "Você deve fornecer um ID do jogador!", "error")
         end
     else
-        TriggerClientEvent('Core:Notify', source, "You Cannot Do This!", "error")
+        TriggerClientEvent('Core:Notify', source, "Você não pode fazer isso!", "error")
     end
 end)
