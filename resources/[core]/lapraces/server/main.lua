@@ -557,7 +557,7 @@ Core.Commands.Add("cancelrace", "Cancel going race..", {}, false, function(sourc
     end
 end)
 
-Core.Commands.Add("togglesetup", "Turn on / off racing setup", {}, false, function(source, _)
+Core.Commands.Add("togglesetup", "Virar on / off configuração de corrida", {}, false, function(source, _)
     local Player = Core.Functions.GetPlayer(source)
 
     if IsWhitelisted(Player.PlayerData.citizenid) then
