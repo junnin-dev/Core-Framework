@@ -109,7 +109,7 @@ RegisterNetEvent('customs:server:UpdateLocation', function(location, type, key, 
 end)
 
 -- name, help, args, argsrequired, cb, perms
-Core.Commands.Add('customs', 'Open customs (admin only)', {}, false, function(source)
+Core.Commands.Add('customs', 'Abrir customs (somente admin)', {}, false, function(source)
     local ped = GetPlayerPed(source)
     TriggerClientEvent('customs:client:EnterCustoms', source, {
         coords = GetEntityCoords(ped),
