@@ -6,7 +6,7 @@ $(document).on('click', '.bank-app-account', function(e){
     copyText.setSelectionRange(0, 99999);
     document.execCommand("copy");
 
-    JN.Phone.Notifications.Add("fas fa-university", "QBank", "Account number. copied!", "#badc58", 1750);
+    JN.Phone.Notifications.Add("fas fa-university", "Bank", "Account number. copied!", "#badc58", 1750);
 });
 
 var CurrentTab = "accounts";
@@ -54,19 +54,19 @@ JN.Phone.Functions.DoBankOpen = function() {
 
     $(".bank-app-loaded").css({"display":"none", "padding-left":"30vh"});
     $(".bank-app-accounts").css({"left":"30vh"});
-    $(".qbank-logo").css({"left": "0vh"});
-    $("#qbank-text").css({"opacity":"0.0", "left":"9vh"});
+    $(".bank-logo").css({"left": "0vh"});
+    $("#bank-text").css({"opacity":"0.0", "left":"9vh"});
     $(".bank-app-loading").css({
         "display":"block",
         "left":"0vh",
     });
     setTimeout(function(){
         CurrentTab = "accounts";
-        $(".qbank-logo").animate({
+        $(".bank-logo").animate({
             left: -12+"vh"
         }, 500);
         setTimeout(function(){
-            $("#qbank-text").animate({
+            $("#bank-text").animate({
                 opacity: 1.0,
                 left: 14+"vh"
             });
@@ -111,14 +111,14 @@ $(document).on('click', '#accept-transfer', function(e){
 
                     $(".bank-app-account-balance").html("&#36; " + (data.NewBalance).toFixed(0));
                     $(".bank-app-account-balance").data('balance', (data.NewBalance).toFixed(0));
-                    JN.Phone.Notifications.Add("fas fa-university", "QBank", "You have transfered &#36; "+amount+"!", "#badc58", 1500);
+                    JN.Phone.Notifications.Add("fas fa-university", "Bank", "You have transfered &#36; "+amount+"!", "#badc58", 1500);
                 } else {
-                    JN.Phone.Notifications.Add("fas fa-university", "QBank", "You don't have enough balance!", "#badc58", 1500);
+                    JN.Phone.Notifications.Add("fas fa-university", "Bank", "You don't have enough balance!", "#badc58", 1500);
                 }
                 JN.Phone.Animations.TopSlideUp(".bank-app-transfer", 400, -100);
             });
     } else {
-        JN.Phone.Notifications.Add("fas fa-university", "QBank", "Fill out all fields!", "#badc58", 1750);
+        JN.Phone.Notifications.Add("fas fa-university", "Bank", "Fill out all fields!", "#badc58", 1750);
     }
 });
 
@@ -154,17 +154,17 @@ $(document).on('click', '.pay-invoice', function(event){
                         $("#"+InvoiceId).remove();
                     }, 100);
                 });
-                JN.Phone.Notifications.Add("fas fa-university", "QBank", "You have paid &#36;"+InvoiceData.amount+"!", "#badc58", 1500);
+                JN.Phone.Notifications.Add("fas fa-university", "Bank", "You have paid &#36;"+InvoiceData.amount+"!", "#badc58", 1500);
                 var amountData = $(".bank-app-account-balance").data('balance');
                 var NewAmount = (amountData - InvoiceData.amount).toFixed();
                 $("#bank-transfer-amount").val(NewAmount);
                 $(".bank-app-account-balance").data('balance', NewAmount);
             } else {
-                JN.Phone.Notifications.Add("fas fa-university", "QBank", "You don't have enough balance!", "#badc58", 1500);
+                JN.Phone.Notifications.Add("fas fa-university", "Bank", "You don't have enough balance!", "#badc58", 1500);
             }
         });
     } else {
-        JN.Phone.Notifications.Add("fas fa-university", "QBank", "You don't have enough balance!", "#badc58", 1500);
+        JN.Phone.Notifications.Add("fas fa-university", "Bank", "You don't have enough balance!", "#badc58", 1500);
     }
 });
 
@@ -244,7 +244,7 @@ $(document).on('click', '.bank-app-my-contact', function(e){
     if (PressedContactData.iban !== "" && PressedContactData.iban !== undefined && PressedContactData.iban !== null) {
         $("#bank-transfer-iban").val(PressedContactData.iban);
     } else {
-        JN.Phone.Notifications.Add("fas fa-university", "QBank", "There is no bank account attached to this number!", "#badc58", 2500);
+        JN.Phone.Notifications.Add("fas fa-university", "Bank", "There is no bank account attached to this number!", "#badc58", 2500);
     }
     JN.Phone.Animations.TopSlideUp(".bank-app-my-contacts", 400, -100);
 });

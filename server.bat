@@ -1,1 +1,1 @@
-..\build\FXServer.exe +set onesync on +set onesync_population true +exec server.cfg
+build\FXServer.exe +set onesync on +set onesync_population true +exec server.cfg
