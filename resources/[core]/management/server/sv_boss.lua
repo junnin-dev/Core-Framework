@@ -143,17 +143,17 @@ RegisterNetEvent('bossmenu:server:GradeUpdate', function(data)
 	local Employee = Core.Functions.GetPlayerByCitizenId(data.cid)
 
 	if not Player.PlayerData.job.isboss then ExploitBan(src, 'GradeUpdate Exploiting') return end
-	if data.grade > Player.PlayerData.job.grade.level then TriggerClientEvent('Core:Notify', src, "You cannot promote to this rank!", "error") return end
+	if data.grade > Player.PlayerData.job.grade.level then TriggerClientEvent('Core:Notify', src, "Você não pode promover para esta classificação!", "error") return end
 	
 	if Employee then
 		if Employee.Functions.SetJob(Player.PlayerData.job.name, data.grade) then
-			TriggerClientEvent('Core:Notify', src, "Sucessfulluy promoted!", "success")
+			TriggerClientEvent('Core:Notify', src, "SUCESSFULLUY Promovido!", "success")
 			TriggerClientEvent('Core:Notify', Employee.PlayerData.source, "Você foi promovido a" ..data.gradename..".", "success")
 		else
 			TriggerClientEvent('Core:Notify', src, "A nota de promoção não existe.", "error")
 		end
 	else
-		TriggerClientEvent('Core:Notify', src, "Civilian not in city.", "error")
+		TriggerClientEvent('Core:Notify', src, "Civil não na cidade.", "error")
 	end
 	TriggerClientEvent('bossmenu:client:OpenMenu', src)
 end)
@@ -168,7 +168,7 @@ RegisterNetEvent('bossmenu:server:FireEmployee', function(target)
 
 	if Employee then
 		if target ~= Player.PlayerData.citizenid then
-			if Employee.PlayerData.job.grade.level > Player.PlayerData.job.grade.level then TriggerClientEvent('Core:Notify', src, "You cannot fire this citizen!", "error") return end
+			if Employee.PlayerData.job.grade.level > Player.PlayerData.job.grade.level then TriggerClientEvent('Core:Notify', src, "Você não pode demitir esse cidadão!", "error") return end
 			if Employee.Functions.SetJob("unemployed", '0') then
 				TriggerEvent("log:server:CreateLog", "bossmenu", "Job Fire", "red", Player.PlayerData.charinfo.firstname .. " " .. Player.PlayerData.charinfo.lastname .. ' com sucesso demitido ' .. Employee.PlayerData.charinfo.firstname .. " " .. Employee.PlayerData.charinfo.lastname .. " (" .. Player.PlayerData.job.name .. ")", false)
 				TriggerClientEvent('Core:Notify', src, "Funcionário demitido!", "success")
@@ -184,7 +184,7 @@ RegisterNetEvent('bossmenu:server:FireEmployee', function(target)
 		if player[1] ~= nil then
 			Employee = player[1]
 			Employee.job = json.decode(Employee.job)
-			if Employee.job.grade.level > Player.PlayerData.job.grade.level then TriggerClientEvent('Core:Notify', src, "You cannot fire this citizen!", "error") return end
+			if Employee.job.grade.level > Player.PlayerData.job.grade.level then TriggerClientEvent('Core:Notify', src, "Você não pode demitir esse cidadão!", "error") return end
 			local job = {}
 			job.name = "unemployed"
 			job.label = "Unemployed"
@@ -213,7 +213,7 @@ RegisterNetEvent('bossmenu:server:HireEmployee', function(recruit)
 	if not Player.PlayerData.job.isboss then ExploitBan(src, 'HireEmployee Exploiting') return end
 
 	if Target and Target.Functions.SetJob(Player.PlayerData.job.name, 0) then
-		TriggerClientEvent('Core:Notify', src, "You hired " .. (Target.PlayerData.charinfo.firstname .. ' ' .. Target.PlayerData.charinfo.lastname) .. " come " .. Player.PlayerData.job.label .. "", "success")
+		TriggerClientEvent('Core:Notify', src, "Você contratou " .. (Target.PlayerData.charinfo.firstname .. ' ' .. Target.PlayerData.charinfo.lastname) .. " come " .. Player.PlayerData.job.label .. "", "success")
 		TriggerClientEvent('Core:Notify', Target.PlayerData.source , "Você foi contratado como " .. Player.PlayerData.job.label .. "", "success")
 		TriggerEvent('log:server:CreateLog', 'bossmenu', 'Recruit', "lightgreen", (Player.PlayerData.charinfo.firstname .. ' ' .. Player.PlayerData.charinfo.lastname).. " recrutado com sucesso " .. (Target.PlayerData.charinfo.firstname .. ' ' .. Target.PlayerData.charinfo.lastname) .. ' (' .. Player.PlayerData.job.name .. ')', false)
 	end
