@@ -224,7 +224,7 @@ RegisterNetEvent('hospital:server:SendDoctorAlert', function()
             doctorCalled = false
         end)
     else
-        TriggerClientEvent('Core:Notify', src, 'Doctor has already been notified', 'error')
+        TriggerClientEvent('Core:Notify', src, 'Médico já foi notificado', 'error')
     end
 end)
 
