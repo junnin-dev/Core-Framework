@@ -56,13 +56,8 @@ var AnimationDuration = 200;
 $(document).on('click', '#myhouse-option-transfer', function(e){
     e.preventDefault();
 
-    $(".myhouses-options").animate({
-        left: -35+"vw"
-    }, AnimationDuration);
-
-    $(".myhouse-option-transfer-container").animate({
-        left: 0
-    }, AnimationDuration);
+    ClearInputNew()
+    $('#house-transfer-new-box').fadeIn(350);
 });
 
 $(document).on('click', '#myhouse-option-keys', function(e){
@@ -71,7 +66,7 @@ $(document).on('click', '#myhouse-option-keys', function(e){
         $.each(CurrentHouseData.keyholders, function(i, keyholder){
             if (keyholder !== null && keyholder !== undefined) {
                 var elem;
-                if (keyholder.citizenid !== JN.Phone.Data.PlayerData.citizenid) {
+                if (keyholder.citizenid !== QB.Phone.Data.PlayerData.citizenid) {
                     elem = '<div class="house-key" id="holder-'+i+'"><span class="house-key-holder">' + keyholder.charinfo.firstname + ' ' + keyholder.charinfo.lastname + '</span> <div class="house-key-delete"><i class="fas fa-trash"></i></div> </div>';
                 } else {
                     elem = '<div class="house-key" id="holder-'+i+'"><span class="house-key-holder">(Me) ' + keyholder.charinfo.firstname + ' ' + keyholder.charinfo.lastname + '</span></div>';
@@ -111,7 +106,7 @@ $(document).on('click', '.house-key-delete', function(e){
         $(this).remove();
     });
 
-    $.post('https://phone/RemoveKeyholder', JSON.stringify({
+    $.post('https://qb-phone/RemoveKeyholder', JSON.stringify({
         HolderData: Data,
         HouseData: CurrentHouseData,
     }));
@@ -127,9 +122,9 @@ function shakeElement(element){
 $(document).on('click', '#myhouse-option-transfer-confirm', function(e){
     e.preventDefault();
         
-    var NewBSN = $(".myhouse-option-transfer-container-citizenid").val();
+    var NewBSN = $("#myhouse-option-transfer-container-citizenid").val();
 
-    $.post('https://phone/TransferCid', JSON.stringify({
+    $.post('https://qb-phone/TransferCid', JSON.stringify({
         newBsn: NewBSN,
         HouseData: CurrentHouseData,
     }), function(CanTransfer){
@@ -143,15 +138,15 @@ $(document).on('click', '#myhouse-option-transfer-confirm', function(e){
             }, AnimationDuration);
 
             setTimeout(function(){
-                $.post('https://phone/GetPlayerHouses', JSON.stringify({}), function(Houses){
+                $.post('https://qb-phone/GetPlayerHouses', JSON.stringify({}), function(Houses){
                     SetupPlayerHouses(Houses);
                     $(".myhouses-options-container").fadeOut(150);
                 });
             }, 100);
         } else {
-            JN.Phone.Notifications.Add("fas fa-home", "Houses", "This is an invalid CSN-number", "#27ae60", 2500);
+            QB.Phone.Notifications.Add("fas fa-home", "Houses", "This is an invalid CSN-number", "#27ae60", 2500);
             shakeElement(".myhouse-option-transfer-container");
-            $(".myhouse-option-transfer-container-citizenid").val("");
+            $("#myhouse-option-transfer-container-citizenid").val("");
         }
     });
 });

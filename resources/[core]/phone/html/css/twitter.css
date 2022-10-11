@@ -4,7 +4,7 @@
     display: none;
     height: 100%;
     width: 100%;
-    background: rgb(36, 36, 36);
+    background: #202731;
     overflow: hidden;
 }
 
@@ -40,16 +40,15 @@
 .twitter-app-header {
     position: relative;
     padding: 5vh 0 0 1.85vh;
-    font-family: 'Poppins', sans-serif;
     font-size: 2vh;
 }
 
 .twitter-home-tab {
     display: block;
     position: absolute;
-    height: 75%;
+    height: 85%;
     width: 100%;
-    top: 12vh;
+    top: 8vh;
     overflow: hidden;
     overflow-y: scroll !important;
     overflow-x: hidden !important;
@@ -118,9 +117,9 @@
     height: auto;
     width: 90%;
     margin-bottom: 0.5vh;
-    background-color: #1DA1F2;
-    border-radius: 7px;
-    left: 15px;
+    background-color: #0c62c5;
+    border-radius: 2px;
+    left: 5.4%;
     color: white;
 }
 
@@ -170,13 +169,11 @@
 .tweet-tweeter {
     padding-left: 6vh;
     padding-top: .6vh;
-    font-family: 'Poppins', sans-serif;
     font-size: 1.1vh;
 }
 
 .tweet-tweeter > span {
     position: relative;
-    font-family: 'Poppins', sans-serif;
     font-size: 1.0vh;
     top: -.1vh;
 }
@@ -185,7 +182,6 @@
     margin-top: .3vh;
     padding-left: 6vh;
     top: .5vh;
-    font-family: 'Poppins', sans-serif;
     font-size: 1.3vh;
     padding-bottom: 1vh;
     overflow-wrap: break-word;
@@ -195,25 +191,24 @@
 .twitter-new-tweet {
     position: absolute;
     bottom: 0;
-    right: 0;
+    top: 2%;
+    right: -2%;
     width: 5.5vh;
     height: 5.5vh;
-    background-color: #1DA1F2;
     margin: 2.2vh;
     z-index: 101;
     border-radius: 50%;
     text-align: center;
-    transition: .1s;
+    transition: .2s;
 }
 
-.twitter-new-tweet:hover {
-    background-color: rgb(62, 179, 252);
+.twitter-new-tweet > i:hover {
+    color: rgb(201, 201, 201);
 }
 
 .twitter-new-tweet > i {
     line-height: 5.5vh;
     font-size: 2vh;
-    transform: rotate(-20deg);
     color: white;
 }
 
@@ -232,7 +227,6 @@
 .twitter-new-tweet-header {
     position: relative;
     padding: 6vh 0 0 9vh;
-    font-family: 'Poppins', sans-serif;
     font-size: 2vh;
     color: white;
 }
@@ -249,7 +243,6 @@
     outline: none;
     border: 2px solid #1DA1F2;
     resize: none;
-    font-family: 'Poppins', sans-serif;
     padding: 0.87vh;
     font-size: 1.4vh;
     top: 12vh;
@@ -264,7 +257,6 @@
 
 #tweet-new-message::placeholder {
     font-size: 1.4vh;
-    font-family: 'Poppins', sans-serif;
 }
 
 #tweet-new-url{
@@ -278,7 +270,6 @@
     background: rgba(23, 23, 23, 90%);
     outline: none;
     resize: none;
-    font-family: 'Poppins', sans-serif;
     padding: 0.87vh;
     font-size: 1.4vh;
     top: 30vh;
@@ -306,7 +297,6 @@
     height: 100%;
     text-align: center;
     line-height: 4.5vh;
-    font-family: 'Poppins', sans-serif;
     font-size: 1.5vh;
     border-top: .3vh solid #6ab04c00;
     transition: .1s;
@@ -322,7 +312,6 @@
     top: 4vh;
     width: 100%;
     font-size: 2vh;
-    font-family: 'Poppins', sans-serif;
     color: white;
 }
 
@@ -354,7 +343,6 @@
     position: absolute;
     top: .8vh;
     left: 1vh;
-    font-family: 'Poppins', sans-serif;
     font-size: 1.1vh;
     color: white;
 }
@@ -363,7 +351,6 @@
     position: absolute;
     top: 2.5vh;
     left: 1vh;
-    font-family: 'Poppins', sans-serif;
     font-size: 1.4vh;
     color: white;
 }
@@ -371,7 +358,6 @@
     position: absolute;
     bottom: .8vh;
     left: 1vh;
-    font-family: 'Poppins', sans-serif;
     font-size: 1.1vh;
     color: white;
 }

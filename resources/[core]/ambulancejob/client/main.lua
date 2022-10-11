@@ -895,7 +895,7 @@ if Config.UseTarget then
                         type = "client",
                         icon = "fa fa-clipboard",
                         event = "ambulancejob:checkin",
-                        label = "Check In",
+                        label = "Check-in",
                     }
                 },
                 distance = 1.5
@@ -915,7 +915,7 @@ if Config.UseTarget then
                         type = "client",
                         event = "ambulancejob:beds",
                         icon = "fas fa-bed",
-                        label = "Layin Bed",
+                        label = "Cama deitado",
                     }
                 },
                 distance = 1.5

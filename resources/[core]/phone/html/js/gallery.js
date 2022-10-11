@@ -13,7 +13,6 @@ function setUpGalleryData(Images){
 $(document).on('click', '.tumbnail', function(e){
     e.preventDefault();
     let source = $(this).attr('src')
-    // JN.Screen.popUp(source)
     $(".gallery-homescreen").animate({
         left: 30+"vh"
     }, 200);
@@ -26,7 +25,7 @@ $(document).on('click', '.tumbnail', function(e){
 $(document).on('click', '.image', function(e){
     e.preventDefault();
     let source = $(this).attr('src')
-    JN.Screen.popUp(source)
+    QB.Screen.popUp(source)
 });
 
 
@@ -35,10 +34,10 @@ $(document).on('click', '#delete-button', function(e){
     let source = $('.image').attr('src')
 
     setTimeout(() => {
-        $.post('https://phone/DeleteImage', JSON.stringify({image:source}), function(Hashtags){
+        $.post('https://qb-phone/DeleteImage', JSON.stringify({image:source}), function(Hashtags){
             setTimeout(()=>{
                 $('#return-button').click()
-                $.post('https://phone/GetGalleryData', JSON.stringify({}), function(data){
+                $.post('https://qb-phone/GetGalleryData', JSON.stringify({}), function(data){
                     setTimeout(()=>{
                             setUpGalleryData(data);
                         
@@ -64,7 +63,6 @@ $(document).on('click', '#make-post-button', function(e){
     let source = $('#imagedata').attr('src')
     postImageUrl=source
 
-    // JN.Screen.popUp(source)
     $(".gallery-detailscreen").animate({
         left: 30+"vh"
     }, 200);
@@ -74,6 +72,20 @@ $(document).on('click', '#make-post-button', function(e){
     SetupPostDetails();
 });
 
+$(document).on('click', '#gallery-coppy-button', function(e){
+    e.preventDefault();
+    let source = $('#imagedata').attr('src')
+    copyToClipboard(source)
+});
+
+const copyToClipboard = str => {
+    const el = document.createElement('textarea');
+    el.value = str;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+ };
 
 $(document).on('click', '#return-button', function(e){
     e.preventDefault();
@@ -108,22 +120,21 @@ $(document).on('click', '#tweet-button', function(e){
     var imageURL = postImageUrl
     if (TweetMessage != "") {
         var CurrentDate = new Date();
-        $.post('https://phone/PostNewTweet', JSON.stringify({
+        $.post('https://qb-phone/PostNewTweet', JSON.stringify({
             Message: TweetMessage,
             Date: CurrentDate,
-            Picture: JN.Phone.Data.MetaData.profilepicture,
+            Picture: QB.Phone.Data.MetaData.profilepicture,
             url: imageURL
         }), function(Tweets){
-            JN.Phone.Notifications.LoadTweets(Tweets);
+            QB.Phone.Notifications.LoadTweets(Tweets);
         });
         var TweetMessage = $("#new-textarea").val(' ');
-        $.post('https://phone/GetHashtags', JSON.stringify({}), function(Hashtags){
-            JN.Phone.Notifications.LoadHashtags(Hashtags)
+        $.post('https://qb-phone/GetHashtags', JSON.stringify({}), function(Hashtags){
+            QB.Phone.Notifications.LoadHashtags(Hashtags)
         })
-        // JN.Phone.Animations.TopSlideUp(".twitter-new-tweet-tab", 450, -120);
         returnDetail()
     } else {
-        JN.Phone.Notifications.Add("fab fa-twitter", "Twitter", "Fill a message!", "#1DA1F2");
+        QB.Phone.Notifications.Add("fab fa-twitter", "Twitter", "Fill a message!", "#1DA1F2");
     };
     $('#tweet-new-url').val("");
     $("#tweet-new-message").val("");
@@ -143,13 +154,13 @@ $(document).on('click', '#advert-button', function(e){
             left: -30+"vh"
         });
         if (!picture){
-            $.post('https://phone/PostAdvert', JSON.stringify({
+            $.post('https://qb-phone/PostAdvert', JSON.stringify({
                 message: Advert,
                 url: null
             }));
             returnDetail()
         }else {
-            $.post('https://phone/PostAdvert', JSON.stringify({
+            $.post('https://qb-phone/PostAdvert', JSON.stringify({
                 message: Advert,
                 url: picture
             }));
@@ -157,7 +168,7 @@ $(document).on('click', '#advert-button', function(e){
         }
         $("#new-textarea").val(' ');
     } else {
-        JN.Phone.Notifications.Add("fas fa-ad", "Advertisement", "You can\'t post an empty ad!", "#ff8f1a", 2000);
+        QB.Phone.Notifications.Add("fas fa-ad", "Advertisement", "You can\'t post an empty ad!", "#ff8f1a", 2000);
     }
 });
 

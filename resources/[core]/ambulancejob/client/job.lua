@@ -469,7 +469,7 @@ if Config.UseTarget then
                         type = "client",
                         event = "EMSToggle:Duty",
                         icon = "fa fa-clipboard",
-                        label = "Sign In/Off duty",
+                        label = "Sinal In/Off dever",
                         job = "ambulance"
                     }
                 },
@@ -489,7 +489,7 @@ if Config.UseTarget then
                         type = "client",
                         event = "ambulancejob:stash",
                         icon = "fa fa-hand",
-                        label = "Open Stash",
+                        label = "Abrir esconderijo",
                         job = "ambulance"
                     }
                 },
@@ -509,7 +509,7 @@ if Config.UseTarget then
                         type = "client",
                         event = "ambulancejob:armory",
                         icon = "fa fa-hand",
-                        label = "Open Armory",
+                        label = "Abrir Arsenal",
                         job = "ambulance"
                     }
                 },
@@ -529,7 +529,7 @@ if Config.UseTarget then
                         type = "client",
                         event = "ambulancejob:elevator_roof",
                         icon = "fas fa-hand-point-up",
-                        label = "Take Elevator",
+                        label = "Pegue o elevador",
                         job = "ambulance"
                     },
                 },
@@ -549,7 +549,7 @@ if Config.UseTarget then
                         type = "client",
                         event = "ambulancejob:elevator_main",
                         icon = "fas fa-hand-point-up",
-                        label = "Take Elevator",
+                        label = "Pegue o elevador",
                         job = "ambulance"
                     },
                 },

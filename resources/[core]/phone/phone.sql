@@ -80,11 +80,32 @@ CREATE TABLE IF NOT EXISTS `player_vehicles` (
   KEY `license` (`license`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1;
 
-CREATE TABLE IF NOT EXISTS `phone_gallery` (
+CREATE TABLE `phone_gallery` (
    `citizenid` VARCHAR(255) NOT NULL , 
    `image` VARCHAR(255) NOT NULL ,
    `date` timestamp NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `phone_debt` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `citizenid` varchar(50) DEFAULT NULL,
+  `amount` int(11) NOT NULL DEFAULT 0,
+  `sender` varchar(50) DEFAULT NULL,
+  `sendercitizenid` varchar(50) DEFAULT NULL,
+  `reason` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `citizenid` (`citizenid`)
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb3;
+
+CREATE TABLE IF NOT EXISTS `phone_note` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `citizenid` varchar(50) DEFAULT NULL,
+  `title` text DEFAULT NULL,
+  `text` text DEFAULT NULL,
+  `lastupdate` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `citizenid` (`citizenid`)
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb3;
 
 CREATE TABLE IF NOT EXISTS `phone_tweets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

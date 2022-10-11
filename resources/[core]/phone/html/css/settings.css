@@ -4,7 +4,7 @@
     display: none;
     height: 100%;
     width: 100%;
-    background: rgba(36, 36, 36, 90%);
+    background: #202731;
     overflow: hidden;
 }
 
@@ -33,19 +33,19 @@
 
 .settings-app-tab {
     position: relative;
-    width: 90%;
+    width: 88%;
     border-radius: 0.15rem;
     height: 6vh;
     margin-bottom: 10px;
     color: white;
-    background: rgba(23, 23, 23, 90%);
-    left: 15px;
+    background: #2c465f;
+    left: 5.5%;
     box-shadow: 0rem 0rem 0.1rem 0.05rem #000000;
 }
 
 .settings-app-tab:hover {
-    background-color: #dc143c;
-    transition: .5s ease;
+    background-color: #0d1218c0;
+    transition: .2s ease;
 }
 
 .settings-app-tab-header {
@@ -131,14 +131,14 @@
     height: 6vh;
     margin-bottom: 10px;
     color: white;
-    background: rgba(23, 23, 23, 90%);
+    background: #2c465f;
     left: 15px;
     box-shadow: 0rem 0rem 0.1rem 0.05rem #000000;
 }
 
 .background-option:hover {
-    background-color: #dc143c;
-    transition: .5s ease;
+    background-color: #0d1218c0;
+    transition: .2s ease;
 }
 
 .background-option-icon {
@@ -204,7 +204,7 @@
 }
 
 .background-button:hover {
-    border-top: .3vh solid #dc143c;
+    border-top: .3vh solid #0d1218c0;
 }
 
 .background-custom {
@@ -270,7 +270,7 @@
 
 .custom-background-button:hover {
     font-weight: bolder;
-    color: #DC143C;
+    color: #0d1218c0;
 }
 
 
@@ -288,7 +288,7 @@
     height: 6vh;
     margin-bottom: 10px;
     color: white;
-    background: rgba(23, 23, 23, 90%);
+    background: #2c465f;
     left: 15px;
     box-shadow: 0rem 0rem 0.1rem 0.05rem #000000;
 }
@@ -355,7 +355,7 @@
 }
 
 .profilepicture-button:hover {
-    border-top: .3vh solid #dc143c;
+    border-top: .3vh solid #0d1218c0;
 }
 
 .profilepicture-custom {
@@ -419,13 +419,11 @@
 
 .custom-profilepicture-button:hover {
     font-weight: bolder;
-    color: #DC143C;
+    color: #0d1218c0;
 }
 
-/* The switch - the box around the slider */
 .switch {
     position: absolute;
-    /* display: inline-block; */
     width: 50px;
     height: 24px;
     top: 50%;
@@ -433,14 +431,12 @@
     transform: translateY(-50%);
 }
 
-/* Hide default HTML checkbox */
 .switch input {
     opacity: 0;
     width: 0;
     height: 0;
 }
 
-/* The slider */
 .slider {
     position: absolute;
     cursor: pointer;
@@ -479,7 +475,6 @@ input:checked + .slider:before {
     transform: translateX(26px);
 }
 
-/* Rounded sliders */
 .slider.round {
     border-radius: 24px;
 }

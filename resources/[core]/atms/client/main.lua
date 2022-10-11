@@ -46,7 +46,7 @@ if Config.UseTarget then
                     event = 'atms:server:enteratm',
                     type = 'server',
                     icon = "fas fa-credit-card",
-                    label = "Use ATM",
+                    label = "Usar ATM",
                 },
             },
             distance = 1.5,

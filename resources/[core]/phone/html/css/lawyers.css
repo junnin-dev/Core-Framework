@@ -5,7 +5,7 @@
     height: 100%;
     width: 100%;
     overflow: hidden;
-    background: rgb(36, 36, 36);
+    background: #202731;
 }
 
 .lawyers-header {
@@ -14,7 +14,7 @@
     height: 12vh;
     top: 0;
     color: white;
-    font-family: 'Poppins', sans-serif;
+    /* font-family: 'Poppins', sans-serif; */
     font-size: 1.8vh;
 }
 
@@ -54,9 +54,9 @@
     width: 95%;
     height: 6vh;
     margin: 2.5%;
-    background: rgba(23, 23, 23, 90%);
+    background: #2c465f;
     border-radius: 0.15rem;
-    box-shadow: 0rem 0rem 0.1rem 0.05rem #000000;
+    box-shadow: 0rem 0rem 0.2rem 0.02rem #000000a6;
 }
 
 .lawyer-list-firstletter {
@@ -70,7 +70,7 @@
     left: 1vh;
     line-height: 3.5vh;
     border-radius: 50%;
-    font-family: 'Poppins', sans-serif;
+    /* font-family: 'Poppins', sans-serif; */
     font-size: 1.8vh;
     color: white;
 }
@@ -80,7 +80,7 @@
     top: 50%;
     transform: translateY(-50%);
     left: 5.5vh;
-    font-family: 'Poppins', sans-serif;
+    /* font-family: 'Poppins', sans-serif; */
     font-size: 1.5vh;
     max-width: 14vh;
     white-space: nowrap;
@@ -93,7 +93,7 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    font-family: 'Poppins', sans-serif;
+    /* font-family: 'Poppins', sans-serif; */
     font-size: 1.3vh;
     margin: 0 auto;
     left: 0;
@@ -115,7 +115,7 @@
 }
 
 .lawyer-list-call:hover {
-    color: rgb(49, 214, 60);
+    color: #8ee074;
     opacity: .8;
     transform: rotate(0deg);
     cursor: pointer;

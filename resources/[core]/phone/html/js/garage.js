@@ -16,9 +16,10 @@ $(document).on('click', '.garage-vehicle', function(e){
     SetupDetails(VehData);
 });
 
+
 $(document).on('click', '#track-vehicle', function(e){
     e.preventDefault()
-    $.post("https://phone/track-vehicle", JSON.stringify({
+    $.post("https://qb-phone/gps-vehicle-garage", JSON.stringify({
         veh: veh,
     }));
 });
