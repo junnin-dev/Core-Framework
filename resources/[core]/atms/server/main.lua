@@ -133,9 +133,9 @@ RegisterNetEvent('atms:server:doAccountWithdraw', function(data)
                     xCH.Functions.RemoveMoney('bank', tonumber(data.amount))
                     xPlayer.Functions.AddMoney('cash', tonumber(data.amount))
                     dailyWithdraws[cardHolder] = dailyWithdraws[cardHolder] + tonumber(data.amount)
-                    TriggerClientEvent('Core:Notify', src, "Withdraw $" .. data.amount .. ' from credit card. Daily Withdraws: ' .. dailyWithdraws[cardHolder], "success")
+                    TriggerClientEvent('Core:Notify', src, "Retirar $" .. data.amount .. ' do cartão de crédito.Retirada diária: ' .. dailyWithdraws[cardHolder], "success")
                 else
-                    TriggerClientEvent('Core:Notify', src, "Not Enough Money", "error")
+                    TriggerClientEvent('Core:Notify', src, "Dinheiro insuficiente", "error")
                 end
 
                 banking['online'] = true
@@ -152,9 +152,9 @@ RegisterNetEvent('atms:server:doAccountWithdraw', function(data)
                     xCH.money.bank = bankCount
                     MySQL.Async.execute('UPDATE players SET money = ? WHERE citizenid = ?', { xCH.money, cardHolder })
                     dailyWithdraws[cardHolder] = dailyWithdraws[cardHolder] + tonumber(data.amount)
-                    TriggerClientEvent('Core:Notify', src, "Withdraw $" .. data.amount .. ' from credit card. Daily Withdraws: ' .. dailyWithdraws[cardHolder], "success")
+                    TriggerClientEvent('Core:Notify', src, "Retirar $" .. data.amount .. ' do cartão de crédito.Retirada diária: ' .. dailyWithdraws[cardHolder], "success")
                 else
-                    TriggerClientEvent('Core:Notify', src, "Not Enough Money", "error")
+                    TriggerClientEvent('Core:Notify', src, "Dinheiro insuficiente", "error")
                 end
 
                 banking['online'] = false
@@ -165,7 +165,7 @@ RegisterNetEvent('atms:server:doAccountWithdraw', function(data)
             end
             TriggerClientEvent('atms:client:updateBankInformation', src, banking)
         else
-            TriggerClientEvent('Core:Notify', src, "You have reached the daily limit", "error")
+            TriggerClientEvent('Core:Notify', src, "Você atingiu o limite diário", "error")
         end
     end
 end)
