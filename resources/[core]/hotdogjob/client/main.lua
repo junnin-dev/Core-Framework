@@ -865,7 +865,7 @@ CreateThread(function()
         }, {
             options = {
                 {
-                    label = 'Toggle Work',
+                    label = 'Alternar o trabalho',
                     job = 'hotdog',
                     icon = 'fa-solid fa-hotdog',
                     action = function()
