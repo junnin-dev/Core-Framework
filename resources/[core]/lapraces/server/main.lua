@@ -202,10 +202,10 @@ RegisterNetEvent('lapraces:server:CreateLapRace', function(RaceName)
         if IsNameAvailable(RaceName) then
             TriggerClientEvent('lapraces:client:StartRaceEditor', source, RaceName)
         else
-            TriggerClientEvent('Core:Notify', source, 'There is already a race with this name.', 'error')
+            TriggerClientEvent('Core:Notify', source, 'Já existe uma corrida com esse nome.', 'error')
         end
     else
-        TriggerClientEvent('Core:Notify', source, 'You have not been authorized to race\'s to create.', 'error')
+        TriggerClientEvent('Core:Notify', source, 'Você não foi autorizado a correr para criar.', 'error')
     end
 end)
 
@@ -371,13 +371,13 @@ RegisterNetEvent('lapraces:server:SetupRace', function(RaceId, Laps)
                     end
                 end)
             else
-                TriggerClientEvent('Core:Notify', source, 'The race is already running', 'error')
+                TriggerClientEvent('Core:Notify', source, 'A corrida já está correndo', 'error')
             end
         else
-            TriggerClientEvent('Core:Notify', source, 'The race is already running', 'error')
+            TriggerClientEvent('Core:Notify', source, 'A corrida já está correndo', 'error')
         end
     else
-        TriggerClientEvent('Core:Notify', source, 'This race does not exist :(', 'error')
+        TriggerClientEvent('Core:Notify', source, 'Esta raça não existe :(', 'error')
     end
 end)
 
@@ -549,11 +549,11 @@ Core.Commands.Add("cancelrace", "Cancel going race..", {}, false, function(sourc
                 LastRaces[RaceId] = nil
                 TriggerClientEvent('phoneclient:UpdateLapraces', -1)
             else
-                TriggerClientEvent('Core:Notify', source, 'This race has not started yet.', 'error')
+                TriggerClientEvent('Core:Notify', source, 'Esta corrida ainda não começou.', 'error')
             end
         end
     else
-        TriggerClientEvent('Core:Notify', source, 'You have not been authorized to do this.', 'error')
+        TriggerClientEvent('Core:Notify', source, 'Você não foi autorizado a fazer isso.', 'error')
     end
 end)
 
@@ -563,12 +563,12 @@ Core.Commands.Add("togglesetup", "Turn on / off racing setup", {}, false, functi
     if IsWhitelisted(Player.PlayerData.citizenid) then
         Config.RaceSetupAllowed = not Config.RaceSetupAllowed
         if not Config.RaceSetupAllowed then
-            TriggerClientEvent('Core:Notify', source, 'No more races can be created!', 'error')
+            TriggerClientEvent('Core:Notify', source, 'Não há mais races podem ser criadas!', 'error')
         else
-            TriggerClientEvent('Core:Notify', source, 'Races can be created again!', 'success')
+            TriggerClientEvent('Core:Notify', source, 'As corridas podem ser criadas novamente!', 'success')
         end
     else
-        TriggerClientEvent('Core:Notify', source, 'You have not been authorized to do this.', 'error')
+        TriggerClientEvent('Core:Notify', source, 'Você não foi autorizado a fazer isso.', 'error')
     end
 end)
 
