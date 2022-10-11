@@ -147,7 +147,7 @@ end
 
 RegisterNetEvent('consumables:client:Eat', function(itemName)
     TriggerEvent('animations:client:EmoteCommandStart', {"eat"})
-    Core.Functions.Progressbar("eat_something", "Eating..", 5000, false, true, {
+    Core.Functions.Progressbar("eat_something", "Comendo..", 5000, false, true, {
         disableMovement = false,
         disableCarMovement = false,
 		disableMouse = false,
@@ -162,7 +162,7 @@ end)
 
 RegisterNetEvent('consumables:client:Drink', function(itemName)
     TriggerEvent('animations:client:EmoteCommandStart', {"drink"})
-    Core.Functions.Progressbar("drink_something", "Drinking..", 5000, false, true, {
+    Core.Functions.Progressbar("drink_something", "Bebendo..", 5000, false, true, {
         disableMovement = false,
         disableCarMovement = false,
 		disableMouse = false,
@@ -176,7 +176,7 @@ end)
 
 RegisterNetEvent('consumables:client:DrinkAlcohol', function(itemName)
     TriggerEvent('animations:client:EmoteCommandStart', {"drink"})
-    Core.Functions.Progressbar("snort_coke", "Drinking liquor..", math.random(3000, 6000), false, true, {
+    Core.Functions.Progressbar("snort_coke", "Bebendo licor..", math.random(3000, 6000), false, true, {
         disableMovement = false,
         disableCarMovement = false,
         disableMouse = false,
@@ -202,7 +202,7 @@ end)
 
 RegisterNetEvent('consumables:client:Cokebaggy', function()
     local ped = PlayerPedId()
-    Core.Functions.Progressbar("snort_coke", "Quick sniff..", math.random(5000, 8000), false, true, {
+    Core.Functions.Progressbar("snort_coke", "Sniff rápido..", math.random(5000, 8000), false, true, {
         disableMovement = false,
         disableCarMovement = false,
         disableMouse = false,
@@ -247,7 +247,7 @@ RegisterNetEvent('consumables:client:Crackbaggy', function()
 end)
 
 RegisterNetEvent('consumables:client:EcstasyBaggy', function()
-    Core.Functions.Progressbar("use_ecstasy", "Pops Pills", 3000, false, true, {
+    Core.Functions.Progressbar("use_ecstasy", "Pílulas pops", 3000, false, true, {
         disableMovement = false,
         disableCarMovement = false,
 		disableMouse = false,
@@ -268,7 +268,7 @@ RegisterNetEvent('consumables:client:EcstasyBaggy', function()
 end)
 
 RegisterNetEvent('consumables:client:oxy', function()
-    Core.Functions.Progressbar("use_oxy", "Healing", 2000, false, true, {
+    Core.Functions.Progressbar("use_oxy", "Curando", 2000, false, true, {
         disableMovement = false,
         disableCarMovement = false,
 		disableMouse = false,
@@ -290,7 +290,7 @@ RegisterNetEvent('consumables:client:oxy', function()
 end)
 
 RegisterNetEvent('consumables:client:meth', function()
-    Core.Functions.Progressbar("snort_meth", "Smoking Ass Meth", 1500, false, true, {
+    Core.Functions.Progressbar("snort_meth", "Metanfetamina para fumantes", 1500, false, true, {
         disableMovement = false,
         disableCarMovement = false,
         disableMouse = false,
@@ -313,7 +313,7 @@ RegisterNetEvent('consumables:client:meth', function()
 end)
 
 RegisterNetEvent('consumables:client:UseJoint', function()
-    Core.Functions.Progressbar("smoke_joint", "Lighting joint..", 1500, false, true, {
+    Core.Functions.Progressbar("smoke_joint", "Articulação de iluminação..", 1500, false, true, {
         disableMovement = false,
         disableCarMovement = false,
 		disableMouse = false,
@@ -332,7 +332,7 @@ end)
 
 RegisterNetEvent('consumables:client:UseParachute', function()
     EquipParachuteAnim()
-    Core.Functions.Progressbar("use_parachute", "Putting on parachute..", 5000, false, true, {
+    Core.Functions.Progressbar("use_parachute", "Colocando paraquedas..", 5000, false, true, {
         disableMovement = false,
         disableCarMovement = false,
 		disableMouse = false,
@@ -355,7 +355,7 @@ end)
 RegisterNetEvent('consumables:client:ResetParachute', function()
     if ParachuteEquiped then
         EquipParachuteAnim()
-        Core.Functions.Progressbar("reset_parachute", "Packing parachute..", 40000, false, true, {
+        Core.Functions.Progressbar("reset_parachute", "Embalagem de pára -quedas..", 40000, false, true, {
             disableMovement = false,
             disableCarMovement = false,
             disableMouse = false,
@@ -380,7 +380,7 @@ end)
 
 RegisterNetEvent('consumables:client:UseArmor', function()
     if GetPedArmour(PlayerPedId()) >= 75 then Core.Functions.Notify('Você já tem armadura suficiente!', 'error') return end
-    Core.Functions.Progressbar("use_armor", "Putting on the body armour..", 5000, false, true, {
+    Core.Functions.Progressbar("use_armor", "Colocando a armadura corporal..", 5000, false, true, {
         disableMovement = false,
         disableCarMovement = false,
 		disableMouse = false,
@@ -425,7 +425,7 @@ end)
 RegisterNetEvent('consumables:client:ResetArmor', function()
     local ped = PlayerPedId()
     if currentVest ~= nil and currentVestTexture ~= nil then
-        Core.Functions.Progressbar("remove_armor", "Removing the body armour..", 2500, false, true, {
+        Core.Functions.Progressbar("remove_armor", "Removendo a armadura corporal..", 2500, false, true, {
             disableMovement = false,
             disableCarMovement = false,
             disableMouse = false,

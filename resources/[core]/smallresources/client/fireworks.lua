@@ -108,7 +108,7 @@ CreateThread(function()
 end)
 
 RegisterNetEvent('fireworks:client:UseFirework', function(itemName, assetName)
-    Core.Functions.Progressbar("spawn_object", "Placing object..", 3000, false, true, {
+    Core.Functions.Progressbar("spawn_object", "Colocando objeto..", 3000, false, true, {
         disableMovement = true,
         disableCarMovement = true,
         disableMouse = false,

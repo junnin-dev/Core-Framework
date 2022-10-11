@@ -20,7 +20,7 @@ RegisterNetEvent('carwash:client:washCar', function()
     local PlayerPed = PlayerPedId()
     local PedVehicle = GetVehiclePedIsIn(PlayerPed, false)
     washingVehicle = true
-    Core.Functions.Progressbar("search_cabin", "Vehicle is being washed ..", math.random(4000, 8000), false, true, {
+    Core.Functions.Progressbar("search_cabin", "Veículo está sendo lavado ..", math.random(4000, 8000), false, true, {
         disableMovement = true,
         disableCarMovement = true,
         disableMouse = false,
