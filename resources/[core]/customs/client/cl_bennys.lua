@@ -1024,7 +1024,7 @@ end)
 RegisterNetEvent("customs:client:purchaseSuccessful", function()
     isPurchaseSuccessful = true
     attemptingPurchase = false
-    Core.Functions.Notify("Compre sucesso")
+    Core.Functions.Notify("Comprou com sucesso")
 end)
 
 RegisterNetEvent("customs:client:purchaseFailed", function()
