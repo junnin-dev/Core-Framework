@@ -1,6 +1,6 @@
 local Translations = {
     error = {
-        ["failed_notification"] = "Failed!",
+        ["failed_notification"] = "Fracassada!",
         ["not_near_veh"] = "Você não está perto de um veículo!",
         ["out_range_veh"] = "Você está muito longe do veículo!",
         ["inside_veh"] = "Você não pode reparar um motor de veículo por dentro!",
