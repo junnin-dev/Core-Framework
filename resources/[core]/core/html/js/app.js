@@ -26,18 +26,14 @@ const app = Vue.createApp({
         console.error(
           "The notification config did not load properly, trying again for next time"
         );
-        // Lets check again to see if it exists
+        
         await fetchNotifyConfig();
-        // If we have a config lets re-run notification with same data, this
-        // isn't recursive though.
         if (NOTIFY_CONFIG) return showNotif({ data });
       }
 
       $q.notify({
         message: text,
         multiLine: text.length > 100,
-        // If our text is larger than a 100 characters,
-        // we should use multiline notifications
         group: NOTIFY_CONFIG.NotificationStyling.group ?? false,
         progress: NOTIFY_CONFIG.NotificationStyling.progress ?? true,
         position: NOTIFY_CONFIG.NotificationStyling.position ?? "right",
