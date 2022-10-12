@@ -7,14 +7,6 @@ local Gloveboxes = {}
 local Stashes = {}
 local ShopItems = {}
 
---#endregion Variables
-
---#region Functions
-
----Loads the inventory for the player with the citizenid that is provided
----@param source number Source of the player
----@param citizenid string CitizenID of the player
----@return { [number]: { name: string, amount: number, info?: table, label: string, description: string, weight: number, type: string, unique: boolean, useable: boolean, image: string, shouldClose: boolean, slot: number, combinable: table } } loadedInventory Table of items with slot as index
 local function LoadInventory(source, citizenid)
     local inventory = MySQL.prepare.await('SELECT inventory FROM players WHERE citizenid = ?', { citizenid })
 	local loadedInventory = {}
@@ -60,9 +52,6 @@ end
 
 exports("LoadInventory", LoadInventory)
 
----Saves the inventory for the player with the provided source or PlayerData is they're offline
----@param source number | table Source of the player, if offline, then provide the PlayerData in this argument
----@param offline boolean Is the player offline or not, if true, it will expect a table in source
 local function SaveInventory(source, offline)
 	local PlayerData
 	if not offline then
@@ -97,9 +86,6 @@ end
 
 exports("SaveInventory", SaveInventory)
 
----Gets the totalweight of the items provided
----@param items { [number]: { amount: number, weight: number } } Table of items, usually the inventory table of the player
----@return number weight Total weight of param items
 local function GetTotalWeight(items)
 	local weight = 0
     if not items then return 0 end
@@ -111,10 +97,6 @@ end
 
 exports("GetTotalWeight", GetTotalWeight)
 
----Gets the slots that the provided item is in
----@param items { [number]: { name: string, amount: number, info?: table, label: string, description: string, weight: number, type: string, unique: boolean, useable: boolean, image: string, shouldClose: boolean, slot: number, combinable: table } } Table of items, usually the inventory table of the player
----@param itemName string Name of the item to the get the slots from
----@return number[] slotsFound Array of slots that were found for the item
 local function GetSlotsByItem(items, itemName)
     local slotsFound = {}
     if not items then return slotsFound end
@@ -128,10 +110,6 @@ end
 
 exports("GetSlotsByItem", GetSlotsByItem)
 
----Get the first slot where the item is located
----@param items { [number]: { name: string, amount: number, info?: table, label: string, description: string, weight: number, type: string, unique: boolean, useable: boolean, image: string, shouldClose: boolean, slot: number, combinable: table } } Table of items, usually the inventory table of the player
----@param itemName string Name of the item to the get the slot from
----@return number | nil slot If found it returns a number representing the slot, otherwise it sends nil
 local function GetFirstSlotByItem(items, itemName)
     if not items then return nil end
     for slot, item in pairs(items) do
