@@ -59,7 +59,7 @@ end
 
 function CircleZone:isPointInside(point)
   if self.destroyed then
-    print("[PolyZone] Warning: Called isPointInside on destroyed zone {name=" .. self.name .. "}")
+    print("[PolyZone] Warning: Chamado IsPointInside na zona destruída {name=" .. self.name .. "}")
     return false
   end
 
