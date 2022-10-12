@@ -6,9 +6,6 @@ local freezeTime = Config.FreezeTime
 local blackout = Config.Blackout
 local newWeatherTimer = Config.NewWeatherTimer
 
---- Is the source a client or the server
---- @param src string | number - source to check
---- @return int - source
 local function getSource(src)
     if src == '' then
         return 0
@@ -16,9 +13,6 @@ local function getSource(src)
     return src
 end
 
---- Does source have permissions to run admin commands
---- @param src number - Source to check
---- @return boolean - has permission
 local function isAllowedToChange(src)
     if src == 0 or Core.Functions.HasPermission(src, "admin") or IsPlayerAceAllowed(src, 'command') then
         return true
@@ -26,14 +20,10 @@ local function isAllowedToChange(src)
     return false
 end
 
---- Sets time offset based on minutes provided
---- @param minute number - Minutes to offset by
 local function shiftToMinute(minute)
     timeOffset = timeOffset - (((baseTime + timeOffset) % 60) - minute)
 end
 
---- Sets time offset based on hour provided
---- @param hour number - Hour to offset by
 local function shiftToHour(hour)
     timeOffset = timeOffset - ((((baseTime + timeOffset) / 60) % 24) - hour) * 60
 end
@@ -58,9 +48,6 @@ local function nextWeatherStage()
     TriggerEvent("weathersync:server:RequestStateSync")
 end
 
---- Switch to a specified weather type
---- @param weather string - Weather type from Config.AvailableWeatherTypes
---- @return boolean - success
 local function setWeather(weather)
     local validWeatherType = false
     for _, weatherType in pairs(Config.AvailableWeatherTypes) do
@@ -75,10 +62,6 @@ local function setWeather(weather)
     return true
 end
 
---- Sets sun position based on time to specified
---- @param hour number|string - Hour to set (0-24)
---- @param minute number|string `optional` - Minute to set (0-60)
---- @return boolean - success
 local function setTime(hour, minute)
     local argh = tonumber(hour)
     local argm = tonumber(minute) or 0
@@ -93,9 +76,6 @@ local function setTime(hour, minute)
     return true
 end
 
---- Sets or toggles blackout state and returns the state
---- @param state boolean `optional` - enable blackout?
---- @return boolean - blackout state
 local function setBlackout(state)
     if state == nil then state = not blackout end
     if state then blackout = true
@@ -104,9 +84,6 @@ local function setBlackout(state)
     return blackout
 end
 
---- Sets or toggles time freeze state and returns the state
---- @param state boolean `optional` - Enable time freeze?
---- @return boolean - Time freeze state
 local function setTimeFreeze(state)
     if state == nil then state = not freezeTime end
     if state then freezeTime = true
@@ -115,9 +92,6 @@ local function setTimeFreeze(state)
     return freezeTime
 end
 
---- Sets or toggles dynamic weather state and returns the state
---- @param state boolean `optional` - Enable dynamic weather?
---- @return boolean - Dynamic Weather state
 local function setDynamicWeather(state)
     if state == nil then state = not Config.DynamicWeather end
     if state then Config.DynamicWeather = true
