@@ -1922,7 +1922,7 @@ Core.Functions.CreateCallback('inventory:server:GetCurrentDrops', function(_, cb
 end)
 
 Core.Functions.CreateCallback('Core:HasItem', function(source, cb, items, amount)
-	print("^3Core:HasItem is deprecated, please use Core.Functions.HasItem, it can be used on both server- and client-side and uses the same arguments.^0")
+	print("^3Core:HasItem está obsoleto, por favor use Core.Functions.HasItem, Pode ser usado no servidor e no lado do cliente e usa os mesmos argumentos.^0")
     local retval = false
     local Player = Core.Functions.GetPlayer(source)
     if not Player then return cb(false) end
