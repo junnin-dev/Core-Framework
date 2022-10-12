@@ -231,8 +231,8 @@ $(document).on("click", "#inv-close", function(e) {
 
 $(document).on("click", ".weapon-attachments-back", function(e) {
     e.preventDefault();
-    $("#qbcore-inventory").css({ display: "block" });
-    $("#qbcore-inventory").animate({
+    $("#inventory").css({ display: "block" });
+    $("#inventory").animate({
             left: 0 + "vw",
         },
         200
@@ -402,12 +402,12 @@ $(document).on("click", "#weapon-attachments", function(e) {
     e.preventDefault();
     if (!Inventory.IsWeaponBlocked(ClickedItemData.name)) {
         $(".weapon-attachments-container").css({ display: "block" });
-        $("#qbcore-inventory").animate({
+        $("#inventory").animate({
                 left: 100 + "vw",
             },
             200,
             function() {
-                $("#qbcore-inventory").css({ display: "none" });
+                $("#inventory").css({ display: "none" });
             }
         );
         $(".weapon-attachments-container").animate({
@@ -2434,7 +2434,7 @@ var requiredItemOpen = false;
             requiredItemOpen = false;
         }
 
-        $("#qbcore-inventory").fadeIn(300);
+        $("#inventory").fadeIn(300);
         if (data.other != null && data.other != "") {
             $(".other-inventory").attr("data-inventory", data.other.name);
         } else {
@@ -2713,7 +2713,7 @@ var requiredItemOpen = false;
         $(".ply-hotbar-inventory").css("display", "block");
         // $(".ply-iteminfo-container").css("display", "none");
         $(".ply-iteminfo-container").css("opacity", "0.0");
-        $("#qbcore-inventory").fadeOut(300);
+        $("#inventory").fadeOut(300);
         $(".combine-option-container").hide();
         $(".item-slot").remove();
         if ($("#rob-money").length) {
@@ -2722,7 +2722,7 @@ var requiredItemOpen = false;
         $.post("https://inventory/CloseInventory", JSON.stringify({}));
 
         if (AttachmentScreenActive) {
-            $("#qbcore-inventory").css({ left: "0vw" });
+            $("#inventory").css({ left: "0vw" });
             $(".weapon-attachments-container").css({ left: "-100vw" });
             AttachmentScreenActive = false;
         }
