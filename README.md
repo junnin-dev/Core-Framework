@@ -1,2 +1,2 @@
 # Core-Framework
-Uma base QBCore que eu to fazendo uma framework em cima
+Uma base que esta em faze de teste 
