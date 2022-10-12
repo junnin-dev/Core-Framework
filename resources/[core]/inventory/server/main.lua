@@ -245,10 +245,6 @@ end
 
 exports("RemoveItem", RemoveItem)
 
----Get the item with the slot
----@param source number The source of the player to get the item from the slot
----@param slot number The slot to get the item from
----@return { name: string, amount: number, info?: table, label: string, description: string, weight: number, type: string, unique: boolean, useable: boolean, image: string, shouldClose: boolean, slot: number, combinable: table } | nil item Returns the item table, if there is no item in the slot, it will return nil
 local function GetItemBySlot(source, slot)
 	local Player = Core.Functions.GetPlayer(source)
 	slot = tonumber(slot)
@@ -257,10 +253,6 @@ end
 
 exports("GetItemBySlot", GetItemBySlot)
 
----Get the item from the inventory of the player with the provided source by the name of the item
----@param source number The source of the player
----@param item string The name of the item to get
----@return { name: string, amount: number, info?: table, label: string, description: string, weight: number, type: string, unique: boolean, useable: boolean, image: string, shouldClose: boolean, slot: number, combinable: table } | nil item Returns the item table, if the item wasn't found, it will return nil
 local function GetItemByName(source, item)
 	local Player = Core.Functions.GetPlayer(source)
 	item = tostring(item):lower()
@@ -270,10 +262,6 @@ end
 
 exports("GetItemByName", GetItemByName)
 
----Get the item from the inventory of the player with the provided source by the name of the item in an array for all slots that the item is in
----@param source number The source of the player
----@param item string The name of the item to get
----@return { name: string, amount: number, info?: table, label: string, description: string, weight: number, type: string, unique: boolean, useable: boolean, image: string, shouldClose: boolean, slot: number, combinable: table }[] item Returns an array of the item tables found, if the item wasn't found, it will return an empty table
 local function GetItemsByName(source, item)
 	local Player = Core.Functions.GetPlayer(source)
 	item = tostring(item):lower()
@@ -289,9 +277,6 @@ end
 
 exports("GetItemsByName", GetItemsByName)
 
----Clear the inventory of the player with the provided source and filter any items out of the clearing of the inventory to keep (optional)
----@param source number Source of the player to clear the inventory from
----@param filterItems? string | string[] Array of item names to keep
 local function ClearInventory(source, filterItems)
 	local Player = Core.Functions.GetPlayer(source)
 	local savedItemData = {}
@@ -324,9 +309,6 @@ end
 
 exports("ClearInventory", ClearInventory)
 
----Sets the items playerdata to the provided items param
----@param source number The source of player to set it for
----@param items { [number]: { name: string, amount: number, info?: table, label: string, description: string, weight: number, type: string, unique: boolean, useable: boolean, image: string, shouldClose: boolean, slot: number, combinable: table } } Table of items, the inventory table of the player
 local function SetInventory(source, items)
 	local Player = Core.Functions.GetPlayer(source)
 
@@ -401,9 +383,6 @@ end
 
 exports("CreateUsableItem", CreateUsableItem)
 
----Get the usable item data for the specified item
----@param itemName string The item to get the data for
----@return any usable_item
 local function GetUsableItem(itemName)
 	return Core.Functions.CanUseItem(itemName)
 end
@@ -593,9 +572,6 @@ local function RemoveFromStash(stashId, slot, itemName, amount)
 	end
 end
 
----Get the items in the trunk of a vehicle
----@param plate string The plate of the vehicle to check
----@return table items
 local function GetOwnedVehicleItems(plate)
 	local items = {}
 	local result = MySQL.scalar.await('SELECT items FROM trunkitems WHERE plate = ?', {plate})
@@ -625,9 +601,6 @@ local function GetOwnedVehicleItems(plate)
 	return items
 end
 
----Save the items in a trunk
----@param plate string The plate to save the items from
----@param items table
 local function SaveOwnedVehicleItems(plate, items)
 	if Trunks[plate].label == "Trunk-None" or not items then return end
 
@@ -643,13 +616,6 @@ local function SaveOwnedVehicleItems(plate, items)
 	Trunks[plate].isOpen = false
 end
 
----Add items to a trunk
----@param plate string The plate of the car
----@param slot number Slot of the trunk to save the item to
----@param otherslot number Slot of the trunk to swap it to the item isn't unique
----@param itemName string The name of the item
----@param amount? number The amount of the item
----@param info? table The info of the item
 local function AddToTrunk(plate, slot, otherslot, itemName, amount, info)
 	amount = tonumber(amount) or 1
 	local ItemData = Core.Shared.Items[itemName]
@@ -708,11 +674,6 @@ local function AddToTrunk(plate, slot, otherslot, itemName, amount, info)
 	end
 end
 
----Remove the item from the trunk
----@param plate string plate of the car to remove the item from
----@param slot number Slot to remove the item from
----@param itemName string Name of the item to remove
----@param amount? number The amount to remove
 local function RemoveFromTrunk(plate, slot, itemName, amount)
 	amount = tonumber(amount) or 1
 	if Trunks[plate].items[slot] and Trunks[plate].items[slot].name == itemName then
@@ -779,13 +740,6 @@ local function SaveOwnedGloveboxItems(plate, items)
 	Gloveboxes[plate].isOpen = false
 end
 
----Add items to a glovebox
----@param plate string The plate of the car
----@param slot number Slot of the glovebox to save the item to
----@param otherslot number Slot of the glovebox to swap it to the item isn't unique
----@param itemName string The name of the item
----@param amount? number The amount of the item
----@param info? table The info of the item
 local function AddToGlovebox(plate, slot, otherslot, itemName, amount, info)
 	amount = tonumber(amount) or 1
 	local ItemData = Core.Shared.Items[itemName]
@@ -844,11 +798,6 @@ local function AddToGlovebox(plate, slot, otherslot, itemName, amount, info)
 	end
 end
 
----Remove the item from the glovebox
----@param plate string Plate of the car to remove the item from
----@param slot number Slot to remove the item from
----@param itemName string Name of the item to remove
----@param amount? number The amount to remove
 local function RemoveFromGlovebox(plate, slot, itemName, amount)
 	amount = tonumber(amount) or 1
 	if Gloveboxes[plate].items[slot] and Gloveboxes[plate].items[slot].name == itemName then
@@ -865,12 +814,6 @@ local function RemoveFromGlovebox(plate, slot, itemName, amount)
 	end
 end
 
----Add an item to a drop
----@param dropId integer The id of the drop
----@param slot number The slot of the drop inventory to add the item to
----@param itemName string Name of the item to add
----@param amount? number The amount of the item to add
----@param info? table Extra info to add to the item
 local function AddToDrop(dropId, slot, itemName, amount, info)
 	amount = tonumber(amount) or 1
 	Drops[dropId].createdTime = os.time()
@@ -895,11 +838,6 @@ local function AddToDrop(dropId, slot, itemName, amount, info)
 	end
 end
 
----Remove an item from a drop
----@param dropId integer The id of the drop to remove it from
----@param slot number The slot of the drop inventory
----@param itemName string The name of the item to remove
----@param amount? number The amount to remove
 local function RemoveFromDrop(dropId, slot, itemName, amount)
 	amount = tonumber(amount) or 1
 	Drops[dropId].createdTime = os.time()
@@ -935,11 +873,6 @@ local function CreateDropId()
 	end
 end
 
----Creates a new drop
----@param source number The source of the player
----@param fromSlot number The slot that the item comes from
----@param toSlot number The slot that the item goes to
----@param itemAmount? number The amount of the item drop to create
 local function CreateNewDrop(source, fromSlot, toSlot, itemAmount)
 	itemAmount = tonumber(itemAmount) or 1
 	local Player = Core.Functions.GetPlayer(source)
