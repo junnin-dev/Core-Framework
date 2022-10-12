@@ -214,7 +214,7 @@ function Queue:AddToQueue(ids, connectTime, name, src, deferrals)
             end
 
             if _pos then
-                Queue:DebugPrint(string_format("%s[%s] was prioritized and placed %d/%d in queue", tmp.name, ids[1], _pos, queueCount))
+                Queue:DebugPrint(string_format("%s[%s] foi priorizado e colocado %d/%d in queue", tmp.name, ids[1], _pos, queueCount))
                 break
             end
         end
@@ -222,7 +222,7 @@ function Queue:AddToQueue(ids, connectTime, name, src, deferrals)
 
     if not _pos then
         _pos = Queue:GetSize() + 1
-        Queue:DebugPrint(string_format("%s[%s] was placed %d/%d in queue", tmp.name, ids[1], _pos, queueCount))
+        Queue:DebugPrint(string_format("%s[%s] foi colocado %d/%d in queue", tmp.name, ids[1], _pos, queueCount))
     end
 
     table_insert(queueList, _pos, tmp)
@@ -309,7 +309,7 @@ function Queue:AddToConnecting(ids, ignorePos, autoRemove, done)
         done(Config.Language.connectingerr)
         Queue:RemoveFromConnecting(ids)
         Queue:RemoveFromQueue(ids)
-        Queue:DebugPrint("Player could not be added to the connecting list")
+        Queue:DebugPrint("O jogador não pôde ser adicionado à lista de conexão")
     end
 
     local connList = Queue:GetConnectingList()
@@ -356,7 +356,7 @@ function Queue:AddPriority(id, power, temp)
             if _id and type(_id) == "string" and power and type(power) == "number" then
                 Queue:GetPriorityList()[_id] = power
             else
-                Queue:DebugPrint("Error adding a priority id, invalid data passed")
+                Queue:DebugPrint("Erro adicionando um ID de prioridade, dados inválidos passados")
                 return false
             end
         end
@@ -496,7 +496,7 @@ local function playerConnect(name, setKickReason, deferrals)
         -- prevent joining
         done(Config.Language.idrr)
         CancelEvent()
-        Queue:DebugPrint("Dropped " .. name .. ", couldn't retrieve any of their id's")
+        Queue:DebugPrint("Dropped " .. name .. ", não conseguiu recuperar nenhum de seus id")
         return
     end
 
@@ -519,7 +519,7 @@ local function playerConnect(name, setKickReason, deferrals)
             done(reason and tostring(reason) or "You were blocked from joining")
             Queue:RemoveFromQueue(ids)
             Queue:RemoveFromConnecting(ids)
-            Queue:DebugPrint(string_format("%s[%s] was blocked from joining; Reason: %s", name, ids[1], reason))
+            Queue:DebugPrint(string_format("%s[%s] estava bloqueado de ingressar;Razão: %s", name, ids[1], reason))
             CancelEvent()
             return
         end
@@ -557,7 +557,7 @@ local function playerConnect(name, setKickReason, deferrals)
     if Queue:IsInQueue(ids) then
         rejoined = true
         Queue:UpdatePosData(src, ids, deferrals)
-        Queue:DebugPrint(string_format("%s[%s] has rejoined queue after cancelling", name, ids[1]))
+        Queue:DebugPrint(string_format("%s[%s] voltou à fila após o cancelamento", name, ids[1]))
     else
         Queue:AddToQueue(ids, connectTime, name, src, deferrals)
 
@@ -585,7 +585,7 @@ local function playerConnect(name, setKickReason, deferrals)
         if not added then CancelEvent() return end
 
         done()
-        Queue:DebugPrint(name .. "[" .. ids[1] .. "] is loading into the server")
+        Queue:DebugPrint(name .. "[" .. ids[1] .. "] está carregando no servidor")
 
         return
     end
@@ -615,7 +615,7 @@ local function playerConnect(name, setKickReason, deferrals)
 
         if not data or not data.deferrals or not data.source or not pos then
             remove("[Queue] Removed from queue, queue data invalid :(")
-            Queue:DebugPrint(tostring(name .. "[" .. ids[1] .. "] was removed from the queue because they had invalid data"))
+            Queue:DebugPrint(tostring(name .. "[" .. ids[1] .. "] foi removido da fila porque eles tinham dados inválidos"))
             return
         end
 
@@ -624,7 +624,7 @@ local function playerConnect(name, setKickReason, deferrals)
 
         if data.timeout >= Config.QueueTimeOut and os_time() - connectTime > 5 then
             remove("[Queue] Removed due to timeout")
-            Queue:DebugPrint(name .. "[" .. ids[1] .. "] was removed from the queue because they timed out")
+            Queue:DebugPrint(name .. "[" .. ids[1] .. "] foi removido da fila porque eles cronometraram")
             return
         end
 
@@ -646,7 +646,7 @@ local function playerConnect(name, setKickReason, deferrals)
             if Config.EnableGrace then Queue:AddPriority(ids[1], Config.GracePower, Config.GraceTime) end
 
             Queue:RemoveFromQueue(ids)
-            Queue:DebugPrint(name .. "[" .. ids[1] .. "] is loading into the server")
+            Queue:DebugPrint(name .. "[" .. ids[1] .. "] está carregando no servidor")
             return
         end
 
@@ -683,7 +683,7 @@ Citizen.CreateThread(function()
     
             if ((data.timeout >= 300 and not endPoint) or data.timeout >= Config.ConnectTimeOut) and data.source ~= "debug" and os_time() - data.firstconnect > 5 then
                 remove(data)
-                Queue:DebugPrint(data.name .. "[" .. data.ids[1] .. "] was removed from the connecting queue because they timed out")
+                Queue:DebugPrint(data.name .. "[" .. data.ids[1] .. "] foi removido da fila de conexão porque eles cronometraram")
             else
                 i = i + 1
             end
@@ -770,11 +770,11 @@ commands.removeq = function(args)
     args[1] = tonumber(args[1])
     local name = Queue:GetQueueList()[args[1]] and Queue:GetQueueList()[args[1]].name or nil
     Queue:RemoveFromQueue(nil, nil, args[1])
-    Queue:DebugPrint("REMOVED " .. tostring(name) .. " FROM THE QUEUE")
+    Queue:DebugPrint("REMOVIDA " .. tostring(name) .. " Da fila")
 end
 
 commands.printq = function()
-    Queue:DebugPrint("CURRENT QUEUE LIST")
+    Queue:DebugPrint("Lista de filas atual")
 
     for pos, data in ipairs(Queue:GetQueueList()) do
         Queue:DebugPrint(pos .. ": [src: " .. data.source .. "] " .. data.name .. "[" .. data.ids[1] .. "] | Priority: " .. (tostring(data.priority and data.priority or false)) .. " | Last Msg: " .. (data.source ~= "debug" and GetPlayerLastMsg(data.source) or "debug") .. " | Timeout: " .. data.timeout .. " | Queue Time: " .. data.queuetime() .. " Seconds")
@@ -783,18 +783,18 @@ end
 
 commands.addc = function()
     Queue:AddToConnecting({"debug"})
-    Queue:DebugPrint("ADDED DEBUG CONNECTING QUEUE")
+    Queue:DebugPrint("Adicionado depuração de conexão na fila")
 end
 
 commands.removec = function(args)
     args[1] = tonumber(args[1])
     local name = Queue:GetConnectingList()[args[1]] and Queue:GetConnectingList()[args[1]].name or nil
     Queue:RemoveFromConnecting(nil, nil, args[1])
-    Queue:DebugPrint("REMOVED " .. tostring(name) .. " FROM THE CONNECTING LIST")
+    Queue:DebugPrint("REMOVIDA " .. tostring(name) .. " Da lista de conexão")
 end
 
 commands.printc = function()
-    Queue:DebugPrint("CURRENT CONNECTING LIST")
+    Queue:DebugPrint("Lista de conexão atual")
 
     for pos, data in ipairs(Queue:GetConnectingList()) do
         Queue:DebugPrint(pos .. ": [src: " .. data.source .. "] " .. data.name .. "[" .. data.ids[1] .. "] | Priority: " .. (tostring(data.priority and data.priority or false)) .. " | Last Msg: " .. (data.source ~= "debug" and GetPlayerLastMsg(data.source) or "debug") .. " | Timeout: " .. data.timeout)
@@ -808,7 +808,7 @@ commands.printl = function()
 end
 
 commands.printp = function()
-    Queue:DebugPrint("CURRENT PRIORITY LIST")
+    Queue:DebugPrint("Lista de prioridade atual")
 
     for id, power in pairs(Queue:GetPriorityList()) do
         Queue:DebugPrint(id .. ": " .. tostring(power))
@@ -816,11 +816,11 @@ commands.printp = function()
 end
 
 commands.printcount = function()
-    Queue:DebugPrint("Player Count: " .. Queue:GetPlayerCount())
+    Queue:DebugPrint("Contagem de jogadores: " .. Queue:GetPlayerCount())
 end
 
 commands.printtp = function()
-    Queue:DebugPrint("CURRENT TEMP PRIORITY LIST")
+    Queue:DebugPrint("Lista de prioridade da temperatura atual")
 
     for k, data in pairs(Queue:GetTempPriorityList()) do
         Queue:DebugPrint(k .. ": Power: " .. tostring(data.power) .. " | EndTime: " .. tostring(data.endTime) .. " | CurTime: " .. tostring(os_time()))
@@ -831,7 +831,7 @@ commands.removetp = function(args)
     if not args[1] then return end
 
     Queue:GetTempPriorityList()[args[1]] = nil
-    Queue:DebugPrint("REMOVED " .. args[1] .. " FROM THE TEMP PRIORITY LIST")
+    Queue:DebugPrint("REMOVIDA " .. args[1] .. " Da lista de prioridades da temperatura")
 end
 
 commands.setpos = function(args)
@@ -843,7 +843,7 @@ commands.setpos = function(args)
 
     Queue:SetPos(data.ids, args[2])
 
-    Queue:DebugPrint("SET " .. data.name .. "'s QUEUE POSITION TO: " .. args[2])
+    Queue:DebugPrint("SET " .. data.name .. "'s Posição da fila para: " .. args[2])
 end
 
 commands.setdata = function(args)
