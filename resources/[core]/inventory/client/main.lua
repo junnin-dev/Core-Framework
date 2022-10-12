@@ -74,11 +74,6 @@ local function OpenVending()
     TriggerServerEvent("inventory:server:OpenInventory", "shop", "Vendingshop_"..math.random(1, 99), ShopItems)
 end
 
----Draws 3d text in the world on the given position
----@param x number The x coord of the text to draw
----@param y number The y coord of the text to draw
----@param z number The z coord of the text to draw
----@param text string The text to display
 local function DrawText3Ds(x, y, z, text)
     SetTextScale(0.35, 0.35)
     SetTextFont(4)
@@ -268,8 +263,6 @@ local function SetupAttachmentItemsInfo()
 	Config.AttachmentCrafting["items"] = items
 end
 
----Runs ItemsToItemInfo() and checks if the client has enough reputation to support the threshold, otherwise the items is not available to craft for the client
----@return table items
 local function GetThresholdItems()
 	ItemsToItemInfo()
 	local items = {}
@@ -319,8 +312,6 @@ local function RemoveAllNearbyDrops()
     end
 end
 
----Creates a new item drop object on the ground
----@param index integer The drop id to save the object in
 local function CreateItemDrop(index)
     local dropItem = CreateObject(Config.ItemDropObject, DropsNear[index].coords.x, DropsNear[index].coords.y, DropsNear[index].coords.z, false, false, false)
     DropsNear[index].object = dropItem
