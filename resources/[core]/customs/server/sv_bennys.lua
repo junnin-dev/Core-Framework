@@ -71,7 +71,7 @@ RegisterNetEvent('customs:server:attemptPurchase', function(type, upgradeLevel, 
             exports['management']:RemoveMoney(job, price)
         else
             paidBySociety = false
-            TriggerClientEvent('Core:Notify', source, "Your job society can't pay for this. You will be charged instead.")
+            TriggerClientEvent('Core:Notify', source, "Sua sociedade de trabalho não pode pagar por isso.Você será cobrado.")
         end
     end
     if balance >= price or paidBySociety then
