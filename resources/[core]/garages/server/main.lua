@@ -1,31 +1,114 @@
 local Core = exports['core']:GetCoreObject()
 local OutsideVehicles = {}
+local VehicleSpawnerVehicles = {}
 
-Core.Functions.CreateCallback("garage:server:GetGarageVehicles", function(source, cb, garage, type, category)
+local function TableContains (tab, val)
+    if type(val) == "table" then
+        for _, value in ipairs(tab) do
+            if TableContains(val, value) then
+                return true
+            end
+        end
+        return false
+    else
+        for _, value in ipairs(tab) do
+            if value == val then
+                return true
+            end
+        end
+    end
+    return false
+end
+
+Core.Functions.CreateCallback("garage:server:GetOutsideVehicle", function(source, cb, plate)
     local src = source
     local pData = Core.Functions.GetPlayer(src)
-    if type == "public" then        --Public garages give player cars in the garage only
-        MySQL.query('SELECT * FROM player_vehicles WHERE citizenid = ? AND garage = ? AND state = ?', {pData.PlayerData.citizenid, garage, 1}, function(result)
+    if not OutsideVehicles[plate] then cb(nil) return end
+     MySQL.query('SELECT * FROM player_vehicles WHERE citizenid = ? and plate = ?', {pData.PlayerData.citizenid, plate}, function(result)
+        if result[1] then
+            cb(result[1])
+        else
+            cb(nil)
+        end
+    end)
+end)
+
+Core.Functions.CreateCallback("garage:server:CheckSpawnedVehicle", function(source, cb, plate)
+    cb(VehicleSpawnerVehicles[plate] ~= nil and VehicleSpawnerVehicles[plate])
+end)
+
+RegisterNetEvent("garage:server:UpdateSpawnedVehicle", function(plate, value)
+    VehicleSpawnerVehicles[plate] = value
+end)
+
+Core.Functions.CreateCallback('garage:server:spawnvehicle', function (source, cb, vehInfo, coords, warp)
+    local veh = Core.Functions.SpawnVehicle(source, vehInfo.vehicle, coords, warp)
+
+    if not veh or not NetworkGetNetworkIdFromEntity(veh) then
+        print('ISSUE HERE', veh, NetworkGetNetworkIdFromEntity(veh))
+    end
+    local vehProps = {}
+    local plate = vehInfo.plate
+    local result = MySQL.query.await('SELECT mods FROM player_vehicles WHERE plate = ?', {plate})
+    if result[1] then vehProps = json.decode(result[1].mods) end
+    local netId = NetworkGetNetworkIdFromEntity(veh)
+    OutsideVehicles[plate] = {netID = netId, entity = veh}
+    cb(netId, vehProps)
+end)
+
+Core.Functions.CreateCallback("garage:server:GetGarageVehicles", function(source, cb, garage, garageType, category)
+    local src = source
+    local pData = Core.Functions.GetPlayer(src)
+    if garageType == "public" then        --Public garages give player cars in the garage only
+         MySQL.query('SELECT * FROM player_vehicles WHERE citizenid = ? AND garage = ? AND state = ?', {pData.PlayerData.citizenid, garage, 1}, function(result)
+            local vehs = {}
             if result[1] then
-                cb(result)
+                for _, vehicle in pairs(result) do
+                    if vehicle.parkingspot then
+                        local spot = json.decode(vehicle.parkingspot)
+                        if spot and spot.x then
+                            vehicle.parkingspot = vector3(spot.x, spot.y, spot.z)
+                        end
+                    end
+                    if vehicle.damage then
+                        vehicle.damage = json.decode(vehicle.damage)
+                    end
+                    vehs[#vehs + 1] = vehicle
+                end
+                cb(vehs)
             else
                 cb(nil)
             end
         end)
-    elseif type == "depot" then    --Depot give player cars that are not in garage only
-        MySQL.query('SELECT * FROM player_vehicles WHERE citizenid = ? AND (state = ?)', {pData.PlayerData.citizenid, 0}, function(result)
+    elseif garageType == "depot" then    --Depot give player cars that are not in garage only
+         MySQL.query('SELECT * FROM player_vehicles WHERE citizenid = ? AND (state = ? OR garage = ? OR garage IS NULL)', {pData.PlayerData.citizenid, 0, garage}, function(result)
             local tosend = {}
             if result[1] then
-                --Check vehicle type against depot type
+                if type(category) == 'table' then
+                    if TableContains(category, {'car'}) then
+                        category = 'car'
+                    elseif TableContains(category, {'plane', 'helicopter'}) then
+                        category = 'air'
+                    elseif TableContains(category, 'boat') then
+                        category = 'sea'
+                    end
+                end
                 for _, vehicle in pairs(result) do
-                    if not OutsideVehicles[vehicle.plate] or not DoesEntityExist(OutsideVehicles[vehicle.plate].entity) then
-                        if category == "air" and ( Core.Shared.Vehicles[vehicle.vehicle].category == "helicopters" or Core.Shared.Vehicles[vehicle.vehicle].category == "planes" ) then
-                            tosend[#tosend + 1] = vehicle
-                        elseif category == "sea" and Core.Shared.Vehicles[vehicle.vehicle].category == "boats" then
-                            tosend[#tosend + 1] = vehicle
-                        elseif category == "car" and Core.Shared.Vehicles[vehicle.vehicle].category ~= "helicopters" and Core.Shared.Vehicles[vehicle.vehicle].category ~= "planes" and Core.Shared.Vehicles[vehicle.vehicle].category ~= "boats" then
-                            tosend[#tosend + 1] = vehicle
-                        end
+                    if vehicle.depotprice == 0 then
+                        vehicle.depotprice = DepotPrice
+                    end
+
+                    vehicle.parkingspot = nil
+                    if vehicle.damage then
+                        vehicle.damage = json.decode(vehicle.damage)
+                    end
+
+                    if category == "air" and ( Core.Shared.Vehicles[vehicle.vehicle].category == "helicopters" or Core.Shared.Vehicles[vehicle.vehicle].category == "planes" ) then
+                        tosend[#tosend + 1] = vehicle
+                    elseif category == "sea" and Core.Shared.Vehicles[vehicle.vehicle].category == "boats" then
+                        tosend[#tosend + 1] = vehicle
+                    elseif category == "car" and Core.Shared.Vehicles[vehicle.vehicle].category ~= "helicopters" and Core.Shared.Vehicles[vehicle.vehicle].category ~= "planes" and Core.Shared.Vehicles[vehicle.vehicle].category ~= "boats" then
+                        tosend[#tosend + 1] = vehicle
                     end
                 end
                 cb(tosend)
@@ -35,12 +118,23 @@ Core.Functions.CreateCallback("garage:server:GetGarageVehicles", function(source
         end)
     else                            --House give all cars in the garage, Job and Gang depend of config
         local shared = ''
-        if not SharedGarages and type ~= "house" then
+        if not TableContains(SharedJobGarages, garage) and garageType ~= "house" then
             shared = " AND citizenid = '"..pData.PlayerData.citizenid.."'"
         end
-        MySQL.query('SELECT * FROM player_vehicles WHERE garage = ? AND state = ?'..shared, {garage, 1}, function(result)
+         MySQL.query('SELECT * FROM player_vehicles WHERE garage = ? AND state = ?'..shared, {garage, 1}, function(result)
             if result[1] then
-                cb(result)
+                local vehs = {}
+                for _, vehicle in pairs(result) do
+                    local spot = json.decode(vehicle.parkingspot)
+                    if vehicle.parkingspot then
+                        vehicle.parkingspot = vector3(spot.x, spot.y, spot.z)
+                    end
+                    if vehicle.damage then
+                        vehicle.damage = json.decode(vehicle.damage)
+                    end
+                    vehs[#vehs + 1] = vehicle
+                end
+                cb(vehs)
             else
                 cb(nil)
             end
@@ -48,89 +142,53 @@ Core.Functions.CreateCallback("garage:server:GetGarageVehicles", function(source
     end
 end)
 
-Core.Functions.CreateCallback("garage:server:validateGarageVehicle", function(source, cb, garage, type, plate)
-    local src = source
-    local pData = Core.Functions.GetPlayer(src)
-    if type == "public" then        --Public garages give player cars in the garage only
-        MySQL.query('SELECT * FROM player_vehicles WHERE citizenid = ? AND garage = ? AND state = ? AND plate = ?', {pData.PlayerData.citizenid, garage, 1, plate}, function(result)
-            if result[1] then
-                cb(true)
-            else
-                cb(false)
-            end
-        end)
-    elseif type == "depot" then    --Depot give player cars that are not in garage only
-        MySQL.query('SELECT * FROM player_vehicles WHERE citizenid = ? AND (state = ? OR state = ?) AND plate = ?', {pData.PlayerData.citizenid, 0, 2, plate}, function(result)
-            if result[1] then
-                cb(true)
-            else
-                cb(false)
-            end
-        end)
-    else
-        local shared = ''
-        if not SharedGarages and type ~= "house" then
-            shared = " AND citizenid = '"..pData.PlayerData.citizenid.."'"
-        end
-        MySQL.query('SELECT * FROM player_vehicles WHERE garage = ? AND state = ? AND plate = ?'..shared, {garage, 1, plate}, function(result)
-            if result[1] then
-                cb(true)
-            else
-                cb(false)
-            end
-        end)
-    end
-end)
+if UseEnc0dedPersistenVehicles then
+    Core.Functions.CreateCallback("garage:server:checkIsSpawned", function (plate)
+        local data = exports['persistent-vehicles']:GetVehicleData(plate, {'pos'})
+        return data == false and data or true
+    end)
+end
 
-Core.Functions.CreateCallback("garage:server:checkOwnership", function(source, cb, plate, type, house, gang)
+
+
+Core.Functions.CreateCallback("garage:server:checkOwnership", function(source, cb, plate, garageType, garage, gang)
     local src = source
     local pData = Core.Functions.GetPlayer(src)
-    if type == "public" then        --Public garages only for player cars
-        MySQL.query('SELECT * FROM player_vehicles WHERE plate = ? AND citizenid = ?',{plate, pData.PlayerData.citizenid}, function(result)
+    local hasHouseKey = false
+
+    if garageType == "public" then        --Public garages only for player cars
+         MySQL.query('SELECT * FROM player_vehicles WHERE plate = ? AND citizenid = ?',{plate, pData.PlayerData.citizenid}, function(result)
             if result[1] then
                 cb(true)
             else
                 cb(false)
             end
         end)
-    elseif type == "house" then     --House garages only for player cars that have keys of the house
-        MySQL.query('SELECT * FROM player_vehicles WHERE plate = ?', {plate}, function(result)
+    elseif garageType == "house" then     --House garages only for player cars that have keys of the house
+         MySQL.query('SELECT * FROM player_vehicles WHERE plate = ?', {plate}, function(result)
             if result[1] then
-                local hasHouseKey = exports['houses']:hasKey(result[1].license, result[1].citizenid, house)
-                if hasHouseKey then
-                    cb(true)
-                else
-                    cb(false)
-                end
+                hasHouseKey = exports['houses']:hasKey(result[1].license, result[1].citizenid, garage)
+                cb(hasHouseKey)
             else
                 cb(false)
             end
         end)
-    elseif type == "gang" then        --Gang garages only for gang members cars (for sharing)
-        MySQL.query('SELECT * FROM player_vehicles WHERE plate = ?', {plate}, function(result)
+    elseif garageType == "gang" then        --Gang garages only for gang members cars (for sharing)
+         MySQL.query('SELECT * FROM player_vehicles WHERE plate = ?', {plate}, function(result)
             if result[1] then
-                --Check if found owner is part of the gang
-                local resultplayer = MySQL.single.await('SELECT * FROM players WHERE citizenid = ?', { result[1].citizenid })
-                if resultplayer then
-                    local playergang = json.decode(resultplayer.gang)
-                    if playergang.name == gang then
-                        cb(true)
-                    else
-                        cb(false)
-                    end
-                else
-                    cb(false)
-                end
+                local Player = Core.Functions.GetPlayer(source)
+                local playerGang = Player.PlayerData.gang.name
+                cb(playerGang == gang)
             else
                 cb(false)
             end
         end)
     else                            --Job garages only for cars that are owned by someone (for sharing and service) or only by player depending of config
         local shared = ''
-        if not SharedGarages then
+        if not TableContains(SharedJobGarages, garage) then
             shared = " AND citizenid = '"..pData.PlayerData.citizenid.."'"
         end
-        MySQL.query('SELECT * FROM player_vehicles WHERE plate = ?'..shared, {plate}, function(result)
+         MySQL.query('SELECT * FROM player_vehicles WHERE plate = ?'..shared, {plate}, function(result)
             if result[1] then
                 cb(true)
             else
@@ -140,20 +198,7 @@ Core.Functions.CreateCallback("garage:server:checkOwnership", function(source, c
     end
 end)
 
-Core.Functions.CreateCallback('garage:server:spawnvehicle', function (source, cb, vehInfo, coords, warp)
-    local plate = vehInfo.plate
-    local veh = Core.Functions.SpawnVehicle(source, vehInfo.vehicle, coords, warp)
-    SetEntityHeading(veh, coords.w)
-    SetVehicleNumberPlateText(veh, plate)
-    local vehProps = {}
-    local result = MySQL.query.await('SELECT mods FROM player_vehicles WHERE plate = ?', {plate})
-    if result[1] then vehProps = json.decode(result[1].mods) end
-    local netId = NetworkGetNetworkIdFromEntity(veh)
-    OutsideVehicles[plate] = {netID = netId, entity = veh}
-    cb(netId, vehProps)
-end)
-
-Core.Functions.CreateCallback("garage:server:GetVehicleProperties", function(_, cb, plate)
+Core.Functions.CreateCallback("garage:server:GetVehicleProperties", function(source, cb, plate)
     local properties = {}
     local result = MySQL.query.await('SELECT mods FROM player_vehicles WHERE plate = ?', {plate})
     if result[1] then
@@ -162,58 +207,41 @@ Core.Functions.CreateCallback("garage:server:GetVehicleProperties", function(_, 
     cb(properties)
 end)
 
-Core.Functions.CreateCallback("garage:server:IsSpawnOk", function(_, cb, plate, type)
-    if type == "depot" then         --If depot, check if vehicle is not already spawned on the map
-        if OutsideVehicles[plate] and DoesEntityExist(OutsideVehicles[plate].entity) then
-            cb(false)
+RegisterNetEvent('garage:server:updateVehicle', function(state, fuel, engine, body, plate, properties, garage, location, damage)
+    if location and type(location) == 'vector3' then
+        if StoreDamageAccuratly then
+            MySQL.update('UPDATE player_vehicles SET state = ?, garage = ?, fuel = ?, engine = ?, body = ?, mods = ?, parkingspot = ?, damage = ? WHERE plate = ?',{state, garage, fuel, engine, body, json.encode(properties), json.encode(location), json.encode(damage), plate})
         else
-            cb(true)
+            MySQL.update('UPDATE player_vehicles SET state = ?, garage = ?, fuel = ?, engine = ?, body = ?, mods = ?, parkingspot = ? WHERE plate = ?',{state, garage, fuel, engine, body, json.encode(properties), json.encode(location), plate})
         end
     else
-        cb(true)
-    end
-end)
-
-RegisterNetEvent('garage:server:updateVehicle', function(state, fuel, engine, body, plate, garage, type, gang)
-    Core.Functions.TriggerCallback('garage:server:checkOwnership', source, function(owned)     --Check ownership
-        if owned then
-            if state == 0 or state == 1 or state == 2 then                                          --Check state value
-                if type ~= "house" then
-                    if Garages[garage] then                                                             --Check if garage is existing
-                        MySQL.update('UPDATE player_vehicles SET state = ?, garage = ?, fuel = ?, engine = ?, body = ? WHERE plate = ?', {state, garage, fuel, engine, body, plate})
-                    end
-                else
-                    MySQL.update('UPDATE player_vehicles SET state = ?, garage = ?, fuel = ?, engine = ?, body = ? WHERE plate = ?', {state, garage, fuel, engine, body, plate})
-                end
-            end
+        if StoreDamageAccuratly then
+            MySQL.update('UPDATE player_vehicles SET state = ?, garage = ?, fuel = ?, engine = ?, body = ?, mods = ?, damage = ? WHERE plate = ?',{state, garage, fuel, engine, body, json.encode(properties), json.encode(damage), plate})
         else
-            TriggerClientEvent('Core:Notify', source, Lang:t("error.not_owned"), 'error')
+            MySQL.update('UPDATE player_vehicles SET state = ?, garage = ?, fuel = ?, engine = ?, body = ?, mods = ? WHERE plate = ?', {state, garage, fuel, engine, body, json.encode(properties), plate})
         end
-    end, plate, type, garage, gang)
+    end
 end)
 
 RegisterNetEvent('garage:server:updateVehicleState', function(state, plate, garage)
-    local type
-    if Garages[garage] then
-        type = Garages[garage].type
-    else
-        type = "house"
-    end
-
-    Core.Functions.TriggerCallback('garage:server:validateGarageVehicle', source, function(owned)     --Check ownership
-        if owned then
-            if state == 0 then                                          --Check state value
-                MySQL.update('UPDATE player_vehicles SET state = ?, depotprice = ? WHERE plate = ?', {state, 0, plate})
-            end
-        else
-            TriggerClientEvent('Core:Notify', source, Lang:t("error.not_owned"), 'error')
-        end
-    end, garage, type, plate)
+    MySQL.update('UPDATE player_vehicles SET state = ?, garage = ?, depotprice = ? WHERE plate = ?',{state, garage, 0, plate})
 end)
 
-RegisterNetEvent('garages:server:UpdateOutsideVehicle', function(plate, vehicle)
-    local entity = NetworkGetEntityFromNetworkId(vehicle)
-    OutsideVehicles[plate] = {netID = vehicle, entity = entity}
+RegisterNetEvent('garages:server:UpdateOutsideVehicles', function(Vehicles)
+    local src = source
+    local ply = Core.Functions.GetPlayer(src)
+    local citizenId = ply.PlayerData.citizenid
+    OutsideVehicles[citizenId] = Vehicles
+end)
+
+Core.Functions.CreateCallback("garage:server:GetOutsideVehicles", function(source, cb)
+    local ply = Core.Functions.GetPlayer(source)
+    local citizenId = ply.PlayerData.citizenid
+    if OutsideVehicles[citizenId] and next(OutsideVehicles[citizenId]) then
+        cb(OutsideVehicles[citizenId])
+    else
+        cb({})
+    end
 end)
 
 AddEventHandler('onResourceStart', function(resource)
@@ -231,31 +259,24 @@ RegisterNetEvent('garage:server:PayDepotPrice', function(data)
     local cashBalance = Player.PlayerData.money["cash"]
     local bankBalance = Player.PlayerData.money["bank"]
 
+    
     local vehicle = data.vehicle
-
-    MySQL.query('SELECT * FROM player_vehicles WHERE plate = ?', {vehicle.plate}, function(result)
-        if result[1] then
-            if cashBalance >= result[1].depotprice then
-                Player.Functions.RemoveMoney("cash", result[1].depotprice, "paid-depot")
-                TriggerClientEvent("garages:client:takeOutGarage", src, data)
-            elseif bankBalance >= result[1].depotprice then
-                Player.Functions.RemoveMoney("bank", result[1].depotprice, "paid-depot")
-                TriggerClientEvent("garages:client:takeOutGarage", src, data)
-            else
-                TriggerClientEvent('Core:Notify', src, Lang:t("error.not_enough"), 'error')
-            end
-        end
-    end)
+    local depotPrice = vehicle.depotprice ~= 0 and vehicle.depotprice or DepotPrice
+    if cashBalance >= depotPrice then
+        Player.Functions.RemoveMoney("cash", depotPrice, "paid-depot")
+    elseif bankBalance >= depotPrice then
+        Player.Functions.RemoveMoney("bank", depotPrice, "paid-depot")
+    else
+        TriggerClientEvent('Core:notify', src, Lang:t("error.not_enough"), 'error')
+    end
 end)
 
 
-
 --External Calls
---Call from vehiclesales
 Core.Functions.CreateCallback("garage:server:checkVehicleOwner", function(source, cb, plate)
     local src = source
     local pData = Core.Functions.GetPlayer(src)
-    MySQL.query('SELECT * FROM player_vehicles WHERE plate = ? AND citizenid = ?',{plate, pData.PlayerData.citizenid}, function(result)
+     MySQL.query('SELECT * FROM player_vehicles WHERE plate = ? AND citizenid = ?',{plate, pData.PlayerData.citizenid}, function(result)
         if result[1] then
             cb(true, result[1].balance)
         else
@@ -264,22 +285,21 @@ Core.Functions.CreateCallback("garage:server:checkVehicleOwner", function(source
     end)
 end)
 
---Call from phone
 Core.Functions.CreateCallback('garage:server:GetPlayerVehicles', function(source, cb)
     local Player = Core.Functions.GetPlayer(source)
     local Vehicles = {}
 
-    MySQL.query('SELECT * FROM player_vehicles WHERE citizenid = ?', {Player.PlayerData.citizenid}, function(result)
+     MySQL.query('SELECT * FROM player_vehicles WHERE citizenid = ?', {Player.PlayerData.citizenid}, function(result)
         if result[1] then
-            for _, v in pairs(result) do
+            for k, v in pairs(result) do
                 local VehicleData = Core.Shared.Vehicles[v.vehicle]
-
+                if not VehicleData then goto continue end
                 local VehicleGarage = Lang:t("error.no_garage")
                 if v.garage ~= nil then
                     if Garages[v.garage] ~= nil then
                         VehicleGarage = Garages[v.garage].label
-                    else
-                        VehicleGarage = Lang:t("info.house_garage")         -- HouseGarages[v.garage].label
+                    elseif HouseGarages[v.garage] then
+                        VehicleGarage = HouseGarages[v.garage].label
                     end
                 end
 
@@ -290,13 +310,14 @@ Core.Functions.CreateCallback('garage:server:GetPlayerVehicles', function(source
                 elseif v.state == 2 then
                     v.state = Lang:t("status.impound")
                 end
-
-                local fullname
+                
+                local fullname 
                 if VehicleData["brand"] ~= nil then
                     fullname = VehicleData["brand"] .. " " .. VehicleData["name"]
                 else
                     fullname = VehicleData["name"]
                 end
+                local spot = json.decode(v.parkingspot)
                 Vehicles[#Vehicles+1] = {
                     fullname = fullname,
                     brand = VehicleData["brand"],
@@ -306,8 +327,11 @@ Core.Functions.CreateCallback('garage:server:GetPlayerVehicles', function(source
                     state = v.state,
                     fuel = v.fuel,
                     engine = v.engine,
-                    body = v.body
+                    body = v.body,
+                    parkingspot = spot and vector3(spot.x, spot.y, spot.z) or nil,
+                    damage = json.decode(v.damage)
                 }
+                ::continue::
             end
             cb(Vehicles)
         else
@@ -315,3 +339,42 @@ Core.Functions.CreateCallback('garage:server:GetPlayerVehicles', function(source
         end
     end)
 end)
+
+local function GetRandomPublicGarage()
+    for garageName, garage in pairs(Garages)do
+        if garage.type == 'public' then
+            return garageName -- return the first garageName
+        end
+    end
+end
+
+
+-- Command to restore lost cars (garage: 'None' or something similar)
+Core.Commands.Add("restorelostcars", "Restores cars that were parked in a grage that no longer exists in the config or is invalid (name change or removed).", {{name = "destination_garage", help = "(Optional) Garage where the cars are being sent to."}}, false,
+function(source, args)
+    local src = source
+    if next(Garages) ~= nil then
+        local destinationGarage = args[1] and args[1] or GetRandomPublicGarage()
+        if Garages[destinationGarage] == nil then
+            TriggerClientEvent('Core:notify', src, 'Invalid garage name provided', 'error', 4500)
+            return
+        end
+
+        local invalidGarages = {}
+         MySQL.query('SELECT garage FROM player_vehicles', function(result)
+            if result[1] then
+                for _,v in ipairs(result) do
+                    if Garages[v.garage] == nil then
+                        if v.garage then
+                            invalidGarages[v.garage] = true
+                        end
+                    end
+                end
+                for garage,_ in pairs(invalidGarages) do
+                    MySQL.update('UPDATE player_vehicles set garage = ? WHERE garage = ?',{destinationGarage, garage})
+                end
+                MySQL.update('UPDATE player_vehicles set garage = ? WHERE garage IS NULL OR garage = \'\'',{destinationGarage})
+            end
+        end)
+    end
+end, RestoreCommandPermissionLevel)
