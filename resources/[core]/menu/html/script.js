@@ -1,58 +1,39 @@
 let buttonParams = [];
-let menuHistory = [];
 
-const openMenu = (data = null, useHistory = false) => {
+const openMenu = (data = null) => {
     let html = "";
-    if (useHistory) {
-        $("#buttons").html(" ");
-        buttonParams = [];
-        data = menuHistory[menuHistory.length - 2];
-    }
-
     data.forEach((item, index) => {
-        let header = item.header;
-        let message = item.txt || item.text;
-        let isMenuHeader = item.isMenuHeader;
-        html += getButtonRender(header, message, index, isMenuHeader);
-        if (item.params) buttonParams[index] = item.params;
+        if(!item.hidden) {
+            let header = item.header;
+            let message = item.txt || item.text;
+            let isMenuHeader = item.isMenuHeader;
+            let isDisabled = item.disabled;
+            let icon = item.icon;
+            html += getButtonRender(header, message, index, isMenuHeader, isDisabled, icon);
+            if (item.params) buttonParams[index] = item.params;
+        }
     });
 
     $("#buttons").html(html);
-    menuHistory.push(data);
+
+    $('.button').click(function() {
+        const target = $(this)
+        if (!target.hasClass('title') && !target.hasClass('disabled')) {
+            postData(target.attr('id'));
+        }
+    });
 };
 
-const showHeader = (data = null) => {
-    let html = "";
-    data.forEach((item, index) => {
-        let header = item.header;
-        let message = item.txt || item.text;
-        let isMenuHeader = item.isMenuHeader;
-        html += getButtonRender(header, message, index, isMenuHeader);
-        if (item.params) buttonParams[index] = item.params;
-    });
-    $("#buttons").html(html);
-    menuHistory.push(data);
-}
-
-const getButtonRender = (header, message = null, id, isMenuHeader) => {
-    if (message) {
-        return `
-            <div class="${
-                isMenuHeader ? "title" : "button"
-            }" data-btn-id="${id}">
-                <div class="header">${header}</div>
-                <div class="text">${message}</div>
+const getButtonRender = (header, message = null, id, isMenuHeader, isDisabled, icon) => {
+    return `
+        <div class="${isMenuHeader ? "title" : "button"} ${isDisabled ? "disabled" : ""}" id="${id}">
+            <div class="icon"> <img src=nui://${icon} width=30px onerror="this.onerror=null; this.remove();"> <i class="${icon}" onerror="this.onerror=null; this.remove();"></i> </div>
+            <div class="column">
+            <div class="header"> ${header}</div>
+            ${message ? `<div class="text">${message}</div>` : ""}
             </div>
-        `;
-    } else {
-        return `
-            <div class="${
-                isMenuHeader ? "title" : "button"
-            }" data-btn-id="${id}">
-                <div class="header">${header}</div>
-            </div>
-        `;
-    }
+        </div>
+    `;
 };
 
 const closeMenu = () => {
@@ -60,17 +41,8 @@ const closeMenu = () => {
     buttonParams = [];
 };
 
-const useHistory = () => {
-    return openMenu(null, true);
-};
-
 const postData = (id) => {
-    if (!buttonParams[id]) return useHistory();
-
-    $.post(
-        `https://${GetParentResourceName()}/clickedButton`,
-        JSON.stringify(buttonParams[id])
-    );
+    $.post(`https://${GetParentResourceName()}/clickedButton`, JSON.stringify(parseInt(id) + 1));
     return closeMenu();
 };
 
@@ -79,17 +51,7 @@ const cancelMenu = () => {
     return closeMenu();
 };
 
-const clearHistory = () => {
-    menuHistory = [];
-};
 
-$(document).click(function (event) {
-    let target = $(event.target);
-    if (target.closest(".button").length && $(".button").is(":visible")) {
-        let btnId = $(event.target).closest(".button").data("btn-id");
-        postData(btnId);
-    }
-});
 
 window.addEventListener("message", (event) => {
     const data = event.data;
@@ -97,13 +59,10 @@ window.addEventListener("message", (event) => {
     const action = data.action;
     switch (action) {
         case "OPEN_MENU":
-            return openMenu(buttons);
         case "SHOW_HEADER":
-            return showHeader(buttons);
+            return openMenu(buttons);
         case "CLOSE_MENU":
             return closeMenu();
-        case "CLEAR_HISTORY":
-            return clearHistory();
         default:
             return;
     }
@@ -113,6 +72,5 @@ document.onkeyup = function (event) {
     const charCode = event.key;
     if (charCode == "Escape") {
         cancelMenu();
-        clearHistory();
     }
 };
