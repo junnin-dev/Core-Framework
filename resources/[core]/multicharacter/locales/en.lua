@@ -26,9 +26,9 @@ local Translations = {
         -- Principal
         characters_header = "Meus personagens",
         emptyslot = "Slot vazio",
-        play_button = "Toque",
+        play_button = "Play",
         create_button = "Criar personagem",
-        delete_button = "Excluir caráter",
+        delete_button = "Excluir Personagem",
 
         -- Character Information
         charinfo_header = "Informações sobre o personagem",
